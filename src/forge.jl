@@ -35,11 +35,11 @@ Returns the extra keyword arguments that should be passed to `HTTP.request`.
 request_kwargs(::Forge, ::Function=identity) = Dict()
 
 """
-    postprocessor(::Forge[, ::Function]) -> ::Type{<:PostProcessor}
+    postprocessor(::Forge, ::Function) -> ::Type{<:PostProcessor}
 
 Returns the response postprocessor to be used.
 """
-postprocessor(::Forge, ::Function=identity) = DoNothing
+postprocessor(::Forge, ::Function) = DoNothing
 
 """
     endpoint(::Forge, ::Function, args...) -> String

@@ -6,7 +6,6 @@ struct Result{T, E<:Exception}
     ex::Union{E, Nothing}
 end
 
-
 Result(val::T, resp::HTTP.Response) where T = Result{T, ErrorException}(val, resp, nothing)
 Result{T}(e::E) where {T, E <: Exception} = Result{T, E}(nothing, nothing, e)
 Result{T}(e::E, resp::HTTP.Response) where {T, E <: Exception} =
@@ -43,9 +42,8 @@ function request(
     resp = try
         HTTP.request(
             method, url, headers, body;
-            # Don't allow overriding the query, we already have a method for that.
             # Never throw status exceptions, we'll handle the status ourselves.
-            kwargs..., query=query, status_exception=false,
+            query=query, kwargs..., status_exception=false,
         )
     catch e
         return Result{T}(e)
@@ -54,7 +52,7 @@ function request(
     resp.status >= 300 && return Result{T}(HTTP.StatusError(resp.status, resp), resp)
 
     val = try
-        postprocess(postprocessor(f){T}, resp)
+        postprocess(postprocessor(f, fun){T}, resp)
     catch e
         return Result{T}(e, resp)
     end

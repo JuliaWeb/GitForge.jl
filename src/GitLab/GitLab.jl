@@ -50,7 +50,7 @@ GitForge.base_url(g::GitLabAPI) = g.base_url
 
 GitForge.request_headers(g::GitLabAPI) = [auth_header(g)]
 
-GitForge.postprocessor(::GitLabAPI) = JSON
+GitForge.postprocessor(::GitLabAPI, ::Function) = JSON
 
 include("users.jl")
 

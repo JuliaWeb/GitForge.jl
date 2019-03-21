@@ -34,7 +34,7 @@ function GitForge.request_headers(g::GitHubAPI)
     ]
 end
 
-GitForge.postprocessor(::GitHubAPI) = JSON
+GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
 
 include("users.jl")
 
