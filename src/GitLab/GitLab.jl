@@ -5,7 +5,7 @@ using ..GitForge: @json, Forge, JSON
 using Dates
 using JSON2
 
-export OAuth2, PersonalAccess
+export GitLabAPI, OAuth2, PersonalAccess
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
 

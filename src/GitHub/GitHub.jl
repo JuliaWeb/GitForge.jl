@@ -5,6 +5,8 @@ using ..GitForge: @json, Forge, JSON
 using Dates
 using JSON2
 
+export GitHubAPI
+
 const DEFAULT_URL = "https://api.github.com"
 
 """

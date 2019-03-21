@@ -1,3 +1,21 @@
+# Result type.
+
+struct Result{T, E<:Exception}
+    val::Union{T, Nothing}
+    resp::Union{HTTP.Response, Nothing}
+    ex::Union{E, Nothing}
+end
+
+
+Result(val::T, resp::HTTP.Response) where T = Result{T, ErrorException}(val, resp, nothing)
+Result{T}(e::E) where {T, E <: Exception} = Result{T, E}(nothing, nothing, e)
+Result{T}(e::E, resp::HTTP.Response) where {T, E <: Exception} =
+    Result{T, E}(nothing, resp, e)
+
+value(r::Result) = r.val
+response(r::Result) = r.resp
+exception(r::Result) = r.ex
+
 # Response postprocessing.
 
 abstract type PostProcessor end
@@ -7,24 +25,6 @@ postprocess(::Type{<:DoNothing}, ::HTTP.Response) = nothing
 
 struct JSON{T} <: PostProcessor end
 postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.body), T)
-
-# Response type.
-
-struct Response{T, E<:Exception}
-    val::Union{T, Nothing}
-    resp::Union{HTTP.Response, Nothing}
-    ex::Union{E, Nothing}
-end
-
-Response(val::T, resp::HTTP.Response) where T =
-    Response{T, ErrorException}(val, resp, nothing)
-Response{T}(e::E, resp::HTTP.Response) where {T, E <: Exception} =
-    Response{T, E}(nothing, resp, e)
-Response{T}(e::E) where {T, E <: Exception} = Response{T, E}(nothing, nothing, e)
-
-value(r::Response) = r.val
-response(r::Response) = r.resp
-exception(r::Response) = r.ex
 
 # Requests.
 
@@ -48,16 +48,16 @@ function request(
             kwargs..., query=query, status_exception=false,
         )
     catch e
-        return Response{T}(e)
+        return Result{T}(e)
     end
 
-    resp.status >= 300 && return Response{T}(HTTP.StatusError(resp.status, resp), resp)
+    resp.status >= 300 && return Result{T}(HTTP.StatusError(resp.status, resp), resp)
 
     val = try
         postprocess(postprocessor(f){T}, resp)
     catch e
-        return Response{T}(e, resp)
+        return Result{T}(e, resp)
     end
 
-    return Response(val, resp)
+    return Result(val, resp)
 end

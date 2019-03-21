@@ -10,10 +10,4 @@ include("api.jl")
 include(joinpath("GitHub", "GitHub.jl"))
 include(joinpath("GitLab", "GitLab.jl"))
 
-using .GitHub: GitHubAPI
-using .GitLab: GitLabAPI
-
-export GitHubAPI
-export GitLabAPI
-
 end
