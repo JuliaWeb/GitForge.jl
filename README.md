@@ -7,9 +7,9 @@ GitForge.jl is a unified interface for interacting with Git ["forges"](https://e
 ```julia
 julia> using GitForge, GitForge.GitHub
 
-julia> gh = GitHubAPI(; token="<my token>");
+julia> gh = GitHubAPI()
 
-julia> result = get_user(gh);
+julia> result = get_user(gh, "christopher-dG");
 
 julia> isnothing(GitForge.exception(result))
 true

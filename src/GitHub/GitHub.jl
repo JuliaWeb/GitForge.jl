@@ -10,29 +10,36 @@ export GitHubAPI
 const DEFAULT_URL = "https://api.github.com"
 
 """
-    GitHubAPI(; token::AbstractString, url::AbstractString="$DEFAULT_URL") -> GitHubAPI
+    GitHubAPI(;
+        token::Union{AbstractString, Nothing}=nothing,
+        url::AbstractString="$DEFAULT_URL",
+    ) -> GitHubAPI
 
 Create a GitHub API client.
 
 ## Keywords
-- `token::AbstractString`: Authorization token.
+- `token::Union{AbstractString, Nothing}=nothing`: Authorization token (or lack thereof).
 - `url::AbstractString="$DEFAULT_URL"`: Base URL of the target GitHub instance.
 """
 struct GitHubAPI <: Forge
-    token::String
+    token::Union{String, Nothing}
     base_url::String
 
-    GitHubAPI(; token::AbstractString, url::AbstractString=DEFAULT_URL) = new(token, url)
+    function GitHubAPI(;
+        token::Union{AbstractString, Nothing}=nothing,
+        url::AbstractString=DEFAULT_URL,
+    )
+        return new(token, url)
+    end
 end
+
+auth_headers(g::GitHubAPI) =
+    g.token === nothing ? [] : ["Authorization" => "token $(g.token)"]
 
 GitForge.base_url(g::GitHubAPI) = g.base_url
 
-function GitForge.request_headers(g::GitHubAPI, ::Function)
-    return [
-        "Authorization" => "token $(g.token)",
-        "User-Agent" => "Julia (GitForge.jl)",
-    ]
-end
+GitForge.request_headers(g::GitHubAPI, ::Function) =
+    ["User-Agent" => "Julia (GitForge.jl)"; auth_headers(g)]
 
 GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
 
