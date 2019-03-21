@@ -11,28 +11,28 @@ abstract type Forge end
 
 Returns the base URL of all API endpoints.
 """
-base_url(::Forge, ::Function=identity) = ""
+base_url(::Forge) = ""
 
 """
-    request_headers(::Forge[, ::Function]) -> Vector{Pair}
+    request_headers(::Forge, ::Function) -> Vector{Pair}
 
 Returns the headers that should be added to each request.
 """
-request_headers(::Forge, ::Function=identity) = []
+request_headers(::Forge, ::Function) = []
 
 """
-    request_query(::Forge[, ::Function]) -> Dict
+    request_query(::Forge, ::Function) -> Dict
 
 Returns the query string parameters that should be added to each request.
 """
-request_query(::Forge, ::Function=identity) = Dict()
+request_query(::Forge, ::Function) = Dict()
 
 """
-    request_kwargs(::Forge[, ::Function]) -> Dict
+    request_kwargs(::Forge, ::Function) -> Dict
 
 Returns the extra keyword arguments that should be passed to `HTTP.request`.
 """
-request_kwargs(::Forge, ::Function=identity) = Dict()
+request_kwargs(::Forge, ::Function) = Dict()
 
 """
     postprocessor(::Forge, ::Function) -> ::Type{<:PostProcessor}

@@ -35,9 +35,9 @@ function request(
     kwargs...,
 ) where T
     url = base_url(f) * url
-    headers = vcat(request_headers(f), request_headers(f, fun), headers)
-    query = merge(request_query(f), request_query(f, fun), query)
-    kwargs = merge(request_kwargs(f), request_kwargs(f, fun), Dict(pairs(kwargs)))
+    headers = vcat(request_headers(f, fun), headers)
+    query = merge(request_query(f, fun), query)
+    kwargs = merge(request_kwargs(f, fun), Dict(pairs(kwargs)))
 
     resp = try
         HTTP.request(

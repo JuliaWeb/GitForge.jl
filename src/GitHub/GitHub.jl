@@ -27,7 +27,7 @@ end
 
 GitForge.base_url(g::GitHubAPI) = g.base_url
 
-function GitForge.request_headers(g::GitHubAPI)
+function GitForge.request_headers(g::GitHubAPI, ::Function)
     return [
         "Authorization" => "token $(g.token)",
         "User-Agent" => "Julia (GitForge.jl)",

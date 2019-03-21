@@ -48,7 +48,7 @@ end
 
 GitForge.base_url(g::GitLabAPI) = g.base_url
 
-GitForge.request_headers(g::GitLabAPI) = [auth_header(g)]
+GitForge.request_headers(g::GitLabAPI, ::Function) = [auth_header(g)]
 
 GitForge.postprocessor(::GitLabAPI, ::Function) = JSON
 
