@@ -31,6 +31,7 @@ end
     identities::Vector{Identity}
     can_create_group::Bool
     can_create_project::Bool
+    two_factor_enabled::Bool
     external::Bool
     private_profile::Bool
 end

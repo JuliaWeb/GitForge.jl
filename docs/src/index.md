@@ -18,6 +18,9 @@ Forge
 
 ```@docs
 GitHub.GitHubAPI
+GitHub.NoToken
+GitHub.Token
+GitHub.JWT
 ```
 
 ## GitLab

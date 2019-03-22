@@ -9,7 +9,7 @@ export GitLabAPI, OAuth2Token, PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
 
-abstract type Token end
+abstract type AbstractToken end
 
 """
     NoToken() -> NoToken
@@ -17,14 +17,14 @@ abstract type Token end
 Represents no authentication.
 Only public data will be available.
 """
-struct NoToken <: Token end
+struct NoToken <: AbstractToken end
 
 """
     OAuth2Token(token::AbstractString) -> OAuth2Token
 
 An [OAuth2 bearer token](https://docs.gitlab.com/ce/api/#oauth2-tokens).
 """
-struct OAuth2Token <: Token
+struct OAuth2Token <: AbstractToken
     token::String
 end
 
@@ -33,7 +33,7 @@ end
 
 A [private access token](https://docs.gitlab.com/ce/api/#personal-access-tokens).
 """
-struct PersonalAccessToken <: Token
+struct PersonalAccessToken <: AbstractToken
     token::String
 end
 
@@ -42,22 +42,30 @@ auth_headers(t::OAuth2Token) = ["Authorization" => "Bearer $(t.token)"]
 auth_headers(t::PersonalAccessToken) = ["Private-Token" => t.token]
 
 """
-    GitLabAPI(; token::Token=NoToken(), url::AbstractString="$DEFAULT_URL") -> GitLabAPI
+    GitLabAPI(;
+        token::AbstractToken=NoToken(),
+        url::AbstractString="$DEFAULT_URL",
+    ) -> GitLabAPI
 
 Create a GitLab API client.
 
 ## Keywords
-- `token::Token=NoToken()`: Authorization token (or lack thereof).
+- `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
 - `url::AbstractString="$DEFAULT_URL"`: Base URL of the target GitLab instance.
 """
 struct GitLabAPI <: Forge
-    token::Token
-    base_url::String
+    token::AbstractToken
+    url::String
 
-    GitLabAPI(; token::Token=NoToken(), url::AbstractString=DEFAULT_URL) = new(token, url)
+    function GitLabAPI(;
+        token::AbstractToken=NoToken(),
+        url::AbstractString=DEFAULT_URL,
+    )
+        return new(token, url)
+    end
 end
 
-GitForge.base_url(g::GitLabAPI) = g.base_url
+GitForge.base_url(g::GitLabAPI) = g.url
 
 GitForge.request_headers(g::GitLabAPI, ::Function) =
     ["User-Agent" => USER_AGENT[]; auth_headers(g.token)]
