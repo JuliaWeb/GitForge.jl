@@ -8,8 +8,8 @@ using ..GitForge:
     JSON,
     OnRateLimit,
     RateLimiter,
-    ORL_RETURN,
-    USER_AGENT
+    HEADERS,
+    ORL_RETURN
 
 using Dates
 using HTTP
@@ -81,8 +81,7 @@ struct GitLabAPI <: Forge
 end
 
 GitForge.base_url(g::GitLabAPI) = g.url
-GitForge.request_headers(g::GitLabAPI, ::Function) =
-    ["User-Agent" => USER_AGENT[]; auth_headers(g.token)]
+GitForge.request_headers(g::GitLabAPI, ::Function) = [HEADERS; auth_headers(g.token)]
 GitForge.postprocessor(::GitLabAPI, ::Function) = JSON
 GitForge.rate_limit_check(g::GitLabAPI, ::Function) = GitForge.rate_limit_check(g.rl)
 GitForge.on_rate_limit(g::GitLabAPI, ::Function) = g.orl

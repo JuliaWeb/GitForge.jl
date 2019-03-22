@@ -70,7 +70,7 @@ postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.b
         f::Forge, fun::Function, ep::Endpoint;
         headers::Vector{<:Pair}=HTTP.Header[],
         query::AbstractDict=Dict(),
-        body=HTTP.nobody,
+        request_opts=Dict(),
         kwargs...,
     ) -> Result{T, E<:Exception}
 
@@ -85,8 +85,9 @@ Make an HTTP request and return a [`Result`](@ref).
 ## Keywords
 - `query::AbstractDict=Dict()`: Query string parameters to add to the request.
 - `headers::Vector{<:Pair}=HTTP.Header[]`: Headers to add to the request.
-- `body=HTTP.nobody`: Request body.`
-Trailing keywords are passed into `HTTP.request`.
+- `request_opts=Dict()`: Keywords passed into `HTTP.request`.
+
+Trailing keywords are sent as the request's JSON body.
 
 !!! note
     Every API function passes its keyword arguments into this function.
@@ -96,7 +97,7 @@ function request(
     f::Forge, fun::Function, ep::Endpoint;
     headers::Vector{<:Pair}=HTTP.Header[],
     query::AbstractDict=Dict(),
-    body=HTTP.nobody,
+    request_opts=Dict(),
     kwargs...,
 )
     T = into(f, fun)
@@ -115,7 +116,8 @@ function request(
     url = base_url(f) * ep.url
     headers = vcat(request_headers(f, fun), ep.headers, headers)
     query = merge(request_query(f, fun), ep.query, query)
-    kwargs = merge(request_kwargs(f, fun), Dict(pairs(kwargs)))
+    body = isempty(kwargs) ? HTTP.nobody : JSON2.write(Dict(kwargs))
+    kwargs = merge(request_kwargs(f, fun), Dict(pairs(request_opts)))
 
     resp = try
         HTTP.request(

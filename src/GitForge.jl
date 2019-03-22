@@ -4,12 +4,12 @@ using Dates
 using HTTP
 using JSON2
 
-const USER_AGENT = Ref{String}()
+const HEADERS = ["Content-Type" => "application/json"]
 
 function __init__()
     proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
     pkgver = match(r"version = \"(.+)\"", proj)[1]
-    USER_AGENT[] = "Julia v$VERSION (GitForge v$pkgver)"
+    push!(HEADERS, "User-Agent" => "Julia v$VERSION (GitForge v$pkgver)")
 end
 
 include("forge.jl")

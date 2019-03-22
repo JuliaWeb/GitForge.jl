@@ -48,7 +48,12 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
 
     @testset "Per-call request options" begin
         result, out = capture() do
-            get_user(f; query=Dict("a" => "b"), headers=["A" => "B"], verbose=0)
+            get_user(
+                f;
+                query=Dict("a" => "b"),
+                headers=["A" => "B"],
+                request_opts=(; verbose=0),
+            )
         end
 
         @test GF.exception(result) === nothing

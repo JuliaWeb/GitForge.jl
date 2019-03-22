@@ -10,8 +10,8 @@ using ..GitForge:
     JSON,
     OnRateLimit,
     RateLimiter,
-    ORL_RETURN,
-    USER_AGENT
+    HEADERS,
+    ORL_RETURN
 
 using Dates
 using HTTP
@@ -83,8 +83,7 @@ struct GitHubAPI <: Forge
 end
 
 GitForge.base_url(g::GitHubAPI) = g.url
-GitForge.request_headers(g::GitHubAPI, ::Function) =
-    ["User-Agent" => USER_AGENT[]; auth_headers(g.token)]
+GitForge.request_headers(g::GitHubAPI, ::Function) = [HEADERS; auth_headers(g.token)]
 GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
 GitForge.rate_limit_check(g::GitHubAPI, ::Function) =
     GitForge.rate_limit_check(g.rl_general)
