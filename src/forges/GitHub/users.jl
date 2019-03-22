@@ -43,7 +43,7 @@ end
     owned_private_repos::Int
     disk_usage::Int
     collaborators::Int
-    two_factor_authentication::Int
+    two_factor_authentication::Bool
     plan::Plan
 end
 
@@ -54,3 +54,6 @@ GitForge.into(::GitHubAPI, ::typeof(get_user)) = User
 
 GitForge.endpoint(::GitHubAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 GitForge.into(::GitHubAPI, ::typeof(get_users)) = Vector{User}
+
+GitForge.endpoint(::GitHubAPI, ::typeof(update_user)) = Endpoint(:PATCH, "/user")
+GitForge.into(::GitHubAPI, ::typeof(update_user)) = User

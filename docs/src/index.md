@@ -57,6 +57,7 @@ For more information on these keywords, see [`request`](@ref).
 ```@docs
 get_user
 get_users
+update_user
 ```
 
 # Internals

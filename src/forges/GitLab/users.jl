@@ -1,3 +1,5 @@
+# TODO: Does update_user actually return a User? Need an admin account to find out.
+
 @json struct Identity
     provider::String
     extern_uid::String
@@ -37,8 +39,13 @@ end
 end
 
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = Endpoint(:GET, "/users/$id")
+GitForge.endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) =
+    Endpoint(:GET, "/users/$id")
 GitForge.into(::GitLabAPI, ::typeof(get_user)) = User
 
 GitForge.endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 GitForge.into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
+
+GitForge.endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) =
+    Endpoint(:PUT, "/users/$id")
+GitForge.into(::GitLabAPI, ::typeof(update_user)) = User
