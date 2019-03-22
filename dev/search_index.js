@@ -133,7 +133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.value",
     "category": "function",
-    "text": "value(::Result{T, E}) -> Union{T, Nothing}\n\nReturns the result\'s value, if any exists.\n\n\n\n\n\n"
+    "text": "value(::Result{T}) -> Union{T, Nothing}\n\nReturns the result\'s value, if any exists.\n\n\n\n\n\n"
 },
 
 {
@@ -158,6 +158,22 @@ var documenterSearchIndex = {"docs": [
     "title": "Results",
     "category": "section",
     "text": "Result\nvalue\nresponse\nexception"
+},
+
+{
+    "location": "#GitForge.paginate",
+    "page": "Home",
+    "title": "GitForge.paginate",
+    "category": "function",
+    "text": "paginate(fun::Function, f::Forge, args...; kwargs...) -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(f, args...; kwargs...). fun must return Result{Vector{T}}.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#Pagination-1",
+    "page": "Home",
+    "title": "Pagination",
+    "category": "section",
+    "text": "paginate"
 },
 
 {
@@ -269,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.RateLimiter",
     "category": "type",
-    "text": "A generic rate limiter using the X-RateLimit-Remaining and X-RateLimit-Reset response headers. The reset header is assumed to be a Unix timestamp in seconds.\n\n\n\n\n\n"
+    "text": "A generic rate limiter using the [X-]RateLimit-Remaining and [X-]RateLimit-Reset response headers. The reset header is assumed to be a Unix timestamp in seconds.\n\n\n\n\n\n"
 },
 
 {
