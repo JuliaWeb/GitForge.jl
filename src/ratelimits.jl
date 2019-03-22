@@ -15,7 +15,7 @@ struct RateLimited <: Exception
 end
 
 """
-A generic rate limiter using the `X-RateLimit-Remaining` and `X-RateLimit-Reset` response headers.
+A generic rate limiter using the `[X-]RateLimit-Remaining` and `[X-]RateLimit-Reset` response headers.
 The reset header is assumed to be a Unix timestamp in seconds.
 """
 mutable struct RateLimiter
@@ -33,10 +33,23 @@ rate_limit_wait(rl::RateLimiter) = sleep(rate_limit_period(rl))
 rate_limit_period(rl::RateLimiter) = max(Millisecond(0), unix2datetime(rl.reset) - now(UTC))
 
 function rate_limit_update!(rl::RateLimiter, r::HTTP.Response)
-    try
-        rl.remaining = parse(Int, HTTP.header(r, "X-RateLimit-Remaining"))
-        rl.reset = parse(Int, HTTP.header(r, "X-RateLimit-Reset"))
-    catch e
-        @warn "Parsing rate limit headers failed" exception=(e, catch_backtrace())
+    remaining = tryheader(i -> parse(Int, i), r, "RateLimit-Remaining")
+    reset = tryheader(i -> parse(Int, i), r, "RateLimit-Reset")
+    if remaining === nothing  || reset === nothing
+        @warn "Parsing rate limit headers failed"
+    else
+        rl.remaining = remaining
+        rl.reset = reset
     end
+end
+
+function tryheader(f::Function, r::HTTP.Response, header::AbstractString)
+    for h in [header, "X-$header"]
+        try
+            v = HTTP.header(r, h)
+            return f(v)
+        catch
+        end
+    end
+    return nothing
 end

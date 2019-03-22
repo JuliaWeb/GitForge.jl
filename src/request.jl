@@ -16,7 +16,7 @@ Result{T}(e::E, resp::HTTP.Response) where {T, E <: Exception} =
     Result{T, E}(nothing, resp, e)
 
 """
-    value(::Result{T, E}) -> Union{T, Nothing}
+    value(::Result{T}) -> Union{T, Nothing}
 
 Returns the result's value, if any exists.
 """
