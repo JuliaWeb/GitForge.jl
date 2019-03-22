@@ -7,7 +7,7 @@ include("forge.jl")
 include("types.jl")
 include("request.jl")
 include("api.jl")
-include(joinpath("GitHub", "GitHub.jl"))
-include(joinpath("GitLab", "GitLab.jl"))
+include(joinpath("forges", "GitHub", "GitHub.jl"))
+include(joinpath("forges", "GitLab", "GitLab.jl"))
 
 end
