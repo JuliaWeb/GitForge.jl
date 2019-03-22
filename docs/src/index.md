@@ -88,6 +88,21 @@ This function makes the actual HTTP requests.
 request
 ```
 
+## Rate Limiting
+
+These functions and types handle certain generic rate limiters.
+
+```@docs
+RateLimiter
+OnRateLimit
+RateLimited
+rate_limit_check
+on_rate_limit
+rate_limit_wait
+rate_limit_period
+rate_limit_update!
+```
+
 ## Post Processing
 
 These functions and types process HTTP responses.

@@ -1,8 +1,9 @@
 module GitHub
 
 using ..GitForge
-using ..GitForge: @json, Forge, JSON, USER_AGENT
+using ..GitForge: @json, Forge, JSON, OnRateLimit, RateLimiter, ORL_RETURN, USER_AGENT
 using Dates
+using HTTP
 using JSON2
 
 export GitHubAPI, NoToken, Token, JWT
@@ -44,6 +45,7 @@ auth_headers(t::JWT) = ["Authorization" => "Bearer $(t.token)"]
     GitHubAPI(;
         token::AbstractToken=NoToken(),
         url::AbstractString="$DEFAULT_URL",
+        on_rate_limit::OnRateLimit=ORL_RETURN,
     ) -> GitHubAPI
 
 Create a GitHub API client.
@@ -51,25 +53,37 @@ Create a GitHub API client.
 ## Keywords
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
 - `url::AbstractString="$DEFAULT_URL"`: Base URL of the target GitHub instance.
+- `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
 """
 struct GitHubAPI <: Forge
     token::AbstractToken
     url::String
+    orl::OnRateLimit
+    rl_general::RateLimiter
+    rl_search::RateLimiter
 
     function GitHubAPI(;
         token::AbstractToken=NoToken(),
         url::AbstractString=DEFAULT_URL,
+        on_rate_limit::OnRateLimit=ORL_RETURN,
     )
-        return new(token, url)
+        return new(token, url, on_rate_limit, RateLimiter(), RateLimiter())
     end
 end
 
 GitForge.base_url(g::GitHubAPI) = g.url
-
 GitForge.request_headers(g::GitHubAPI, ::Function) =
     ["User-Agent" => USER_AGENT[]; auth_headers(g.token)]
-
 GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
+# TODO: When search is implemented, they'll need their own rate limits.
+GitForge.rate_limit_check(g::GitHubAPI, ::Function) =
+    GitForge.rate_limit_check(g.rl_general)
+GitForge.on_rate_limit(g::GitHubAPI, ::Function) = g.orl
+GitForge.rate_limit_wait(g::GitHubAPI, ::Function) = GitForge.rate_limit_wait(g.rl_general)
+GitForge.rate_limit_period(g::GitHubAPI, ::Function) =
+    GitForge.rate_limit_period(g.rl_general)
+GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::HTTP.Response) =
+    GitForge.rate_limit_update!(g.rl_general, r)
 
 include("users.jl")
 

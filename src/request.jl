@@ -55,10 +55,10 @@ Parses a JSON response into a given type and returns that object.
 struct JSON{T} <: PostProcessor end
 
 """
-    postprocess(::Type{<:PostProcessor{T}}, ::HTTP.Response)
+    postprocess(::Type{<:PostProcessor}, ::HTTP.Response)
 
-Computes a value of type `T` from an HTTP response.
-This value is what is returned by [`value`](@ref).
+Computes a value from an HTTP response.
+This is what is returned by [`value`](@ref).
 """
 postprocess(::Type{<:DoNothing}, ::HTTP.Response) = nothing
 postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.body), T)
@@ -100,11 +100,23 @@ function request(
     body=HTTP.nobody,
     kwargs...,
 )
+    T = into(f, fun)
+
+    if rate_limit_check(f, fun)
+        orl = on_rate_limit(f, fun)
+        if orl === ORL_RETURN
+            return Result{T}(RateLimited(rate_limit_period(f, fun)))
+        elseif orl === ORL_WAIT
+            rate_limit_wait(f, fun)
+        else
+            @warn "Ignoring unknown rate limit behaviour $orl"
+        end
+    end
+
     url = base_url(f) * url
     headers = vcat(request_headers(f, fun), headers)
     query = merge(request_query(f, fun), query)
     kwargs = merge(request_kwargs(f, fun), Dict(pairs(kwargs)))
-    T = into(f, fun)
 
     resp = try
         HTTP.request(
@@ -115,6 +127,8 @@ function request(
     catch e
         return Result{T}(e)
     end
+
+    rate_limit_update!(f, fun, resp)
 
     resp.status >= 300 && return Result{T}(HTTP.StatusError(resp.status, resp), resp)
 

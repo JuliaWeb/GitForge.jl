@@ -35,7 +35,7 @@ Returns the extra keyword arguments that should be passed to `HTTP.request`.
 request_kwargs(::Forge, ::Function) = Dict()
 
 """
-    postprocessor(::Forge, ::Function) -> ::Type{<:PostProcessor}
+    postprocessor(::Forge, ::Function) -> Type{<:PostProcessor}
 
 Returns the [`PostProcessor`](@ref) to be used.
 Type parameters must not be included (they are produced by [`into`](@ref)).
@@ -59,3 +59,39 @@ For example, [`get_user`](@ref) can take some ID parameter which becomes part of
 """
 endpoint(f::T, ::Function, args...) where T <: Forge =
     error("$T has not implimented this function")
+
+"""
+    rate_limit_check(::Forge, ::Function) -> Bool
+
+Returns whether or not there is an active rate limit.
+If one is found, [`on_rate_limit`](@ref) is called to determine how to react.
+"""
+rate_limit_check(::Forge, ::Function) = false
+
+"""
+    on_rate_limit(::Forge, ::Function) -> OnRateLimit
+
+Returns an [`OnRateLimit`](@ref) that determines how to react to an exceeded rate limit.
+"""
+on_rate_limit(::Forge, ::Function) = ORL_RETURN
+
+"""
+    rate_limit_wait(::Forge, ::Function)
+
+Wait for a rate limit to expire.
+"""
+rate_limit_wait(::Forge, ::Function) = nothing
+
+"""
+    rate_limit_period(::Forge, ::Function) -> Period
+
+Compute the amount of time until a rate limit expires.
+"""
+rate_limit_period(::Forge, ::Function) = nothing
+
+"""
+    rate_limit_update!(::Forge, ::Function, ::HTTP.Response)
+
+Update the rate limiter with a new response.
+"""
+rate_limit_update!(::Forge, ::Function, ::HTTP.Response) = nothing

@@ -1,5 +1,6 @@
 module GitForge
 
+using Dates
 using HTTP
 using JSON2
 
@@ -12,6 +13,7 @@ function __init__()
 end
 
 include("forge.jl")
+include("ratelimits.jl")
 include("types.jl")
 include("request.jl")
 include("api.jl")
