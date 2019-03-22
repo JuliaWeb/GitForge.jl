@@ -1,6 +1,4 @@
 # TODO: GitHub's list users only uses `since`.
-# TODO: The 'last' rel is not always present: https://docs.gitlab.com/ce/api/#other-pagination-headers.
-#       I think GitHub does something similar.
 
 export @paginate
 
@@ -62,7 +60,7 @@ function Base.iterate(p::Paginator, state=nothing)
     it = state === nothing ? iterate(value(p.r)) : iterate(value(p.r), state)
     if it === nothing
         # This page is finished, so either fetch a new page or quit.
-        p.page == p.last && return nothing
+        p.page > p.last && return nothing
         nextpage!(p) || return nothing
         return iterate(p)
     else
@@ -91,5 +89,11 @@ function parserels(link::AbstractString)
     lastm = match(r"(<.*?)>; rel=\"last\"", link)
     nextd = nextm === nothing ? nothing : unescape(nextm[1])
     lastd = lastm === nothing ? nothing : unescape(lastm[1])
-    return nextd, lastd === nothing ? nothing : get(lastd, "page", nothing)
+    last = if lastd == nothing
+        nothing
+    else
+        l = get(lastd, "page", nothing)
+        l === nothing ? nothing : parse(Int, l)
+    end
+    return nextd, last
 end
