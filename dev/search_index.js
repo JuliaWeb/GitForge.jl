@@ -161,11 +161,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "#GitForge.paginate",
+    "location": "#GitForge.@paginate",
     "page": "Home",
-    "title": "GitForge.paginate",
-    "category": "function",
-    "text": "paginate(fun::Function, f::Forge, args...; kwargs...) -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(f, args...; kwargs...). fun must return Result{Vector{T}}.\n\n\n\n\n\n"
+    "title": "GitForge.@paginate",
+    "category": "macro",
+    "text": "@paginate fun(f, args...; kwargss...) page=1 per_page=100 -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(f, args...; kwargs...). fun must return Result{Vector{T}}.\n\nKeywords\n\npage::Int=1: Starting page.\nper_page::Int=100: Number of entries per page.\n\n\n\n\n\n"
 },
 
 {
@@ -173,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Pagination",
     "category": "section",
-    "text": "paginate"
+    "text": "@paginate"
 },
 
 {
