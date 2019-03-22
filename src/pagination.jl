@@ -2,7 +2,27 @@
 # TODO: The 'last' rel is not always present: https://docs.gitlab.com/ce/api/#other-pagination-headers.
 #       I think GitHub does something similar.
 
-export paginate
+export @paginate
+
+"""
+    @paginate fun(f, args...; kwargss...) page=1 per_page=100 -> Paginator
+
+Create an iterator that paginates the results of repeatedly calling `fun(f, args...; kwargs...)`.
+`fun` must return `Result{Vector{T}}`.
+
+## Keywords
+- `page::Int=1`: Starting page.
+- `per_page::Int=100`: Number of entries per page.
+"""
+macro paginate(ex::Expr, kws::Expr...)
+    (ex.args[2] isa Expr && ex.args[2].head === :parameters) ||
+        insert!(ex.args, 2, Expr(:parameters))
+    append!(ex.args[2].args, map(kw -> Expr(:kw, kw.args...), kws))
+    insert!(ex.args, 3, ex.args[1])
+    isempty(ex.args[2].args) && deleteat!(ex.args, 2)
+    ex.args[1] = :(GitForge.paginate)
+    esc(ex)
+end
 
 mutable struct Paginator{T}
     f::Function
@@ -24,12 +44,6 @@ mutable struct Paginator{T}
     end
 end
 
-"""
-    paginate(fun::Function, f::Forge, args...; kwargs...) -> Paginator
-
-Create an iterator that paginates the results of repeatedly calling `fun(f, args...; kwargs...)`.
-`fun` must return `Result{Vector{T}}`.
-"""
 function paginate(
     fun::Function, f::Forge, args...;
     page::Int=1, per_page::Int=100, kwargs...,

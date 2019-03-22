@@ -46,7 +46,7 @@ exception
 ## Pagination
 
 ```@docs
-paginate
+@paginate
 ```
 
 ## Endpoints
