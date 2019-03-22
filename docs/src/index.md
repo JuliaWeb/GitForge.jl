@@ -43,6 +43,12 @@ response
 exception
 ```
 
+## Pagination
+
+```@docs
+paginate
+```
+
 ## Endpoints
 
 These functions all allow any number of trailing keywords.

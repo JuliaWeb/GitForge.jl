@@ -15,6 +15,7 @@ end
 include("forge.jl")
 include("ratelimits.jl")
 include("request.jl")
+include("pagination.jl")
 include("helpers.jl")
 include("api.jl")
 include(joinpath("forges", "GitHub", "GitHub.jl"))
