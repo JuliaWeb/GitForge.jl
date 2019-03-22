@@ -37,21 +37,25 @@ request_kwargs(::Forge, ::Function) = Dict()
 """
     postprocessor(::Forge, ::Function) -> ::Type{<:PostProcessor}
 
-Returns the response postprocessor to be used.
+Returns the [`PostProcessor`](@ref) to be used.
+Type parameters must not be included (they are produced by [`into`](@ref)).
 """
 postprocessor(::Forge, ::Function) = DoNothing
 
 """
+    into(::Forge, ::Function) -> Type
+
+Returns the type that the [`PostProcessor`](@ref) should create from the response.
+
+"""
+into(::Forge, ::Function) = Nothing
+
+"""
     endpoint(::Forge, ::Function, args...) -> String
 
-Returns the endpoint for a given function.
+Returns the endpoint for a given function, relative to the base URL.
+Trailing arguments are usually important for routing.
+For example, [`get_user`](@ref) can take some ID parameter which becomes part of the URL.
 """
 endpoint(f::T, ::Function, args...) where T <: Forge =
     error("$T has not implimented this function")
-
-"""
-    into(::Forge, ::Function) -> Type
-
-Returns the type that the postprocessor should create from the response.
-"""
-into(::Forge, ::Function) = Nothing

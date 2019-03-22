@@ -1,3 +1,8 @@
+"""
+    @json struct T ... end
+
+Create a type that can be parsed from JSON.
+"""
 macro json(ex::Expr)
     # Make the struct mutable.
     ex.args[1] = true

@@ -1,5 +1,9 @@
 # Result type.
 
+"""
+A `Result{T, E<:Exception}` is returned from every API function.
+It encapsulates the value, HTTP response, and thrown exception of the call.
+"""
 struct Result{T, E<:Exception}
     val::Union{T, Nothing}
     resp::Union{HTTP.Response, Nothing}
@@ -11,33 +15,96 @@ Result{T}(e::E) where {T, E <: Exception} = Result{T, E}(nothing, nothing, e)
 Result{T}(e::E, resp::HTTP.Response) where {T, E <: Exception} =
     Result{T, E}(nothing, resp, e)
 
+"""
+    value(::Result{T, E}) -> Union{T, Nothing}
+
+Returns the result's value, if any exists.
+"""
 value(r::Result) = r.val
+
+"""
+    response(::Result) -> Union{HTTP.Response, Nothing}
+
+Returns the result's HTTP response, if any exists.
+"""
 response(r::Result) = r.resp
+
+"""
+    exception(::Result{T, E<:Exception}) -> Union{E, Nothing}
+
+Returns the result's thrown exception, if any exists.
+"""
 exception(r::Result) = r.ex
 
 # Response postprocessing.
 
+"""
+Determines the behaviour of [`postprocess`](@ref).
+Subtypes must have one type parameter, which is determined by [`into`](@ref).
+"""
 abstract type PostProcessor end
 
+"""
+Does nothing and always returns `nothing`.
+"""
 struct DoNothing{T} <: PostProcessor end
-postprocess(::Type{<:DoNothing}, ::HTTP.Response) = nothing
 
+"""
+Parses a JSON response into a given type and returns that object.
+"""
 struct JSON{T} <: PostProcessor end
+
+"""
+    postprocess(::Type{<:PostProcessor{T}}, ::HTTP.Response)
+
+Computes a value of type `T` from an HTTP response.
+This value is what is returned by [`value`](@ref).
+"""
+postprocess(::Type{<:DoNothing}, ::HTTP.Response) = nothing
 postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.body), T)
 
 # Requests.
 
+"""
+    request(
+        f::Forge, fun::Function, url::AbstractString, method::Symbol;
+        headers::Vector{<:Pair}=HTTP.Header[],
+        query::AbstractDict=Dict(),
+        body=HTTP.nobody,
+        kwargs...,
+    ) -> Result{T, E<:Exception}
+
+Make an HTTP request and return a [`Result`](@ref).
+`T` is determined by [`into`](@ref).
+
+## Arguments
+- `f::Forge` A [`Forge`](@ref) subtype.
+- `fun::Function`: The API function being called.
+- `url::AbstractString`: The endpoint, relative to the forge's base URL.
+- `method::Symbol`: The HTTP request method to use.
+
+## Keywords
+- `query::AbstractDict=Dict()`: Query string parameters to add to the request.
+- `headers::Vector{<:Pair}=HTTP.Header[]`: Headers to add to the request.
+- `body=HTTP.nobody`: Request body.`
+Trailing keywords are passed into `HTTP.request`.
+
+!!! note
+    Every API function passes its keyword arguments into this function.
+    Therefore, to customize behaviour for a single request, pass the above keywords to the API function.
+"""
 function request(
-    f::Forge, fun::Function, url::AbstractString, method::Symbol, ::Type{T};
+    f::Forge, fun::Function, url::AbstractString, method::Symbol;
     headers::Vector{<:Pair}=HTTP.Header[],
     query::AbstractDict=Dict(),
     body=HTTP.nobody,
     kwargs...,
-) where T
+)
     url = base_url(f) * url
     headers = vcat(request_headers(f, fun), headers)
     query = merge(request_query(f, fun), query)
     kwargs = merge(request_kwargs(f, fun), Dict(pairs(kwargs)))
+    T = into(f, fun)
 
     resp = try
         HTTP.request(

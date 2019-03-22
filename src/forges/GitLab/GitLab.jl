@@ -10,10 +10,29 @@ export GitLabAPI, OAuth2Token, PersonalAccessToken
 const DEFAULT_URL = "https://gitlab.com/api/v4"
 
 abstract type Token end
+
+"""
+    NoToken() -> NoToken
+
+Represents no authentication.
+Only public data will be available.
+"""
 struct NoToken <: Token end
+
+"""
+    OAuth2Token(token::AbstractString) -> OAuth2Token
+
+An [OAuth2 bearer token](https://docs.gitlab.com/ce/api/#oauth2-tokens).
+"""
 struct OAuth2Token <: Token
     token::String
 end
+
+"""
+    PersonalAccessToken(token::AbstractString) -> PersonalAccessToken
+
+A [private access token](https://docs.gitlab.com/ce/api/#personal-access-tokens).
+"""
 struct PersonalAccessToken <: Token
     token::String
 end
@@ -28,7 +47,7 @@ auth_headers(t::PersonalAccessToken) = ["Private-Token" => t.token]
 Create a GitLab API client.
 
 ## Keywords
-- `token::Token=NoToken()`: Authorization token.
+- `token::Token=NoToken()`: Authorization token (or lack thereof).
 - `url::AbstractString="$DEFAULT_URL"`: Base URL of the target GitLab instance.
 """
 struct GitLabAPI <: Forge

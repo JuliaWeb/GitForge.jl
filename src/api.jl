@@ -16,8 +16,7 @@ function make_endpoint(method::Symbol, fun::Expr, epargs::Expr)
                 f,
                 $fname,
                 endpoint(f, $fname, $(epargs)...),
-                $(QuoteNode(method)),
-                into(f, $fname);
+                $(QuoteNode(method));
                 kwargs...,
             )
         end
