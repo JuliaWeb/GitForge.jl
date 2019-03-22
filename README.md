@@ -8,7 +8,7 @@
 ```julia
 julia> using GitForge, GitForge.GitHub
 
-julia> gh = GitHubAPI()
+julia> gh = GitHubAPI();
 
 julia> result = get_user(gh, "christopher-dG");
 

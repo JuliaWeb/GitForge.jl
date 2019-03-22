@@ -86,7 +86,8 @@ Make an HTTP request and return a [`Result`](@ref).
 - `headers::Vector{<:Pair}=HTTP.Header[]`: Headers to add to the request.
 - `request_opts=Dict()`: Keywords passed into `HTTP.request`.
 
-Trailing keywords are sent as the request's JSON body.
+Trailing keywords are sent as a JSON body for `PATCH`, `POST`, and `PUT` requests.
+For other request types, the keywords are sent as query string parameters.
 
 !!! note
     Every API function passes its keyword arguments into this function.
@@ -115,14 +116,19 @@ function request(
     url = base_url(f) * ep.url
     headers = vcat(request_headers(f, fun), ep.headers, headers)
     query = merge(request_query(f, fun), ep.query, query)
-    body = isempty(kwargs) ? HTTP.nobody : JSON2.write(Dict(kwargs))
-    kwargs = merge(request_kwargs(f, fun), Dict(pairs(request_opts)))
+    opts = merge(request_kwargs(f, fun), Dict(pairs(request_opts)))
+    body = if ep.method in (:PATCH, :POST, :PUT)
+        JSON2.write(Dict(kwargs))
+    else
+        merge!(query, Dict(kwargs))
+        HTTP.nobody
+    end
 
     resp = try
         HTTP.request(
             ep.method, url, headers, body;
             # Never throw status exceptions, we'll handle the status ourselves.
-            query=query, kwargs..., status_exception=false,
+            query=query, opts..., status_exception=false,
         )
     catch e
         return Result{T}(e)

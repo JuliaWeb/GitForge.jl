@@ -30,7 +30,7 @@ Create a new user.
 @endpoint create_user()
 
 """
-    delete_user(::Forge id::Integer)
+    delete_user(::Forge, id::Integer)
 
 Delete a user by ID.
 """
