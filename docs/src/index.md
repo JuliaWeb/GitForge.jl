@@ -58,6 +58,8 @@ For more information on these keywords, see [`request`](@ref).
 get_user
 get_users
 update_user
+create_user
+delete_user
 ```
 
 # Internals

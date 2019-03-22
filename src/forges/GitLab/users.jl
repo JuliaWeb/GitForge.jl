@@ -49,3 +49,10 @@ GitForge.into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
 GitForge.endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) =
     Endpoint(:PUT, "/users/$id")
 GitForge.into(::GitLabAPI, ::typeof(update_user)) = User
+
+GitForge.endpoint(::GitLabAPI, ::typeof(create_user)) = Endpoint(:POST, "/users")
+GitForge.into(::GitLabAPI, ::typeof(create_user)) = User
+
+GitForge.endpoint(::GitLabAPI, ::typeof(delete_user), id::Integer) =
+    Endpoint(:DELETE, "/users/$id")
+GitForge.postprocessor(::GitLabAPI, ::typeof(delete_user)) = DoNothing

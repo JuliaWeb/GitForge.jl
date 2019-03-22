@@ -3,6 +3,7 @@ module GitLab
 using ..GitForge
 using ..GitForge:
     @json,
+    DoNothing,
     Endpoint,
     Forge,
     JSON,

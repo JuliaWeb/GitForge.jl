@@ -21,3 +21,17 @@ Update the currently authenticated user, or a user by ID.
 """
 @endpoint update_user()
 @endpoint update_user(id::Integer) [id]
+
+"""
+    create_user(::Forge; kwargs...)
+
+Create a new user.
+"""
+@endpoint create_user()
+
+"""
+    delete_user(::Forge id::Integer)
+
+Delete a user by ID.
+"""
+@endpoint delete_user(id::Integer) [id]
