@@ -125,7 +125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.Result",
     "category": "type",
-    "text": "A Result{T, E<:Exception} is returned from every API function. It encapsulates the value, HTTP response, and thrown exception of the call.\n\n\n\n\n\n"
+    "text": "A Result{T} is returned from every API function. It encapsulates the value, HTTP response, and thrown exception of the call.\n\n\n\n\n\n"
 },
 
 {
@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.exception",
     "category": "function",
-    "text": "exception(::Result{T, E<:Exception}) -> Union{E, Nothing}\n\nReturns the result\'s thrown exception, if any exists.\n\n\n\n\n\n"
+    "text": "exception(::Result{T}) -> Union{Exception, Nothing}\n\nReturns the result\'s thrown exception, if any exists.\n\n\n\n\n\n"
 },
 
 {
@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.@paginate",
     "category": "macro",
-    "text": "@paginate fun(f, args...; kwargss...) page=1 per_page=100 -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(f, args...; kwargs...). fun must return Result{Vector{T}}.\n\nKeywords\n\npage::Int=1: Starting page.\nper_page::Int=100: Number of entries per page.\n\n\n\n\n\n"
+    "text": "@paginate fun(args...; kwargss...) page=1 per_page=100 -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(args...; kwargs...). fun must take a Forge as its first argument and return a Result{Vector{T}}.\n\nKeywords\n\npage::Int=1: Starting page.\nper_page::Int=100: Number of entries per page.\n\n\n\n\n\n"
 },
 
 {
@@ -181,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.get_user",
     "category": "function",
-    "text": "get_user(::Forge)\n\nGet the currently authenticated user.\n\n\n\n\n\nget_user(::Forge, name_or_id::Union{AbstractString, Integer})\n\nGet a user by name or ID.\n\n\n\n\n\n"
+    "text": "get_user(::Forge[, name_or_id::Union{AbstractString, Integer}])\n\nGet the currently authenticated user, or a user by name or ID.\n\n\n\n\n\n"
 },
 
 {
@@ -193,11 +193,35 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "#GitForge.update_user",
+    "page": "Home",
+    "title": "GitForge.update_user",
+    "category": "function",
+    "text": "update_user(::Forge[, id::Integer]; kwargs...)\n\nUpdate the currently authenticated user, or a user by ID.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.create_user",
+    "page": "Home",
+    "title": "GitForge.create_user",
+    "category": "function",
+    "text": "create_user(::Forge; kwargs...)\n\nCreate a new user.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.delete_user",
+    "page": "Home",
+    "title": "GitForge.delete_user",
+    "category": "function",
+    "text": "delete_user(::Forge id::Integer)\n\nDelete a user by ID.\n\n\n\n\n\n"
+},
+
+{
     "location": "#Endpoints-1",
     "page": "Home",
     "title": "Endpoints",
     "category": "section",
-    "text": "These functions all allow any number of trailing keywords. For more information on these keywords, see request.get_user\nget_users"
+    "text": "These functions all allow any number of trailing keywords. For more information on these keywords, see request.get_user\nget_users\nupdate_user\ncreate_user\ndelete_user"
 },
 
 {
@@ -221,7 +245,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.endpoint",
     "category": "function",
-    "text": "endpoint(::Forge, ::Function, args...) -> String\n\nReturns the endpoint for a given function, relative to the base URL. Trailing arguments are usually important for routing. For example, get_user can take some ID parameter which becomes part of the URL.\n\n\n\n\n\n"
+    "text": "endpoint(::Forge, ::Function, args...) -> Endpoint\n\nReturns an Endpoint for a given function. Trailing arguments are usually important for routing. For example, get_user can take some ID parameter which becomes part of the URL.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.Endpoint",
+    "page": "Home",
+    "title": "GitForge.Endpoint",
+    "category": "type",
+    "text": "Endpoint(\n    method::Symbol,\n    url::AbstractString;\n    headers::Vector{<:Pair}=HTTP.Header[],\n    query::Dict=Dict(),\n) -> Endpoint\n\nContains information on how to call an endpoint.\n\nArguments\n\nmethod::Symbol: HTTP request method to use.\nurl::AbstractString: Endpoint URL, relative to the base URL.\n\nKeywords\n\nheaders::Vector{<:Pair}=HTTP.Header[]: Request headers to add.\nquery::Dict=Dict(): Query string parameters to add.\n\n\n\n\n\n"
 },
 
 {
@@ -229,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "URLs",
     "category": "section",
-    "text": "These functions set request URLs. To determine the full URL for a given request, they are concatenated together.base_url\nendpoint"
+    "text": "These functions set request URLs. To determine the full URL for a given request, they are concatenated together.base_url\nendpoint\nEndpoint"
 },
 
 {
@@ -269,7 +301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.request",
     "category": "function",
-    "text": "request(\n    f::Forge, fun::Function, url::AbstractString, method::Symbol;\n    headers::Vector{<:Pair}=HTTP.Header[],\n    query::AbstractDict=Dict(),\n    body=HTTP.nobody,\n    kwargs...,\n) -> Result{T, E<:Exception}\n\nMake an HTTP request and return a Result. T is determined by into.\n\nArguments\n\nf::Forge A Forge subtype.\nfun::Function: The API function being called.\nurl::AbstractString: The endpoint, relative to the forge\'s base URL.\nmethod::Symbol: The HTTP request method to use.\n\nKeywords\n\nquery::AbstractDict=Dict(): Query string parameters to add to the request.\nheaders::Vector{<:Pair}=HTTP.Header[]: Headers to add to the request.\nbody=HTTP.nobody: Request body.`\n\nTrailing keywords are passed into HTTP.request.\n\nnote: Note\nEvery API function passes its keyword arguments into this function. Therefore, to customize behaviour for a single request, pass the above keywords to the API function.\n\n\n\n\n\n"
+    "text": "request(\n    f::Forge, fun::Function, ep::Endpoint;\n    headers::Vector{<:Pair}=HTTP.Header[],\n    query::AbstractDict=Dict(),\n    request_opts=Dict(),\n    kwargs...,\n) -> Result{T}\n\nMake an HTTP request and return a Result. T is determined by into.\n\nArguments\n\nf::Forge A Forge subtype.\nfun::Function: The API function being called.\nep::Endpoint: The endpoint information.\n\nKeywords\n\nquery::AbstractDict=Dict(): Query string parameters to add to the request.\nheaders::Vector{<:Pair}=HTTP.Header[]: Headers to add to the request.\nrequest_opts=Dict(): Keywords passed into HTTP.request.\n\nTrailing keywords are sent as the request\'s JSON body.\n\nnote: Note\nEvery API function passes its keyword arguments into this function. Therefore, to customize behaviour for a single request, pass the above keywords to the API function.\n\n\n\n\n\n"
 },
 
 {
