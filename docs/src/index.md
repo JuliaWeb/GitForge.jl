@@ -74,6 +74,7 @@ To determine the full URL for a given request, they are concatenated together.
 ```@docs
 base_url
 endpoint
+Endpoint
 ```
 
 ## Request Options

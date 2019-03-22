@@ -24,7 +24,7 @@ GF.request_headers(::TestForge, ::Function) = ["Foo" => "Bar"]
 GF.request_query(::TestForge, ::Function) = Dict("foo" => "bar")
 GF.request_kwargs(::TestForge, ::Function) = Dict(:verbose => 1)
 GF.postprocessor(::TestForge, ::Function) = TestPostProcessor
-GF.endpoint(::TestForge, ::typeof(get_user)) = "/get"
+GF.endpoint(::TestForge, ::typeof(get_user)) = GF.Endpoint(:GET, "/get")
 GF.into(::TestForge, ::typeof(get_user)) = Symbol
 
 @testset "GitForge.jl" begin

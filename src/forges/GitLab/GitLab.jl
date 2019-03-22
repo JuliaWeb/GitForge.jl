@@ -1,7 +1,16 @@
 module GitLab
 
 using ..GitForge
-using ..GitForge: @json, Forge, JSON, OnRateLimit, RateLimiter, ORL_RETURN, USER_AGENT
+using ..GitForge:
+    @json,
+    Endpoint,
+    Forge,
+    JSON,
+    OnRateLimit,
+    RateLimiter,
+    ORL_RETURN,
+    USER_AGENT
+
 using Dates
 using HTTP
 using JSON2

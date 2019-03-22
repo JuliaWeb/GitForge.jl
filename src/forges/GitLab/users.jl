@@ -36,9 +36,9 @@ end
     private_profile::Bool
 end
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user)) = "/user"
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = "/users/$id"
+GitForge.endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
+GitForge.endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = Endpoint(:GET, "/users/$id")
 GitForge.into(::GitLabAPI, ::typeof(get_user)) = User
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_users)) = "/users"
+GitForge.endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 GitForge.into(::GitLabAPI, ::typeof(get_users)) = Vector{User}

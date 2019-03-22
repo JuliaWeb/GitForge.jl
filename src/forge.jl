@@ -7,6 +7,38 @@ The most common example is [GitHub](https://github.com).
 abstract type Forge end
 
 """
+    Endpoint(
+        method::Symbol,
+        url::AbstractString;
+        headers::Vector{<:Pair}=HTTP.Header[],
+        query::Dict=Dict(),
+    ) -> Endpoint
+
+Contains information on how to call an endpoint.
+
+## Arguments
+- `method::Symbol`: HTTP request method to use.
+- `url::AbstractString`: Endpoint URL, relative to the base URL.
+
+## Keywords
+- `headers::Vector{<:Pair}=HTTP.Header[]`: Request headers to add.
+- `query::Dict=Dict()`: Query string parameters to add.
+"""
+struct Endpoint
+    method::Symbol
+    url::String
+    headers::Vector{<:Pair}
+    query::Dict
+
+    function Endpoint(
+        method::Symbol, url::AbstractString;
+        headers::Vector{<:Pair}=HTTP.Header[], query::Dict=Dict(),
+    )
+        return new(method, url, headers, query)
+    end
+end
+
+"""
     base_url(::Forge) -> String
 
 Returns the base URL of all API endpoints.
@@ -51,9 +83,9 @@ Returns the type that the [`PostProcessor`](@ref) should create from the respons
 into(::Forge, ::Function) = Nothing
 
 """
-    endpoint(::Forge, ::Function, args...) -> String
+    endpoint(::Forge, ::Function, args...) -> Endpoint
 
-Returns the endpoint for a given function, relative to the base URL.
+Returns an [`Endpoint`](@ref) for a given function.
 Trailing arguments are usually important for routing.
 For example, [`get_user`](@ref) can take some ID parameter which becomes part of the URL.
 """

@@ -3,14 +3,14 @@
 
 Get the currently authenticated user.
 """
-@endpoint GET get_user()
+@endpoint get_user()
 
 """
     get_user(::Forge, name_or_id::Union{AbstractString, Integer})
 
 Get a user by name or ID.
 """
-@endpoint GET get_user(name_or_id::Union{AbstractString, Integer}) [name_or_id]
+@endpoint get_user(name_or_id::Union{AbstractString, Integer}) [name_or_id]
 
 
 """
@@ -18,4 +18,4 @@ Get a user by name or ID.
 
 Get all users.
 """
-@endpoint GET get_users()
+@endpoint get_users()

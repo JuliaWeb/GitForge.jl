@@ -67,7 +67,7 @@ postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.b
 
 """
     request(
-        f::Forge, fun::Function, url::AbstractString, method::Symbol;
+        f::Forge, fun::Function, ep::Endpoint;
         headers::Vector{<:Pair}=HTTP.Header[],
         query::AbstractDict=Dict(),
         body=HTTP.nobody,
@@ -80,8 +80,7 @@ Make an HTTP request and return a [`Result`](@ref).
 ## Arguments
 - `f::Forge` A [`Forge`](@ref) subtype.
 - `fun::Function`: The API function being called.
-- `url::AbstractString`: The endpoint, relative to the forge's base URL.
-- `method::Symbol`: The HTTP request method to use.
+- `ep::Endpoint`: The endpoint information.
 
 ## Keywords
 - `query::AbstractDict=Dict()`: Query string parameters to add to the request.
@@ -94,7 +93,7 @@ Trailing keywords are passed into `HTTP.request`.
     Therefore, to customize behaviour for a single request, pass the above keywords to the API function.
 """
 function request(
-    f::Forge, fun::Function, url::AbstractString, method::Symbol;
+    f::Forge, fun::Function, ep::Endpoint;
     headers::Vector{<:Pair}=HTTP.Header[],
     query::AbstractDict=Dict(),
     body=HTTP.nobody,
@@ -113,14 +112,14 @@ function request(
         end
     end
 
-    url = base_url(f) * url
-    headers = vcat(request_headers(f, fun), headers)
-    query = merge(request_query(f, fun), query)
+    url = base_url(f) * ep.url
+    headers = vcat(request_headers(f, fun), ep.headers, headers)
+    query = merge(request_query(f, fun), ep.query, query)
     kwargs = merge(request_kwargs(f, fun), Dict(pairs(kwargs)))
 
     resp = try
         HTTP.request(
-            method, url, headers, body;
+            ep.method, url, headers, body;
             # Never throw status exceptions, we'll handle the status ourselves.
             query=query, kwargs..., status_exception=false,
         )

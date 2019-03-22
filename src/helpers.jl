@@ -1,18 +1,11 @@
-macro endpoint(method::Symbol, fun::Expr, epargs::Expr=:(()))
+macro endpoint(fun::Expr, epargs::Expr=:(()))
     fname = fun.args[1]
     fargs = fun.args[2:end]
 
     ex = quote
         export $fname
-        Base.@__doc__ function $fname(f::Forge, $(fargs...); kwargs...)
-            return request(
-                f,
-                $fname,
-                endpoint(f, $fname, $(epargs)...),
-                $(QuoteNode(method));
-                kwargs...,
-            )
-        end
+        Base.@__doc__ $fname(f::Forge, $(fargs...); kwargs...) =
+            request(f, $fname, endpoint(f, $fname, $(epargs)...); kwargs...)
     end
 
     esc(ex)
