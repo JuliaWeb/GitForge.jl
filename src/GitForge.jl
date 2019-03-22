@@ -14,8 +14,8 @@ end
 
 include("forge.jl")
 include("ratelimits.jl")
-include("types.jl")
 include("request.jl")
+include("helpers.jl")
 include("api.jl")
 include(joinpath("forges", "GitHub", "GitHub.jl"))
 include(joinpath("forges", "GitLab", "GitLab.jl"))
