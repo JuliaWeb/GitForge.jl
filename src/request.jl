@@ -1,19 +1,18 @@
 # Result type.
 
 """
-A `Result{T, E<:Exception}` is returned from every API function.
+A `Result{T}` is returned from every API function.
 It encapsulates the value, HTTP response, and thrown exception of the call.
 """
-struct Result{T, E<:Exception}
+struct Result{T}
     val::Union{T, Nothing}
     resp::Union{HTTP.Response, Nothing}
-    ex::Union{E, Nothing}
+    ex::Union{Exception, Nothing}
 end
 
-Result(val::T, resp::HTTP.Response) where T = Result{T, ErrorException}(val, resp, nothing)
-Result{T}(e::E) where {T, E <: Exception} = Result{T, E}(nothing, nothing, e)
-Result{T}(e::E, resp::HTTP.Response) where {T, E <: Exception} =
-    Result{T, E}(nothing, resp, e)
+Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing)
+Result{T}(e::Exception) where {T} = Result{T}(nothing, nothing, e)
+Result{T}(e::Exception, resp::HTTP.Response) where {T} = Result{T}(nothing, resp, e)
 
 """
     value(::Result{T}) -> Union{T, Nothing}
@@ -30,7 +29,7 @@ Returns the result's HTTP response, if any exists.
 response(r::Result) = r.resp
 
 """
-    exception(::Result{T, E<:Exception}) -> Union{E, Nothing}
+    exception(::Result{T}) -> Union{Exception, Nothing}
 
 Returns the result's thrown exception, if any exists.
 """
@@ -72,7 +71,7 @@ postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.b
         query::AbstractDict=Dict(),
         request_opts=Dict(),
         kwargs...,
-    ) -> Result{T, E<:Exception}
+    ) -> Result{T}
 
 Make an HTTP request and return a [`Result`](@ref).
 `T` is determined by [`into`](@ref).
