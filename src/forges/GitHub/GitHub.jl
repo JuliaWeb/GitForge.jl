@@ -95,5 +95,6 @@ GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::HTTP.Response) =
     GitForge.rate_limit_update!(g.rl_general, r)
 
 include("users.jl")
+include("repos.jl")
 
 end

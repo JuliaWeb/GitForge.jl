@@ -60,6 +60,7 @@ get_users
 update_user
 create_user
 delete_user
+get_repos
 ```
 
 # Internals

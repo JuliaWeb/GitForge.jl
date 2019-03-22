@@ -35,3 +35,11 @@ Create a new user.
 Delete a user by ID.
 """
 @endpoint delete_user(id::Integer)
+
+"""
+    get_repos(::Forge[, name_or_id::Union{AbstractString, Integer}])
+
+Get the currently authenticated user's repositories, or those of a user by name or ID.
+"""
+@endpoint get_repos()
+@endpoint get_repos(name_or_id::Union{AbstractString, Integer})
