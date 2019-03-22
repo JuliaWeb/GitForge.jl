@@ -1,7 +1,7 @@
 module GitHub
 
 using ..GitForge
-using ..GitForge: @json, Forge, JSON
+using ..GitForge: @json, Forge, JSON, USER_AGENT
 using Dates
 using JSON2
 
@@ -39,7 +39,7 @@ auth_headers(g::GitHubAPI) =
 GitForge.base_url(g::GitHubAPI) = g.base_url
 
 GitForge.request_headers(g::GitHubAPI, ::Function) =
-    ["User-Agent" => "Julia (GitForge.jl)"; auth_headers(g)]
+    ["User-Agent" => USER_AGENT[]; auth_headers(g)]
 
 GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
 

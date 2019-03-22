@@ -1,7 +1,7 @@
 module GitLab
 
 using ..GitForge
-using ..GitForge: @json, Forge, JSON
+using ..GitForge: @json, Forge, JSON, USER_AGENT
 using Dates
 using JSON2
 
@@ -59,7 +59,8 @@ end
 
 GitForge.base_url(g::GitLabAPI) = g.base_url
 
-GitForge.request_headers(g::GitLabAPI, ::Function) = auth_headers(g.token)
+GitForge.request_headers(g::GitLabAPI, ::Function) =
+    ["User-Agent" => USER_AGENT[]; auth_headers(g.token)]
 
 GitForge.postprocessor(::GitLabAPI, ::Function) = JSON
 

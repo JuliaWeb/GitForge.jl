@@ -18,7 +18,7 @@ base_url(::Forge) = ""
 
 Returns the headers that should be added to each request.
 """
-request_headers(::Forge, ::Function) = []
+request_headers(::Forge, ::Function) = ["UserAgent" => USER_AGENT[]]
 
 """
     request_query(::Forge, ::Function) -> Dict
