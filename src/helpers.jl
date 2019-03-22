@@ -1,11 +1,12 @@
-macro endpoint(fun::Expr, epargs::Expr=:(()))
+macro endpoint(fun::Expr, epargs=:auto)
     fname = fun.args[1]
     fargs = fun.args[2:end]
+    epargs === :auto && (epargs = Expr(:tuple, map(ex -> ex.args[1], fargs)...))
 
     ex = quote
         export $fname
         Base.@__doc__ $fname(f::Forge, $(fargs...); kwargs...) =
-            request(f, $fname, endpoint(f, $fname, $(epargs)...); kwargs...)
+            request(f, $fname, endpoint(f, $fname, $epargs...); kwargs...)
     end
 
     esc(ex)

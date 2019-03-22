@@ -4,7 +4,7 @@
 Get the currently authenticated user, or a user by name or ID.
 """
 @endpoint get_user()
-@endpoint get_user(name_or_id::Union{AbstractString, Integer}) [name_or_id]
+@endpoint get_user(name_or_id::Union{AbstractString, Integer})
 
 
 """
@@ -20,7 +20,7 @@ Get all users.
 Update the currently authenticated user, or a user by ID.
 """
 @endpoint update_user()
-@endpoint update_user(id::Integer) [id]
+@endpoint update_user(id::Integer)
 
 """
     create_user(::Forge; kwargs...)
@@ -34,4 +34,4 @@ Create a new user.
 
 Delete a user by ID.
 """
-@endpoint delete_user(id::Integer) [id]
+@endpoint delete_user(id::Integer)
