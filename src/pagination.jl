@@ -1,4 +1,6 @@
 # TODO: GitHub's list users only uses `since`.
+# TODO: The 'last' rel is not always present: https://docs.gitlab.com/ce/api/#other-pagination-headers.
+#       I think GitHub does something similar.
 
 export paginate
 

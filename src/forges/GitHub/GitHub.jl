@@ -1,3 +1,5 @@
+# TODO: When search is implemented, they'll need their own rate limits.
+
 module GitHub
 
 using ..GitForge
@@ -75,7 +77,6 @@ GitForge.base_url(g::GitHubAPI) = g.url
 GitForge.request_headers(g::GitHubAPI, ::Function) =
     ["User-Agent" => USER_AGENT[]; auth_headers(g.token)]
 GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
-# TODO: When search is implemented, they'll need their own rate limits.
 GitForge.rate_limit_check(g::GitHubAPI, ::Function) =
     GitForge.rate_limit_check(g.rl_general)
 GitForge.on_rate_limit(g::GitHubAPI, ::Function) = g.orl

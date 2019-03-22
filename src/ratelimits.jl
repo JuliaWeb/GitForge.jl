@@ -45,11 +45,7 @@ end
 
 function tryheader(f::Function, r::HTTP.Response, header::AbstractString)
     for h in [header, "X-$header"]
-        try
-            v = HTTP.header(r, h)
-            return f(v)
-        catch
-        end
+        HTTP.hasheader(r, h) && return f(HTTP.header(r, h))
     end
     return nothing
 end
