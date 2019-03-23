@@ -95,7 +95,7 @@ end
     request_access_enabled::Bool
     merge_method::String
     statistics::Statistics
-    _links::Links
+    _links => links::Links
 end
 
 GitForge.endpoint(::GitLabAPI, ::typeof(get_repos)) =

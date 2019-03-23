@@ -21,9 +21,21 @@ macro json(ex::Expr)
     # Make the struct mutable.
     ex.args[1] = true
 
-    # Make all fields nullable.
-    foreach(ex.args[3].args) do ex
-        ex isa Expr && (ex.args[2] = :(Union{$(ex.args[2]), Nothing}))
+    # Make all fields nullable, and figure out if we need to modify any field names.
+    renames = Expr[]
+    for field in ex.args[3].args
+        field isa Expr || continue
+        if field.head === :(::)
+            field.args[2] = :(Union{$(field.args[2]), Nothing})
+        elseif field.head === :call && field.args[1] === :(=>)
+            from = QuoteNode(field.args[2])
+            to, T = field.args[3].args
+            field.head = :(::)
+            field.args = [to, :(Union{$T, Nothing})]
+            push!(renames, :($to => (; name=$from)))
+        else
+            @warn "Invalid field expression $field"
+        end
     end
 
     # Add a zero argument constructor.
@@ -31,8 +43,9 @@ macro json(ex::Expr)
     nothings = repeat([nothing], count(ex -> ex isa Expr, ex.args[3].args))
     push!(ex.args[3].args, :($T() = new($(nothings...))))
 
-    # Apply the noargs JSON2 format.
+    # Apply the noargs JSON2 format with any necessary renames.
     ex = Expr(:block, ex, :(JSON2.@format $T noargs))
+    push!(ex.args[2].args, Expr(:block, renames...))
 
     esc(ex)
 end
