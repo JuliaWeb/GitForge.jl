@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.exception",
     "category": "function",
-    "text": "exception(::Result{T}) -> Union{Exception, Nothing}\n\nReturns the result\'s thrown exception, if any exists.\n\n\n\n\n\n"
+    "text": "exception(::Result{T}) -> Union{Tuple{Exception, Vector}, Nothing}\n\nReturns the result\'s thrown exception and the backtrace, if any exists.\n\n\n\n\n\n"
 },
 
 {
