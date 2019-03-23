@@ -35,9 +35,8 @@ end
     public_gists::Int
     followers::Int
     following::Int
-    # Formats are incorrect: quinnj/JSON2#23
-    # created_at::DateTime
-    # updated_at::DateTime
+    created_at::Union{DateTime, String}
+    updated_at::Union{DateTime, String}
     private_gists::Int
     total_private_repos::Int
     owned_private_repos::Int

@@ -49,3 +49,24 @@ macro json(ex::Expr)
 
     esc(ex)
 end
+
+# TODO: Get rid of this (and Union{Date[Time], String}) when quinnj/JSON2.jl#23 is solved.
+function parsedatetimes!(x::T) where T
+    isimmutable(x) && return x
+    M = parentmodule(T)
+    parentmodule(M) === (@__MODULE__) || return x
+    date = getfield(M, :DATE_FORMAT)
+    datetime = getfield(M, :DATE_TIME_FORMAT)
+
+    for (fn, ft) in zip(fieldnames(T), fieldtypes(T))
+        val = getfield(x, fn)
+        val isa String || continue
+        if Date <: ft
+            setfield!(x, fn, Date(val, date))
+        elseif DateTime <: ft
+            setfield!(x, fn, DateTime(val, datetime))
+        end
+    end
+
+    return x
+end

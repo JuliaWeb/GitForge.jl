@@ -11,8 +11,7 @@ end
     state::String
     avatar_url::String
     web_url::String
-    # Same as Github.User.
-    # created_at::DateTime
+    created_at::Union{DateTime, String}
     is_admin::Bool
     bio::String
     location::String
@@ -21,13 +20,13 @@ end
     twitter::String
     website_url::String
     organization::String
-    # last_sign_in_at::DateTime
-    # confirmed_at::DateTime
+    last_sign_in_at::Union{DateTime, String}
+    confirmed_at::Union{DateTime, String}
     theme_id::Int
-    # last_activity_on::DateTime
+    last_activity_on::Union{Date, String}
     color_scheme_id::Int
     projects_limit::Int
-    # current_sign_in_at::DateTime
+    current_sign_in_at::Union{DateTime, String}
     identities::Vector{Identity}
     can_create_group::Bool
     can_create_project::Bool

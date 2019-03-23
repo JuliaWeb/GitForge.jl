@@ -35,9 +35,11 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[JSON2]]
 deps = ["Dates", "Parsers", "Test"]
-git-tree-sha1 = "7e46c37f892d98a0b676e6663c828859fff89ecd"
+git-tree-sha1 = "7efea7e4932e198d5bef6b70227b83272f71862c"
+repo-rev = "master"
+repo-url = "https://github.com/christopher-dG/JSON2.jl"
 uuid = "2535ab7d-5cd8-5a07-80ac-9b1792aadce3"
-version = "0.2.4"
+version = "0.2.4+"
 
 [[LibGit2]]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
