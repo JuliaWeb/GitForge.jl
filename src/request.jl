@@ -8,11 +8,12 @@ struct Result{T}
     val::Union{T, Nothing}
     resp::Union{HTTP.Response, Nothing}
     ex::Union{Exception, Nothing}
+    bt::Union{Vector{Union{Ptr{Nothing}, Base.InterpreterIP}}, Nothing}
 end
 
-Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing)
-Result{T}(e::Exception) where {T} = Result{T}(nothing, nothing, e)
-Result{T}(e::Exception, resp::HTTP.Response) where {T} = Result{T}(nothing, resp, e)
+Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing, nothing)
+Result{T}(e::Exception, bt) where {T} = Result{T}(nothing, nothing, e, bt)
+Result{T}(e::Exception, bt, resp::HTTP.Response) where {T} = Result{T}(nothing, resp, e, bt)
 
 """
     value(::Result{T}) -> Union{T, Nothing}
@@ -29,11 +30,11 @@ Returns the result's HTTP response, if any exists.
 response(r::Result) = r.resp
 
 """
-    exception(::Result{T}) -> Union{Exception, Nothing}
+    exception(::Result{T}) -> Union{Tuple{Exception, Vector}, Nothing}
 
-Returns the result's thrown exception, if any exists.
+Returns the result's thrown exception and the backtrace, if any exists.
 """
-exception(r::Result) = r.ex
+exception(r::Result) = r.ex === nothing ? nothing : (r.ex, r.bt)
 
 # Response postprocessing.
 
@@ -105,7 +106,7 @@ function request(
     if rate_limit_check(f, fun)
         orl = on_rate_limit(f, fun)
         if orl === ORL_RETURN
-            return Result{T}(RateLimited(rate_limit_period(f, fun)))
+            return Result{T}(RateLimited(rate_limit_period(f, fun)), backtrace())
         elseif orl === ORL_WAIT
             rate_limit_wait(f, fun)
         else
@@ -131,17 +132,18 @@ function request(
             query=query, opts..., status_exception=false,
         )
     catch e
-        return Result{T}(e)
+        return Result{T}(e, catch_backtrace())
     end
 
     rate_limit_update!(f, fun, resp)
 
-    resp.status >= 300 && return Result{T}(HTTP.StatusError(resp.status, resp), resp)
+    resp.status >= 300 &&
+        return Result{T}(HTTP.StatusError(resp.status, resp), backtrace(), resp)
 
     val = try
         postprocess(postprocessor(f, fun){T}, resp)
     catch e
-        return Result{T}(e, resp)
+        return Result{T}(e, catch_backtrace(), resp)
     end
 
     return Result(val, resp)
