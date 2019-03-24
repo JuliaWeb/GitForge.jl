@@ -61,8 +61,7 @@ Computes a value from an HTTP response.
 This is what is returned by [`value`](@ref).
 """
 postprocess(::Type{<:DoNothing}, ::HTTP.Response) = nothing
-postprocess(::Type{JSON{T}}, r::HTTP.Response) where T =
-    GitForge.parsedatetimes!(JSON2.read(IOBuffer(r.body), T))
+postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.body), T)
 
 # Requests.
 

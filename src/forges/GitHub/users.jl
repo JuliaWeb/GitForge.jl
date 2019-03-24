@@ -35,8 +35,8 @@ end
     public_gists::Int
     followers::Int
     following::Int
-    created_at::Union{DateTime, String}
-    updated_at::Union{DateTime, String}
+    created_at::DateTime
+    updated_at::DateTime
     private_gists::Int
     total_private_repos::Int
     owned_private_repos::Int

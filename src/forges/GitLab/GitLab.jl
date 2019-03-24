@@ -19,8 +19,7 @@ using JSON2
 export GitLabAPI, OAuth2Token, PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
-const DATE_FORMAT = dateformat"y-m-d"
-const DATE_TIME_FORMAT = dateformat"y-m-dTH:M:S.sZ"
+const JSON_OPTS = JSON2.Opts(; date=dateformat"y-m-d", datetime=dateformat"y-m-dTH:M:S.sZ")
 
 abstract type AbstractToken end
 

@@ -72,8 +72,8 @@ end
     snippets_enabled::Bool
     resolve_outdated_diff_discussions::Bool
     container_registry_enabled::Bool
-    created_at::Union{DateTime, String}
-    last_activity_at::Union{DateTime, String}
+    created_at::DateTime
+    last_activity_at::DateTime
     creator_id::Int
     namespace::Namespace
     import_status::String

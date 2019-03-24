@@ -81,9 +81,9 @@ end
     has_pages::Bool
     has_downloads::Bool
     archived::Bool
-    pushed_at::Union{DateTime, String}
-    created_at::Union{DateTime, String}
-    updated_at::Union{DateTime, String}
+    pushed_at::DateTime
+    created_at::DateTime
+    updated_at::DateTime
     permissions::Permissions
     allow_rebase_merge::Bool
     allow_squash_merge::Bool
