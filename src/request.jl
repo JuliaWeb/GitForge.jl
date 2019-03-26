@@ -1,5 +1,7 @@
 # Result type.
 
+const BT = Vector{Union{Ptr{Nothing}, Base.InterpreterIP}}
+
 """
 A `Result{T}` is returned from every API function.
 It encapsulates the value, HTTP response, and thrown exception of the call.
@@ -8,12 +10,13 @@ struct Result{T}
     val::Union{T, Nothing}
     resp::Union{HTTP.Response, Nothing}
     ex::Union{Exception, Nothing}
-    bt::Union{Vector{Union{Ptr{Nothing}, Base.InterpreterIP}}, Nothing}
+    bt::BT
 end
 
-Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing, nothing)
-Result{T}(e::Exception, bt) where {T} = Result{T}(nothing, nothing, e, bt)
-Result{T}(e::Exception, bt, resp::HTTP.Response) where {T} = Result{T}(nothing, resp, e, bt)
+Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing, BT())
+Result{T}(e::Exception, bt::BT) where T = Result{T}(nothing, nothing, e, bt)
+Result{T}(e::Exception, bt::BT, resp::HTTP.Response) where T =
+    Result{T}(nothing, resp, e, bt)
 
 """
     value(::Result{T}) -> Union{T, Nothing}
@@ -32,7 +35,7 @@ response(r::Result) = r.resp
 """
     exception(::Result{T}) -> Union{Tuple{Exception, Vector}, Nothing}
 
-Returns the result's thrown exception and the backtrace, if any exists.
+Returns the result's thrown exception and backtrace, if any exists.
 """
 exception(r::Result) = r.ex === nothing ? nothing : (r.ex, r.bt)
 
