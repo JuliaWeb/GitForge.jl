@@ -97,5 +97,6 @@ GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::HTTP.Response) =
 
 include("users.jl")
 include("repos.jl")
+include("merge_requests.jl")
 
 end
