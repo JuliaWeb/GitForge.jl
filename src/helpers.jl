@@ -18,10 +18,9 @@ end
 Create a type that can be parsed from JSON.
 """
 macro json(ex::Expr)
-    # Make the struct mutable.
-    ex.args[1] = true
-
-    # Make all fields nullable, and figure out if we need to modify any field names.
+    # - Make all fields nullable, and with a default value of `nothing`.
+    # - Give the struct a keyword constructor.
+    # - Figure out if we need to modify any field names.
     renames = Expr[]
     for field in ex.args[3].args
         field isa Expr || continue
@@ -36,22 +35,23 @@ macro json(ex::Expr)
         else
             @warn "Invalid field expression $field"
         end
+        field.args = [copy(field), :nothing]
+        field.head = :(=)
     end
+    ex = :(Base.@kwdef $ex)
 
-    # Add a zero argument constructor.
-    T = ex.args[2]
-    nothings = repeat([nothing], count(ex -> ex isa Expr, ex.args[3].args))
-    push!(ex.args[3].args, :($T() = new($(nothings...))))
-
-    # Apply the noargs format with any renames, and set the default parse options.
-    ex = Expr(:block, ex, :(JSON2.@format $T noargs))
+    # Apply the kwargs format with any renames, and set the default parse options.
+    T = ex.args[3].args[2]
+    ex = Expr(:block, ex, :(JSON2.@format $T keywordargs))
     push!(ex.args[end].args, Expr(:block, renames...))
-    defaultopts = quote
+    dfkws = quote
         if isdefined(@__MODULE__, :JSON_OPTS)
-            JSON2.defaultopts(::Type{$T}) = getfield(@__MODULE__, :JSON_OPTS)
+            # This isn't how you're "supposed" to do this, but I'm not quite sure
+            # how to pass these options as literal keyword arguments to @format.
+            JSON2.defaultkwargs(::Type{$T}) = JSON_OPTS
         end
     end
-    push!(ex.args, defaultopts)
+    push!(ex.args, dfkws)
 
     esc(ex)
 end

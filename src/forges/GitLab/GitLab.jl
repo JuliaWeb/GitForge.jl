@@ -19,7 +19,10 @@ using JSON2
 export GitLabAPI, OAuth2Token, PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
-const JSON_OPTS = JSON2.Opts(; date=dateformat"y-m-d", datetime=dateformat"y-m-dTH:M:S.sZ")
+const JSON_OPTS = Dict(
+    :dateformat => dateformat"y-m-d",
+    :datetimeformat => dateformat"y-m-dTH:M:S.sZ",
+)
 
 abstract type AbstractToken end
 
@@ -88,7 +91,7 @@ GitForge.postprocessor(::GitLabAPI, ::Function) = JSON
 GitForge.rate_limit_check(g::GitLabAPI, ::Function) = GitForge.rate_limit_check(g.rl)
 GitForge.on_rate_limit(g::GitLabAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitLabAPI, ::Function) = GitForge.rate_limit_wait(g.rl)
-GitForge.rate_limit_period(g::GitLabAPI, ::Function) = GitForge.rate_limit_period(grl)
+GitForge.rate_limit_period(g::GitLabAPI, ::Function) = GitForge.rate_limit_period(g.rl)
 GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::HTTP.Response) =
     GitForge.rate_limit_update!(g.rl, r)
 
