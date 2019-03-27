@@ -96,7 +96,7 @@ end
     source::Repo
 end
 
-GitForge.endpoint(::GitHubAPI, ::typeof(get_repos)) = Endpoint(:GET, "/user/repos")
-GitForge.endpoint(::GitHubAPI, ::typeof(get_repos), id::Integer) =
+GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user/repos")
+GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
     Endpoint(:GET, "/users/$id/projects")
-GitForge.into(::GitHubAPI, ::typeof(get_repos)) = Vector{Repo}
+GitForge.into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}

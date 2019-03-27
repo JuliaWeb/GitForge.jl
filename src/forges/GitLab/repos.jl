@@ -98,8 +98,8 @@ end
     _links => links::Links
 end
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_repos)) =
+GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
-GitForge.endpoint(::GitLabAPI, ::typeof(get_repos), name::AbstractString) =
+GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AbstractString) =
     Endpoint(:GET, "/users/$name/repos")
-GitForge.into(::GitLabAPI, ::typeof(get_repos)) = Vector{Repo}
+GitForge.into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Repo}

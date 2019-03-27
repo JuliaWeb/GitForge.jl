@@ -16,6 +16,7 @@ end
     bio::String
     location::String
     public_email::String
+    skype::String
     linkedin::String
     twitter::String
     website_url::String
@@ -33,6 +34,8 @@ end
     two_factor_enabled::Bool
     external::Bool
     private_profile::Bool
+    # Undocumented
+    shared_runners_minutes_limit::Int
 end
 
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")

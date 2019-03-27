@@ -98,6 +98,7 @@ end
     requested_reviewers::Vector{User}
     requested_teams::Vector{Team}
     head::Head
+    base::Head
     repo::Repo
     _links => links::Links
     author_association::String

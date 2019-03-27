@@ -37,12 +37,12 @@ Delete a user by ID.
 @endpoint delete_user(id::Integer)
 
 """
-    get_repos(::Forge[, name_or_id::Union{AbstractString, Integer}])
+    get_user_repos(::Forge[, name_or_id::Union{AbstractString, Integer}])
 
 Get the currently authenticated user's repositories, or those of a user by name or ID.
 """
-@endpoint get_repos()
-@endpoint get_repos(name_or_id::Union{AbstractString, Integer})
+@endpoint get_user_repos()
+@endpoint get_user_repos(name_or_id::Union{AbstractString, Integer})
 
 """
     get_pull_request(::Forge, owner::AbstractString, repo::AbstractString, number::Integer)

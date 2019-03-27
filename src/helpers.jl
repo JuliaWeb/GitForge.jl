@@ -17,41 +17,51 @@ end
 
 Create a type that can be parsed from JSON.
 """
-macro json(ex::Expr)
-    # - Make all fields nullable, and with a default value of `nothing`.
-    # - Give the struct a keyword constructor.
-    # - Figure out if we need to modify any field names.
+macro json(def::Expr)
+    T = def.args[2]
     renames = Expr[]
-    for field in ex.args[3].args
+    names = Symbol[]
+
+    for field in def.args[3].args
         field isa Expr || continue
         if field.head === :(::)
+            # Make the field nullable.
             field.args[2] = :(Union{$(field.args[2]), Nothing})
         elseif field.head === :call && field.args[1] === :(=>)
+            # Convert from => to::F to to::F, and record the old name.
             from = QuoteNode(field.args[2])
-            to, T = field.args[3].args
+            to, F = field.args[3].args
             field.head = :(::)
-            field.args = [to, :(Union{$T, Nothing})]
+            field.args = [to, :(Union{$F, Nothing})]
             push!(renames, :($to => (; name=$from)))
         else
             @warn "Invalid field expression $field"
         end
-        field.args = [copy(field), :nothing]
-        field.head = :(=)
+        push!(names, field.args[1])
     end
-    ex = :(Base.@kwdef $ex)
 
-    # Apply the kwargs format with any renames, and set the default parse options.
-    T = ex.args[3].args[2]
-    ex = Expr(:block, ex, :(JSON2.@format $T keywordargs))
-    push!(ex.args[end].args, Expr(:block, renames...))
+    # Add a field for unhandled keys.
+    push!(def.args[3].args, :(_extras::NamedTuple))
+
+    # Document the struct.
+    def = :(Base.@__doc__ $def)
+
+    # Create a keyword constructor.
+    kws = map(name -> Expr(:kw, name, :nothing), names)
+    cons = :($T(; $(kws...), kwargs...) = $T($(names...), (; kwargs...)))
+
+    # Apply the kwargs format with any renames.
+    fmt = :(JSON2.@format $T keywordargs)
+    isempty(renames) || push!(fmt.args, Expr(:block, renames...))
+
+    # Set the default parse options,
     dfkws = quote
         if isdefined(@__MODULE__, :JSON_OPTS)
             # This isn't how you're "supposed" to do this, but I'm not quite sure
-            # how to pass these options as literal keyword arguments to @format.
+            # how to pass these options as literal keywords to @format.
             JSON2.defaultkwargs(::Type{$T}) = JSON_OPTS
         end
     end
-    push!(ex.args, dfkws)
 
-    esc(ex)
+    esc(Expr(:block, def, cons, fmt, dfkws))
 end
