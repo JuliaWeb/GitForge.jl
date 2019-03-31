@@ -5,6 +5,7 @@ module GitHub
 using ..GitForge
 using ..GitForge:
     @json,
+    DoSomething,
     Endpoint,
     Forge,
     JSON,
@@ -88,7 +89,7 @@ end
 
 GitForge.base_url(g::GitHubAPI) = g.url
 GitForge.request_headers(g::GitHubAPI, ::Function) = [HEADERS; auth_headers(g.token)]
-GitForge.postprocessor(::GitHubAPI, ::Function) = JSON
+GitForge.postprocessor(::GitHubAPI, ::Function) = JSON()
 GitForge.rate_limit_check(g::GitHubAPI, ::Function) =
     GitForge.rate_limit_check(g.rl_general)
 GitForge.on_rate_limit(g::GitHubAPI, ::Function) = g.orl
@@ -99,7 +100,10 @@ GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::HTTP.Response) =
     GitForge.rate_limit_update!(g.rl_general, r)
 
 include("users.jl")
-include("repos.jl")
+include("repositories.jl")
 include("pull_requests.jl")
+include("organizations.jl")
+
+ismemberorcollaborator(r::HTTP.Response) = r.status != 404
 
 end

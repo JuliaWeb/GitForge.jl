@@ -100,3 +100,17 @@ GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user
 GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
     Endpoint(:GET, "/users/$id/projects")
 GitForge.into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}
+
+GitForge.endpoint(
+    ::GitHubAPI, ::typeof(get_repo),
+    owner::AbstractString, repo::AbstractString,
+) = Endpoint(:GET, "/repos/$owner/$repo")
+GitForge.into(::GitHubAPI, ::typeof(get_repo)) = Repo
+
+GitForge.endpoint(
+    ::GitHubAPI, ::typeof(is_collaborator),
+    owner::AbstractString, repo::AbstractString, user::AbstractString,
+) = Endpoint(:GET, "/repos/$owner/$repo/collaborators/$user"; allow_404=true)
+GitForge.postprocessor(::GitHubAPI, ::typeof(is_collaborator)) =
+    DoSomething(ismemberorcollaborator)
+GitForge.into(::GitHubAPI, ::typeof(is_collaborator)) = Bool

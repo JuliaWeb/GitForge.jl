@@ -41,6 +41,16 @@ end
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) =
     Endpoint(:GET, "/users/$id")
+GitForge.endpoint(::GitLabAPI, ::typeof(get_user), name::AbstractString) =
+    Endpoint(:GET, "/users"; query=Dict(:username => name))
+GitForge.postprocessor(::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
+    v = JSON2.read(IOBuffer(r.body), Union{User, Vector{User}})
+    return if v isa User
+        v
+    else
+        isempty(v) ? nothing : v[1]
+    end
+end
 GitForge.into(::GitLabAPI, ::typeof(get_user)) = User
 
 GitForge.endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")

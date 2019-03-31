@@ -4,6 +4,7 @@ using ..GitForge
 using ..GitForge:
     @json,
     DoNothing,
+    DoSomething,
     Endpoint,
     Forge,
     JSON,
@@ -87,7 +88,7 @@ end
 
 GitForge.base_url(g::GitLabAPI) = g.url
 GitForge.request_headers(g::GitLabAPI, ::Function) = [HEADERS; auth_headers(g.token)]
-GitForge.postprocessor(::GitLabAPI, ::Function) = JSON
+GitForge.postprocessor(::GitLabAPI, ::Function) = JSON()
 GitForge.rate_limit_check(g::GitLabAPI, ::Function) = GitForge.rate_limit_check(g.rl)
 GitForge.on_rate_limit(g::GitLabAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitLabAPI, ::Function) = GitForge.rate_limit_wait(g.rl)
@@ -96,7 +97,14 @@ GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::HTTP.Response) =
     GitForge.rate_limit_update!(g.rl, r)
 
 include("users.jl")
-include("repos.jl")
+include("projects.jl")
 include("merge_requests.jl")
+include("groups.jl")
+
+function ismember(r::HTTP.Response)
+    r.status == 404 && return false
+    m = JSON2.read(IOBuffer(r.body), Member)
+    return m.access_level !== nothing && m.access_level >= 30
+end
 
 end

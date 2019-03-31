@@ -45,6 +45,15 @@ Get the currently authenticated user's repositories, or those of a user by name 
 @endpoint get_user_repos(name_or_id::Union{AbstractString, Integer})
 
 """
+    get_repo(::Forge, owner::AbstractString, repo::AbstractString)
+    get_repo(::Forge, id::Integer)
+
+Get a repository by owner and name or ID.
+"""
+@endpoint get_repo(owner::AbstractString, repo::AbstractString)
+@endpoint get_repo(id::Integer)
+
+"""
     get_pull_request(::Forge, owner::AbstractString, repo::AbstractString, number::Integer)
     get_pull_request(::Forge, project::Integer, number::Integer)
 
@@ -52,6 +61,29 @@ Get a specific pull request.
 """
 @endpoint get_pull_request(owner::AbstractString, repo::AbstractString, number::Integer)
 @endpoint get_pull_request(project::Integer, number::Integer)
+
+"""
+    is_collaborator(
+        ::Forge,
+        owner::AbstractString,
+        repo::AbstractString,
+        name_or_id::Union{AbstractString, Integer},
+    )
+
+Check whether or not a user is a collaborator on a repository.
+"""
+@endpoint is_collaborator(
+    owner::AbstractString,
+    repo::AbstractString,
+    name_or_id::Union{AbstractString, Integer},
+)
+
+"""
+    is_member(::Forge, org::AbstractString, name_or_id::Union{AbstractString, Integer})
+
+Check whether or not a user is a member of an organization.
+"""
+@endpoint is_member(org::AbstractString, name_or_id::Union{AbstractString, Integer})
 
 """
     get_pull_requests(::Forge, owner::AbstractString, repo::AbstractString)

@@ -25,9 +25,11 @@ macro json(def::Expr)
     for field in def.args[3].args
         field isa Expr || continue
         if field.head === :(::)
+            push!(names, field.args[1])
             # Make the field nullable.
             field.args[2] = :(Union{$(field.args[2]), Nothing})
         elseif field.head === :call && field.args[1] === :(=>)
+            push!(names, field.args[2])
             # Convert from => to::F to to::F, and record the old name.
             from = QuoteNode(field.args[2])
             to, F = field.args[3].args
@@ -37,7 +39,6 @@ macro json(def::Expr)
         else
             @warn "Invalid field expression $field"
         end
-        push!(names, field.args[1])
     end
 
     # Add a field for unhandled keys.

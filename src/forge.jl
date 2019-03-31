@@ -12,6 +12,7 @@ abstract type Forge end
         url::AbstractString;
         headers::Vector{<:Pair}=HTTP.Header[],
         query::Dict=Dict(),
+        allow_404::Bool=false,
     ) -> Endpoint
 
 Contains information on how to call an endpoint.
@@ -23,18 +24,22 @@ Contains information on how to call an endpoint.
 ## Keywords
 - `headers::Vector{<:Pair}=HTTP.Header[]`: Request headers to add.
 - `query::Dict=Dict()`: Query string parameters to add.
+- `allow_404::Bool=false`: Sends responses  with 404 statuses to the postprocessor.
 """
 struct Endpoint
     method::Symbol
     url::String
     headers::Vector{<:Pair}
     query::Dict
+    allow_404::Bool
 
     function Endpoint(
         method::Symbol, url::AbstractString;
-        headers::Vector{<:Pair}=HTTP.Header[], query::Dict=Dict(),
+        headers::Vector{<:Pair}=HTTP.Header[],
+        query::Dict=Dict(),
+        allow_404::Bool=false,
     )
-        return new(method, url, headers, query)
+        return new(method, url, headers, query, allow_404)
     end
 end
 
@@ -67,12 +72,11 @@ Returns the extra keyword arguments that should be passed to `HTTP.request`.
 request_kwargs(::Forge, ::Function) = Dict()
 
 """
-    postprocessor(::Forge, ::Function) -> Type{<:PostProcessor}
+    postprocessor(::Forge, ::Function) -> PostProcessor
 
 Returns the [`PostProcessor`](@ref) to be used.
-Type parameters must not be included (they are produced by [`into`](@ref)).
 """
-postprocessor(::Forge, ::Function) = DoNothing
+postprocessor(::Forge, ::Function) = DoNothing()
 
 """
     into(::Forge, ::Function) -> Type

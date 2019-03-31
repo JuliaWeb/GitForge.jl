@@ -49,7 +49,7 @@ end
     members::String
 end
 
-@json struct Repo
+@json struct Project
     id::Int
     description::String
     default_branch::String
@@ -102,4 +102,23 @@ GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AbstractString) =
     Endpoint(:GET, "/users/$name/repos")
-GitForge.into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Repo}
+GitForge.into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
+
+GitForge.endpoint(
+    ::GitLabAPI, ::typeof(get_repo),
+    owner::AbstractString, repo::AbstractString,
+) = Endpoint(:GET, "/projects/" * HTTP.escapeuri("$owner/$repo"))
+GitForge.into(::GitLabAPI, ::typeof(get_repo)) = Project
+
+function GitForge.endpoint(
+    ::GitLabAPI, ::typeof(is_collaborator),
+    owner::AbstractString, repo::AbstractString, id::Integer,
+)
+    return Endpoint(
+        :GET,
+        "/projects/" * HTTP.escapeuri("$owner/$repo") * "/members/$id";
+        allow_404=true,
+    )
+end
+GitForge.postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
+GitForge.into(::GitLabAPI, ::typeof(is_collaborator)) = Bool

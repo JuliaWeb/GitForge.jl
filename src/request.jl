@@ -1,7 +1,5 @@
 # Result type.
 
-const BT = Vector{Union{Ptr{Nothing}, Base.InterpreterIP}}
-
 """
 A `Result{T}` is returned from every API function.
 It encapsulates the value, HTTP response, and thrown exception of the call.
@@ -10,13 +8,15 @@ struct Result{T}
     val::Union{T, Nothing}
     resp::Union{HTTP.Response, Nothing}
     ex::Union{Exception, Nothing}
-    bt::BT
+    st::StackTraces.StackTrace
 end
 
-Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing, BT())
-Result{T}(e::Exception, bt::BT) where T = Result{T}(nothing, nothing, e, bt)
-Result{T}(e::Exception, bt::BT, resp::HTTP.Response) where T =
-    Result{T}(nothing, resp, e, bt)
+Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing, [])
+Result{T}(
+    e::Exception,
+    bt::Vector{Union{Ptr{Nothing}, Base.InterpreterIP}},
+    resp::Union{HTTP.Response, Nothing}=nothing,
+) where T = Result{T}(nothing, resp, e, stacktrace(bt))
 
 """
     value(::Result{T}) -> Union{T, Nothing}
@@ -33,38 +33,53 @@ Returns the result's HTTP response, if any exists.
 response(r::Result) = r.resp
 
 """
-    exception(::Result{T}) -> Union{Tuple{Exception, Vector}, Nothing}
+    exception(::Result{T}) -> Union{Tuple{Exception, Vector{StackFrame}}, Nothing}
 
-Returns the result's thrown exception and backtrace, if any exists.
+Returns the result's thrown exception and stack trace, if any exists.
 """
-exception(r::Result) = r.ex === nothing ? nothing : (r.ex, r.bt)
+exception(r::Result) = r.ex === nothing ? nothing : (r.ex, r.st)
 
 # Response postprocessing.
 
 """
 Determines the behaviour of [`postprocess`](@ref).
-Subtypes must have one type parameter, which is determined by [`into`](@ref).
 """
 abstract type PostProcessor end
 
 """
 Does nothing and always returns `nothing`.
 """
-struct DoNothing{T} <: PostProcessor end
+struct DoNothing <: PostProcessor end
 
 """
-Parses a JSON response into a given type and returns that object.
+    JSON(f::Function=identity) -> JSON
+
+Parses a JSON response into a given type and runs `f` on that object.
 """
-struct JSON{T} <: PostProcessor end
+struct JSON <: PostProcessor
+    f::Function
+end
+JSON() = JSON(identity)
 
 """
-    postprocess(::Type{<:PostProcessor}, ::HTTP.Response)
+    DoSomething(::Function) -> DoSomething
+
+Runs a user-defined postprocessor.
+"""
+struct DoSomething <: PostProcessor
+    f::Function
+end
+
+"""
+    postprocess(::PostProcessor, ::HTTP.Response, ::Type{T})
 
 Computes a value from an HTTP response.
 This is what is returned by [`value`](@ref).
 """
-postprocess(::Type{<:DoNothing}, ::HTTP.Response) = nothing
-postprocess(::Type{JSON{T}}, r::HTTP.Response) where T = JSON2.read(IOBuffer(r.body), T)
+postprocess(::DoNothing, ::HTTP.Response, ::Type) = nothing
+postprocess(p::JSON, r::HTTP.Response, ::Type{T}) where T =
+    p.f(JSON2.read(IOBuffer(r.body), T))
+postprocess(p::DoSomething, r::HTTP.Response, ::Type) = p.f(r)
 
 # Requests.
 
@@ -140,11 +155,11 @@ function request(
 
     rate_limit_update!(f, fun, resp)
 
-    resp.status >= 300 &&
+    resp.status >= 300 && !(resp.status == 404 && ep.allow_404) &&
         return Result{T}(HTTP.StatusError(resp.status, resp), backtrace(), resp)
 
     val = try
-        postprocess(postprocessor(f, fun){T}, resp)
+        postprocess(postprocessor(f, fun), resp, T)
     catch e
         return Result{T}(e, catch_backtrace(), resp)
     end
