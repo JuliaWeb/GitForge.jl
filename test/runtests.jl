@@ -15,15 +15,15 @@ function capture(f::Function)
     return result, fetch(out)
 end
 
-struct TestPostProcessor{T} <: GF.PostProcessor end
-GF.postprocess(::Type{<:TestPostProcessor}, ::HTTP.Response) = :foo
+struct TestPostProcessor <: GF.PostProcessor end
+GF.postprocess(::TestPostProcessor, ::HTTP.Response, ::Type) = :foo
 
 struct TestForge <: GF.Forge end
 GF.base_url(::TestForge) = "https://httpbin.org"
 GF.request_headers(::TestForge, ::Function) = ["Foo" => "Bar"]
 GF.request_query(::TestForge, ::Function) = Dict("foo" => "bar")
 GF.request_kwargs(::TestForge, ::Function) = Dict(:verbose => 1)
-GF.postprocessor(::TestForge, ::Function) = TestPostProcessor
+GF.postprocessor(::TestForge, ::Function) = TestPostProcessor()
 GF.endpoint(::TestForge, ::typeof(get_user)) = GF.Endpoint(:GET, "/get")
 GF.into(::TestForge, ::typeof(get_user)) = Symbol
 
