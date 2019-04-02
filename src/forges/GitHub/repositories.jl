@@ -96,6 +96,27 @@ end
     source::Repo
 end
 
+@json struct FileContentsLinks
+    self::String
+    git::String
+    html::String
+end
+
+@json struct FileContents
+    type::String
+    encoding::String
+    size::Int
+    name::String
+    path::String
+    content::String
+    sha::String
+    url::String
+    git_url::String
+    html_url::String
+    download_url::String
+    _links => links::FileContentsLinks
+end
+
 GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user/repos")
 GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
     Endpoint(:GET, "/users/$id/projects")
@@ -114,3 +135,9 @@ GitForge.endpoint(
 GitForge.postprocessor(::GitHubAPI, ::typeof(is_collaborator)) =
     DoSomething(ismemberorcollaborator)
 GitForge.into(::GitHubAPI, ::typeof(is_collaborator)) = Bool
+
+GitForge.endpoint(
+    ::GitHubAPI, ::typeof(get_file_contents),
+    owner::AbstractString, repo::AbstractString, path::AbstractString,
+) = Endpoint(:GET, "/repos/$owner/$repo/contents/$path")
+GitForge.into(::GitHubAPI, ::typeof(get_file_contents)) = FileContents

@@ -6,7 +6,6 @@ Get the currently authenticated user, or a user by name or ID.
 @endpoint get_user()
 @endpoint get_user(name_or_id::Union{AbstractString, Integer})
 
-
 """
     get_users(::Forge)
 
@@ -52,6 +51,20 @@ Get a repository by owner and name or ID.
 """
 @endpoint get_repo(owner::AbstractString, repo::AbstractString)
 @endpoint get_repo(id::Integer)
+
+"""
+    get_file_contents(
+        f::Forge,
+        owner::AbstractString,
+        repo::AbstractString,
+        path::AbstracString,
+    )
+    get_file_contents(f::Forge, id::Integer, path::AbstractString)
+
+Get a file from a repository.
+"""
+@endpoint get_file_contents(owner::AbstractString, repo::AbstractString, path::AbstractString)
+@endpoint get_file_contents(id::Integer, path::AbstractString)
 
 """
     get_pull_request(::Forge, owner::AbstractString, repo::AbstractString, number::Integer)

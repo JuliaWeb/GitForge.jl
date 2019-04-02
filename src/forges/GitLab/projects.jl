@@ -98,6 +98,19 @@ end
     _links => links::Links
 end
 
+@json struct FileContents
+    file_name::String
+    file_path::String
+    size::Int
+    encoding::String
+    content::String
+    content_sha256::String
+    ref::String
+    blob_id::String
+    commit_id::String
+    last_commit_id::String
+end
+
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
 GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AbstractString) =
@@ -122,3 +135,9 @@ function GitForge.endpoint(
 end
 GitForge.postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
 GitForge.into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
+
+GitForge.endpoint(
+    ::GitLabAPI, ::typeof(get_file_contents),
+    id::Integer, path::AbstractString,
+) = Endpoint(:GET, "/projects/$id/repository/files/$path"; query=Dict(:ref => "master"))
+GitForge.into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents
