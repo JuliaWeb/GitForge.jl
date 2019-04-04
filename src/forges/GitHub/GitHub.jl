@@ -103,6 +103,7 @@ include("users.jl")
 include("repositories.jl")
 include("pull_requests.jl")
 include("organizations.jl")
+include("branches.jl")
 
 ismemberorcollaborator(r::HTTP.Response) = r.status != 404
 

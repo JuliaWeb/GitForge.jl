@@ -100,6 +100,7 @@ include("users.jl")
 include("projects.jl")
 include("merge_requests.jl")
 include("groups.jl")
+include("branches.jl")
 
 function ismember(r::HTTP.Response)
     r.status == 404 && return false

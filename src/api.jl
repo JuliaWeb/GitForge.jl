@@ -52,6 +52,8 @@ Get a repository by owner and name or ID.
 @endpoint get_repo(owner::AbstractString, repo::AbstractString)
 @endpoint get_repo(id::Integer)
 
+@endpoint get_branch(owner::AbstractString, repo::AbstractString, branch::AbstractString)
+
 """
     get_file_contents(
         f::Forge,
