@@ -46,13 +46,12 @@ end
     plan::Plan
 end
 
-GitForge.endpoint(::GitHubAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
-GitForge.endpoint(::GitHubAPI, ::typeof(get_user), name::AbstractString) =
-    Endpoint(:GET, "/users/$name")
-GitForge.into(::GitHubAPI, ::typeof(get_user)) = User
+endpoint(::GitHubAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
+endpoint(::GitHubAPI, ::typeof(get_user), name::AStr) = Endpoint(:GET, "/users/$name")
+into(::GitHubAPI, ::typeof(get_user)) = User
 
-GitForge.endpoint(::GitHubAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
-GitForge.into(::GitHubAPI, ::typeof(get_users)) = Vector{User}
+endpoint(::GitHubAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
+into(::GitHubAPI, ::typeof(get_users)) = Vector{User}
 
-GitForge.endpoint(::GitHubAPI, ::typeof(update_user)) = Endpoint(:PATCH, "/user")
-GitForge.into(::GitHubAPI, ::typeof(update_user)) = User
+endpoint(::GitHubAPI, ::typeof(update_user)) = Endpoint(:PATCH, "/user")
+into(::GitHubAPI, ::typeof(update_user)) = User

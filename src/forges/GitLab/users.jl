@@ -38,12 +38,11 @@ end
     shared_runners_minutes_limit::Int
 end
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) =
-    Endpoint(:GET, "/users/$id")
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user), name::AbstractString) =
+endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
+endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = Endpoint(:GET, "/users/$id")
+endpoint(::GitLabAPI, ::typeof(get_user), name::AStr) =
     Endpoint(:GET, "/users"; query=Dict(:username => name))
-GitForge.postprocessor(::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
+postprocessor(::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
     v = JSON2.read(IOBuffer(r.body), Union{User, Vector{User}})
     return if v isa User
         v
@@ -51,18 +50,16 @@ GitForge.postprocessor(::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
         isempty(v) ? nothing : v[1]
     end
 end
-GitForge.into(::GitLabAPI, ::typeof(get_user)) = User
+into(::GitLabAPI, ::typeof(get_user)) = User
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
-GitForge.into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
+endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
+into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
 
-GitForge.endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) =
-    Endpoint(:PUT, "/users/$id")
-GitForge.postprocessor(::GitLabAPI, ::typeof(update_user)) = DoNothing
+endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) = Endpoint(:PUT, "/users/$id")
+postprocessor(::GitLabAPI, ::typeof(update_user)) = DoNothing
 
-GitForge.endpoint(::GitLabAPI, ::typeof(create_user)) = Endpoint(:POST, "/users")
-GitForge.into(::GitLabAPI, ::typeof(create_user)) = User
+endpoint(::GitLabAPI, ::typeof(create_user)) = Endpoint(:POST, "/users")
+into(::GitLabAPI, ::typeof(create_user)) = User
 
-GitForge.endpoint(::GitLabAPI, ::typeof(delete_user), id::Integer) =
-    Endpoint(:DELETE, "/users/$id")
-GitForge.postprocessor(::GitLabAPI, ::typeof(delete_user)) = DoNothing
+endpoint(::GitLabAPI, ::typeof(delete_user), id::Integer) = Endpoint(:DELETE, "/users/$id")
+postprocessor(::GitLabAPI, ::typeof(delete_user)) = DoNothing

@@ -79,12 +79,12 @@ function nextpage!(p::Paginator)
     return true
 end
 
-function unescape(url::AbstractString)
+function unescape(url::AStr)
     ms = eachmatch(r"[\?&](.*?)=(.*?)(?:&|$)", url; overlap=true)
     return Dict(m[1] => m[2] for m in ms)
 end
 
-function parserels(link::AbstractString)
+function parserels(link::AStr)
     nextm = match(r"(<.*?)>; rel=\"next\"", link)
     lastm = match(r"(<.*?)>; rel=\"last\"", link)
     nextd = nextm === nothing ? nothing : unescape(nextm[1])

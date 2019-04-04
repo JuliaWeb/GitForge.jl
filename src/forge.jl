@@ -9,7 +9,7 @@ abstract type Forge end
 """
     Endpoint(
         method::Symbol,
-        url::AbstractString;
+        url::$AStr;
         headers::Vector{<:Pair}=HTTP.Header[],
         query::Dict=Dict(),
         allow_404::Bool=false,
@@ -19,7 +19,7 @@ Contains information on how to call an endpoint.
 
 ## Arguments
 - `method::Symbol`: HTTP request method to use.
-- `url::AbstractString`: Endpoint URL, relative to the base URL.
+- `url::$AStr`: Endpoint URL, relative to the base URL.
 
 ## Keywords
 - `headers::Vector{<:Pair}=HTTP.Header[]`: Request headers to add.
@@ -34,7 +34,7 @@ struct Endpoint
     allow_404::Bool
 
     function Endpoint(
-        method::Symbol, url::AbstractString;
+        method::Symbol, url::AStr;
         headers::Vector{<:Pair}=HTTP.Header[],
         query::Dict=Dict(),
         allow_404::Bool=false,

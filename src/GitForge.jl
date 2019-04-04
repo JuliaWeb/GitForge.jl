@@ -4,6 +4,7 @@ using Dates
 using HTTP
 using JSON2
 
+const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]
 
 function __init__()

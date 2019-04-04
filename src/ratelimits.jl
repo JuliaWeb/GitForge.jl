@@ -43,7 +43,7 @@ function rate_limit_update!(rl::RateLimiter, r::HTTP.Response)
     end
 end
 
-function tryheader(f::Function, r::HTTP.Response, header::AbstractString)
+function tryheader(f::Function, r::HTTP.Response, header::AStr)
     for h in [header, "X-$header"]
         HTTP.hasheader(r, h) && return f(HTTP.header(r, h))
     end

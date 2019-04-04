@@ -2,9 +2,12 @@
 
 module GitHub
 
+import ..GitForge: endpoint, into, postprocessor
+
 using ..GitForge
 using ..GitForge:
     @json,
+    AStr,
     DoSomething,
     Endpoint,
     Forge,
@@ -15,7 +18,7 @@ using ..GitForge:
     ORL_RETURN
 
 using Dates
-using HTTP
+using HTTP: Response
 using JSON2
 
 export GitHubAPI, NoToken, Token, JWT
@@ -37,7 +40,7 @@ Only public data will be available.
 struct NoToken <: AbstractToken end
 
 """
-    Token(token::AbstractString) -> Token
+    Token(token::$AStr) -> Token
 
 An [OAuth2 token](https://developer.github.com/v3/#authentication),
 or a [personal access token](https://developer.github.com/v3/#authentication).
@@ -60,7 +63,7 @@ auth_headers(t::JWT) = ["Authorization" => "Bearer $(t.token)"]
 """
     GitHubAPI(;
         token::AbstractToken=NoToken(),
-        url::AbstractString="$DEFAULT_URL",
+        url::$AStr="$DEFAULT_URL",
         on_rate_limit::OnRateLimit=ORL_RETURN,
     ) -> GitHubAPI
 
@@ -68,7 +71,7 @@ Create a GitHub API client.
 
 ## Keywords
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
-- `url::AbstractString="$DEFAULT_URL"`: Base URL of the target GitHub instance.
+- `url::$AStr="$DEFAULT_URL"`: Base URL of the target GitHub instance.
 - `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
 """
 struct GitHubAPI <: Forge
@@ -80,7 +83,7 @@ struct GitHubAPI <: Forge
 
     function GitHubAPI(;
         token::AbstractToken=NoToken(),
-        url::AbstractString=DEFAULT_URL,
+        url::AStr=DEFAULT_URL,
         on_rate_limit::OnRateLimit=ORL_RETURN,
     )
         return new(token, url, on_rate_limit, RateLimiter(), RateLimiter())
@@ -96,7 +99,7 @@ GitForge.on_rate_limit(g::GitHubAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitHubAPI, ::Function) = GitForge.rate_limit_wait(g.rl_general)
 GitForge.rate_limit_period(g::GitHubAPI, ::Function) =
     GitForge.rate_limit_period(g.rl_general)
-GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::HTTP.Response) =
+GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::Response) =
     GitForge.rate_limit_update!(g.rl_general, r)
 
 include("users.jl")
@@ -105,6 +108,6 @@ include("pull_requests.jl")
 include("organizations.jl")
 include("branches.jl")
 
-ismemberorcollaborator(r::HTTP.Response) = r.status != 404
+ismemberorcollaborator(r::Response) = r.status != 404
 
 end

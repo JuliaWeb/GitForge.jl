@@ -59,8 +59,6 @@ end
     protection_url::String
 end
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(get_branch),
-    owner::AbstractString, repo::AbstractString, branch::AbstractString,
-) = Endpoint(:GET, "/repos/$owner/$repo/branches/$branch")
-GitForge.into(::GitHubAPI, ::typeof(get_branch)) = Branch
+endpoint(::GitHubAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
+    Endpoint(:GET, "/repos/$owner/$repo/branches/$branch")
+into(::GitHubAPI, ::typeof(get_branch)) = Branch

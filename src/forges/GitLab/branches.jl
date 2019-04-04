@@ -23,8 +23,6 @@ end
     commit::Commit
 end
 
-GitForge.endpoint(
-    ::GitLabAPI, ::typeof(get_branch),
-    owner::AbstractString, repo::AbstractString, branch::AbstractString,
-) = Endpoint(:GET, "/projects/" * HTTP.escapeuri("$owner/$repo") * "/repository/branches/$branch")
-GitForge.into(::GitLabAPI, ::typeof(get_branch)) = Branch
+endpoint(::GitLabAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
+    Endpoint(:GET, "/projects/" * escapeuri("$owner/$repo") * "/repository/branches/$branch")
+into(::GitLabAPI, ::typeof(get_branch)) = Branch

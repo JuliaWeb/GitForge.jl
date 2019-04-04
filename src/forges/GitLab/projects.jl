@@ -111,33 +111,21 @@ end
     last_commit_id::String
 end
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
+endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
-GitForge.endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AbstractString) =
+endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AStr) =
     Endpoint(:GET, "/users/$name/repos")
-GitForge.into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
+into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
 
-GitForge.endpoint(
-    ::GitLabAPI, ::typeof(get_repo),
-    owner::AbstractString, repo::AbstractString,
-) = Endpoint(:GET, "/projects/" * HTTP.escapeuri("$owner/$repo"))
-GitForge.into(::GitLabAPI, ::typeof(get_repo)) = Project
+endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
+    Endpoint(:GET, "/projects/" * escapeuri("$owner/$repo"))
+into(::GitLabAPI, ::typeof(get_repo)) = Project
 
-function GitForge.endpoint(
-    ::GitLabAPI, ::typeof(is_collaborator),
-    owner::AbstractString, repo::AbstractString, id::Integer,
-)
-    return Endpoint(
-        :GET,
-        "/projects/" * HTTP.escapeuri("$owner/$repo") * "/members/$id";
-        allow_404=true,
-    )
-end
-GitForge.postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
-GitForge.into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
+endpoint(::GitLabAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, id::Integer) =
+    Endpoint(:GET, "/projects/" * escapeuri("$owner/$repo") * "/members/$id"; allow_404=true)
+postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
+into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
 
-GitForge.endpoint(
-    ::GitLabAPI, ::typeof(get_file_contents),
-    id::Integer, path::AbstractString,
-) = Endpoint(:GET, "/projects/$id/repository/files/$path"; query=Dict(:ref => "master"))
-GitForge.into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents
+endpoint(::GitLabAPI, ::typeof(get_file_contents), id::Integer, path::AStr) =
+    Endpoint(:GET, "/projects/$id/repository/files/$path"; query=Dict(:ref => "master"))
+into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents

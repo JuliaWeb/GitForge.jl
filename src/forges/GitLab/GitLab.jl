@@ -1,8 +1,11 @@
 module GitLab
 
+import ..GitForge: endpoint, into, postprocessor
+
 using ..GitForge
 using ..GitForge:
     @json,
+    AStr,
     DoNothing,
     DoSomething,
     Endpoint,
@@ -14,7 +17,7 @@ using ..GitForge:
     ORL_RETURN
 
 using Dates
-using HTTP
+using HTTP: Response, escapeuri
 using JSON2
 
 export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
@@ -36,7 +39,7 @@ Only public data will be available.
 struct NoToken <: AbstractToken end
 
 """
-    OAuth2Token(token::AbstractString) -> OAuth2Token
+    OAuth2Token(token::$AStr) -> OAuth2Token
 
 An [OAuth2 bearer token](https://docs.gitlab.com/ce/api/#oauth2-tokens).
 """
@@ -45,7 +48,7 @@ struct OAuth2Token <: AbstractToken
 end
 
 """
-    PersonalAccessToken(token::AbstractString) -> PersonalAccessToken
+    PersonalAccessToken(token::$AStr) -> PersonalAccessToken
 
 A [private access token](https://docs.gitlab.com/ce/api/#personal-access-tokens).
 """
@@ -60,7 +63,7 @@ auth_headers(t::PersonalAccessToken) = ["Private-Token" => t.token]
 """
     GitLabAPI(;
         token::AbstractToken=NoToken(),
-        url::AbstractString="$DEFAULT_URL",
+        url::$AStr="$DEFAULT_URL",
         on_rate_limit::OnRateLimit=ORL_RETURN,
     ) -> GitLabAPI
 
@@ -68,7 +71,7 @@ Create a GitLab API client.
 
 ## Keywords
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
-- `url::AbstractString="$DEFAULT_URL"`: Base URL of the target GitLab instance.
+- `url::$AStr"$DEFAULT_URL"`: Base URL of the target GitLab instance.
 - `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
 """
 struct GitLabAPI <: Forge
@@ -79,7 +82,7 @@ struct GitLabAPI <: Forge
 
     function GitLabAPI(;
         token::AbstractToken=NoToken(),
-        url::AbstractString=DEFAULT_URL,
+        url::AStr=DEFAULT_URL,
         on_rate_limit::OnRateLimit=ORL_RETURN,
     )
         return new(token, url, on_rate_limit, RateLimiter())
@@ -93,7 +96,7 @@ GitForge.rate_limit_check(g::GitLabAPI, ::Function) = GitForge.rate_limit_check(
 GitForge.on_rate_limit(g::GitLabAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitLabAPI, ::Function) = GitForge.rate_limit_wait(g.rl)
 GitForge.rate_limit_period(g::GitLabAPI, ::Function) = GitForge.rate_limit_period(g.rl)
-GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::HTTP.Response) =
+GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::Response) =
     GitForge.rate_limit_update!(g.rl, r)
 
 include("users.jl")
@@ -102,7 +105,7 @@ include("merge_requests.jl")
 include("groups.jl")
 include("branches.jl")
 
-function ismember(r::HTTP.Response)
+function ismember(r::Response)
     r.status == 404 && return false
     m = JSON2.read(IOBuffer(r.body), Member)
     return m.access_level !== nothing && m.access_level >= 30

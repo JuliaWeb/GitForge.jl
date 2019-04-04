@@ -80,16 +80,14 @@ end
     diff_refs::DiffRefs
 end
 
-GitForge.endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer) =
+endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer) =
     Endpoint(:GET, "/projects/$project/merge_requests")
-GitForge.into(::GitLabAPI, ::typeof(get_pull_requests)) = Vector{MergeRequest}
+into(::GitLabAPI, ::typeof(get_pull_requests)) = Vector{MergeRequest}
 
-GitForge.endpoint(
-    ::GitLabAPI, ::typeof(get_pull_requests),
-    project::Integer, number::Integer,
-) = Endpoint(:GET, "/projects/$project/merge_requests/$number")
-GitForge.into(::GitLabAPI, ::typeof(get_pull_request)) = MergeRequest
+endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer, number::Integer) =
+    Endpoint(:GET, "/projects/$project/merge_requests/$number")
+into(::GitLabAPI, ::typeof(get_pull_request)) = MergeRequest
 
-GitForge.endpoint(::GitLabAPI, ::typeof(create_pull_request), project::Integer) =
+endpoint(::GitLabAPI, ::typeof(create_pull_request), project::Integer) =
     Endpoint(:POST, "/projects/$project/merge_requests")
-GitForge.into(::GitLabAPI, ::typeof(create_pull_request)) = MergeRequest
+into(::GitLabAPI, ::typeof(create_pull_request)) = MergeRequest

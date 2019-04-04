@@ -103,7 +103,7 @@ end
 end
 
 @json struct FileContents
-    type::String
+    _type::String
     encoding::String
     size::Int
     name::String
@@ -117,27 +117,20 @@ end
     _links => links::FileContentsLinks
 end
 
-GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user/repos")
-GitForge.endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
+endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user/repos")
+endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
     Endpoint(:GET, "/users/$id/projects")
-GitForge.into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}
+into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(get_repo),
-    owner::AbstractString, repo::AbstractString,
-) = Endpoint(:GET, "/repos/$owner/$repo")
-GitForge.into(::GitHubAPI, ::typeof(get_repo)) = Repo
+endpoint(::GitHubAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
+    Endpoint(:GET, "/repos/$owner/$repo")
+into(::GitHubAPI, ::typeof(get_repo)) = Repo
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(is_collaborator),
-    owner::AbstractString, repo::AbstractString, user::AbstractString,
-) = Endpoint(:GET, "/repos/$owner/$repo/collaborators/$user"; allow_404=true)
-GitForge.postprocessor(::GitHubAPI, ::typeof(is_collaborator)) =
-    DoSomething(ismemberorcollaborator)
-GitForge.into(::GitHubAPI, ::typeof(is_collaborator)) = Bool
+endpoint(::GitHubAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, user::AStr) =
+    Endpoint(:GET, "/repos/$owner/$repo/collaborators/$user"; allow_404=true)
+postprocessor(::GitHubAPI, ::typeof(is_collaborator)) = DoSomething(ismemberorcollaborator)
+into(::GitHubAPI, ::typeof(is_collaborator)) = Bool
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(get_file_contents),
-    owner::AbstractString, repo::AbstractString, path::AbstractString,
-) = Endpoint(:GET, "/repos/$owner/$repo/contents/$path")
-GitForge.into(::GitHubAPI, ::typeof(get_file_contents)) = FileContents
+endpoint(::GitHubAPI, ::typeof(get_file_contents), owner::AStr, repo::AStr, path::AStr) =
+    Endpoint(:GET, "/repos/$owner/$repo/contents/$path")
+into(::GitHubAPI, ::typeof(get_file_contents)) = FileContents

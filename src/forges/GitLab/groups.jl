@@ -9,7 +9,7 @@
     access_level::Int
 end
 
-GitForge.endpoint(::GitLabAPI, ::typeof(is_member), org::AbstractString, id::Integer) =
-    Endpoint(:GET, "/groups/$(HTTP.escapeuri(org))/members/$id"; allow_404=true)
-GitForge.postprocessor(::GitLabAPI, ::typeof(is_member)) = DoSomething(ismember)
-GitForge.into(::GitLabAPI, ::typeof(is_member)) = Bool
+endpoint(::GitLabAPI, ::typeof(is_member), org::AStr, id::Integer) =
+    Endpoint(:GET, "/groups/" * escapeuri(org) * "/members/$id"; allow_404=true)
+postprocessor(::GitLabAPI, ::typeof(is_member)) = DoSomething(ismember)
+into(::GitLabAPI, ::typeof(is_member)) = Bool

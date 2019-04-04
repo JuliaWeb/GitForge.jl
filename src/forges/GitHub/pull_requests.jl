@@ -117,20 +117,14 @@ end
     changed_files::Int
 end
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(get_pull_requests),
-    owner::AbstractString, repo::AbstractString,
-) = Endpoint(:GET, "/repos/$owner/$repo/pulls")
-GitForge.into(::GitHubAPI, ::typeof(get_pull_requests)) = Vector{PullRequest}
+endpoint(::GitHubAPI, ::typeof(get_pull_requests), owner::AStr, repo::AStr) =
+    Endpoint(:GET, "/repos/$owner/$repo/pulls")
+into(::GitHubAPI, ::typeof(get_pull_requests)) = Vector{PullRequest}
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(get_pull_request),
-    owner::AbstractString, repo::AbstractString, number::Integer,
-) = Endpoint(:GET, "/repos/$owner/$repo/pulls/$number")
-GitForge.into(::GitHubAPI, ::typeof(get_pull_request)) = PullRequest
+endpoint(::GitHubAPI, ::typeof(get_pull_request), owner::AStr, repo::AStr, number::Integer) =
+    Endpoint(:GET, "/repos/$owner/$repo/pulls/$number")
+into(::GitHubAPI, ::typeof(get_pull_request)) = PullRequest
 
-GitForge.endpoint(
-    ::GitHubAPI, ::typeof(create_pull_request),
-    owner::AbstractString, repo::AbstractString
-) = Endpoint(:POST, "/repos/$owner/$repo/pulls")
-GitForge.into(::GitHubAPI, ::typeof(create_pull_request)) = PullRequest
+endpoint(::GitHubAPI, ::typeof(create_pull_request), owner::AStr, repo::AStr) =
+    Endpoint(:POST, "/repos/$owner/$repo/pulls")
+into(::GitHubAPI, ::typeof(create_pull_request)) = PullRequest
