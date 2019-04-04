@@ -17,7 +17,7 @@ using ..GitForge:
     ORL_RETURN
 
 using Dates
-using HTTP: Response, escapeuri
+using HTTP
 using JSON2
 
 export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
@@ -96,7 +96,7 @@ GitForge.rate_limit_check(g::GitLabAPI, ::Function) = GitForge.rate_limit_check(
 GitForge.on_rate_limit(g::GitLabAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitLabAPI, ::Function) = GitForge.rate_limit_wait(g.rl)
 GitForge.rate_limit_period(g::GitLabAPI, ::Function) = GitForge.rate_limit_period(g.rl)
-GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::Response) =
+GitForge.rate_limit_update!(g::GitLabAPI, ::Function, r::HTTP.Response) =
     GitForge.rate_limit_update!(g.rl, r)
 
 include("users.jl")
@@ -105,7 +105,9 @@ include("merge_requests.jl")
 include("groups.jl")
 include("branches.jl")
 
-function ismember(r::Response)
+encode(owner::AStr, repo::AStr) = HTTP.escapeuri("$owner/$repo")
+
+function ismember(r::HTTP.Response)
     r.status == 404 && return false
     m = JSON2.read(IOBuffer(r.body), Member)
     return m.access_level !== nothing && m.access_level >= 30

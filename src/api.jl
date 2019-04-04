@@ -52,11 +52,16 @@ Get a repository by owner and name or ID.
 @endpoint get_repo(owner::AStr, repo::AStr)
 @endpoint get_repo(id::Integer)
 
+"""
+    get_branch(::Forge, owner::AbstractString, repo::AbstractString, branch::AbstractString)
+
+Get a branch from a repository.
+"""
 @endpoint get_branch(owner::AStr, repo::AStr, branch::AStr)
 
 """
     get_file_contents(
-        f::Forge,
+        ::Forge,
         owner::$AStr,
         repo::$AStr,
         path::$AStr,
@@ -78,6 +83,22 @@ Get a specific pull request.
 @endpoint get_pull_request(project::Integer, number::Integer)
 
 """
+    get_pull_requests(::Forge, owner::$AStr, repo::$AStr)
+    get_pull_requests(::Forge, project::Integer)
+
+List a repository's pull requests.
+"""
+@endpoint get_pull_requests(owner::AStr, repo::AStr)
+@endpoint get_pull_requests(repo::Integer)
+
+"""
+    create_pull_requests(::Forge, owner::$AStr, repo::$AStr; kwargs...)
+
+Create a pull request.
+"""
+@endpoint create_pull_request(owner::AStr, repo::AStr)
+
+"""
     is_collaborator(
         ::Forge,
         owner::$AStr,
@@ -95,21 +116,3 @@ Check whether or not a user is a collaborator on a repository.
 Check whether or not a user is a member of an organization.
 """
 @endpoint is_member(org::AStr, name_or_id::Union{AStr, Integer})
-
-"""
-    get_pull_requests(::Forge, owner::$AStr, repo::$AStr)
-    get_pull_requests(::Forge, project::Integer)
-
-List a repository's pull requests.
-"""
-@endpoint get_pull_requests(owner::AStr, repo::AStr)
-@endpoint get_pull_requests(repo::Integer)
-
-"""
-    create_pull_requests(::Forge, owner::$AStr, repo::$AStr; kwargs...)
-    create_pull_requests(::Forge, project::Integer; kwargs...)
-
-Create a pull request.
-"""
-@endpoint create_pull_request(owner::AStr, repo::AStr)
-@endpoint create_pull_request(project::Integer)

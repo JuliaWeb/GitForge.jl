@@ -118,11 +118,11 @@ endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AStr) =
 into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
 
 endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
-    Endpoint(:GET, "/projects/" * escapeuri("$owner/$repo"))
+    Endpoint(:GET, "/projects/$(encode(owner, repo))")
 into(::GitLabAPI, ::typeof(get_repo)) = Project
 
 endpoint(::GitLabAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, id::Integer) =
-    Endpoint(:GET, "/projects/" * escapeuri("$owner/$repo") * "/members/$id"; allow_404=true)
+    Endpoint(:GET, "/projects/$(encode(owner, repo))/members/$id"; allow_404=true)
 postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
 into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
 

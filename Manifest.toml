@@ -35,7 +35,7 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[JSON2]]
 deps = ["Dates", "Parsers", "Test"]
-git-tree-sha1 = "ee2394cf08427ab19cf80249f6a6b8a92567a6c0"
+git-tree-sha1 = "082d6fac0d7d72308633f07a58e4ec2b9c6cadc4"
 repo-rev = "cdg/options"
 repo-url = "https://github.com/christopher-dG/JSON2.jl"
 uuid = "2535ab7d-5cd8-5a07-80ac-9b1792aadce3"

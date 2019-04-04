@@ -18,7 +18,7 @@ using ..GitForge:
     ORL_RETURN
 
 using Dates
-using HTTP: Response
+using HTTP
 using JSON2
 
 export GitHubAPI, NoToken, Token, JWT
@@ -99,7 +99,7 @@ GitForge.on_rate_limit(g::GitHubAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitHubAPI, ::Function) = GitForge.rate_limit_wait(g.rl_general)
 GitForge.rate_limit_period(g::GitHubAPI, ::Function) =
     GitForge.rate_limit_period(g.rl_general)
-GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::Response) =
+GitForge.rate_limit_update!(g::GitHubAPI, ::Function, r::HTTP.Response) =
     GitForge.rate_limit_update!(g.rl_general, r)
 
 include("users.jl")
@@ -108,6 +108,6 @@ include("pull_requests.jl")
 include("organizations.jl")
 include("branches.jl")
 
-ismemberorcollaborator(r::Response) = r.status != 404
+ismemberorcollaborator(r::HTTP.Response) = r.status != 404
 
 end

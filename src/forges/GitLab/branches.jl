@@ -24,5 +24,5 @@ end
 end
 
 endpoint(::GitLabAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
-    Endpoint(:GET, "/projects/" * escapeuri("$owner/$repo") * "/repository/branches/$branch")
+    Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/branches/$branch")
 into(::GitLabAPI, ::typeof(get_branch)) = Branch

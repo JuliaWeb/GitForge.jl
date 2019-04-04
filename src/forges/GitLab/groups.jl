@@ -10,6 +10,6 @@
 end
 
 endpoint(::GitLabAPI, ::typeof(is_member), org::AStr, id::Integer) =
-    Endpoint(:GET, "/groups/" * escapeuri(org) * "/members/$id"; allow_404=true)
+    Endpoint(:GET, "/groups/$(encode(org))/members/$id"; allow_404=true)
 postprocessor(::GitLabAPI, ::typeof(is_member)) = DoSomething(ismember)
 into(::GitLabAPI, ::typeof(is_member)) = Bool
