@@ -93,10 +93,12 @@ List a repository's pull requests.
 
 """
     create_pull_requests(::Forge, owner::$AStr, repo::$AStr; kwargs...)
+    create_pull_requests(::Forge, project::Integer; kwargs...)
 
 Create a pull request.
 """
 @endpoint create_pull_request(owner::AStr, repo::AStr)
+@endpoint create_pull_request(project::Integer)
 
 """
     is_collaborator(
