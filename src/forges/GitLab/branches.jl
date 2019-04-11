@@ -1,17 +1,3 @@
-@json struct Commit
-    author_email::String
-    author_name::String
-    authored_date::DateTime
-    committed_date::DateTime
-    committer_email::String
-    committer_name::String
-    id::String
-    short_id::String
-    title::String
-    message::String
-    parent_ids::Vector{String}
-end
-
 @json struct Branch
     name::String
     merged::Bool

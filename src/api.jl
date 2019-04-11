@@ -101,6 +101,15 @@ Create a pull request.
 @endpoint create_pull_request(project::Integer)
 
 """
+    get_commit(::Forge, owner::$AStr, repo::$AStr, ref::$AStr)
+    get_commit(::Forge, project::Integer, ref::$AStr)
+
+Get a commit from a repository.
+"""
+@endpoint get_commit(owner::AStr, repo::AStr, ref::AStr)
+@endpoint get_commit(project::Integer, ref::AStr)
+
+"""
     is_collaborator(
         ::Forge,
         owner::$AStr,

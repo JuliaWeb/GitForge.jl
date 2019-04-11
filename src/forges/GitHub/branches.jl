@@ -1,61 +1,24 @@
-@json struct Committer
-    name::String
-    date::DateTime
-    email::String
-end
-
-@json struct CommitTree
-    sha::String
-    url::String
-end
-
-@json struct CommitVerification
-    verified::Bool
-    reason::String
-    signature::String
-    payload::String
-end
-
-@json struct CommitInfo
-    author::Committer
-    url::String
-    message::String
-    tree::CommitTree
-    committer::Committer
-    verification::CommitVerification
-end
-
-@json struct CommitLinks
-    html::String
-    self::String
-end
-
-@json struct CommitChecks
+@json struct BranchChecks
     enforcement_level::String
     contexts::Vector{String}
 end
 
-@json struct CommitProtection
+@json struct BranchProtection
     enabled::Bool
-    required_status_checks::CommitChecks
+    required_status_checks::BranchChecks
 end
 
-@json struct Commit
-    sha::String
-    node_id::String
-    commit::CommitInfo
-    author::User
-    parents::Vector{CommitTree}
-    url::String
-    committer::User
+@json struct BranchLinks
+    html::String
+    self::String
 end
 
 @json struct Branch
     name::String
     commit::Commit
-    _links => links::CommitLinks
+    _links => links::BranchLinks
     protected::Bool
-    protection::CommitProtection
+    protection::BranchProtection
     protection_url::String
 end
 
