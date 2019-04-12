@@ -60,7 +60,16 @@ get_users
 update_user
 create_user
 delete_user
-get_repos
+get_user_repos
+get_repo
+get_branch
+get_file_contents
+get_pull_request
+get_pull_requests
+create_pull_request
+get_commit
+is_collaborator
+is_member
 ```
 
 # Internals
@@ -124,6 +133,7 @@ into
 PostProcessor
 postprocess
 DoNothing
+DoSomething
 JSON
 @json
 ```
