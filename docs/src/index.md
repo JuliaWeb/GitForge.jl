@@ -116,6 +116,7 @@ These functions and types handle certain generic rate limiters.
 RateLimiter
 OnRateLimit
 RateLimited
+has_rate_limits
 rate_limit_check
 on_rate_limit
 rate_limit_wait

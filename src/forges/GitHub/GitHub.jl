@@ -64,6 +64,7 @@ auth_headers(t::JWT) = ["Authorization" => "Bearer $(t.token)"]
     GitHubAPI(;
         token::AbstractToken=NoToken(),
         url::$AStr="$DEFAULT_URL",
+        has_rate_limits::Bool=true,
         on_rate_limit::OnRateLimit=ORL_RETURN,
     ) -> GitHubAPI
 
@@ -72,11 +73,13 @@ Create a GitHub API client.
 ## Keywords
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
 - `url::$AStr="$DEFAULT_URL"`: Base URL of the target GitHub instance.
+- `has_rate_limits::Bool=true`: Whether or not the GitHub server has rate limits.
 - `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
 """
 struct GitHubAPI <: Forge
     token::AbstractToken
     url::String
+    hasrl::Bool
     orl::OnRateLimit
     rl_general::RateLimiter
     rl_search::RateLimiter
@@ -84,15 +87,17 @@ struct GitHubAPI <: Forge
     function GitHubAPI(;
         token::AbstractToken=NoToken(),
         url::AStr=DEFAULT_URL,
+        has_rate_limits::Bool=true,
         on_rate_limit::OnRateLimit=ORL_RETURN,
     )
-        return new(token, url, on_rate_limit, RateLimiter(), RateLimiter())
+        return new(token, url, has_rate_limits, on_rate_limit, RateLimiter(), RateLimiter())
     end
 end
 
 GitForge.base_url(g::GitHubAPI) = g.url
 GitForge.request_headers(g::GitHubAPI, ::Function) = [HEADERS; auth_headers(g.token)]
 GitForge.postprocessor(::GitHubAPI, ::Function) = JSON()
+GitForge.has_rate_limits(g::GitHubAPI, ::Function) = g.hasrl
 GitForge.rate_limit_check(g::GitHubAPI, ::Function) =
     GitForge.rate_limit_check(g.rl_general)
 GitForge.on_rate_limit(g::GitHubAPI, ::Function) = g.orl

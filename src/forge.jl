@@ -97,6 +97,13 @@ endpoint(f::T, ::Function, args...) where T <: Forge =
     error("$T has not implimented this function")
 
 """
+    has_rate_limits(::Forge, ::Function) -> Bool
+
+Returns whether or not the forge server uses rate limiting.
+"""
+has_rate_limits(::Forge, ::Function) = false
+
+"""
     rate_limit_check(::Forge, ::Function) -> Bool
 
 Returns whether or not there is an active rate limit.

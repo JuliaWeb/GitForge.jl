@@ -64,6 +64,7 @@ auth_headers(t::PersonalAccessToken) = ["Private-Token" => t.token]
     GitLabAPI(;
         token::AbstractToken=NoToken(),
         url::$AStr="$DEFAULT_URL",
+        has_rate_limits::Bool=true,
         on_rate_limit::OnRateLimit=ORL_RETURN,
     ) -> GitLabAPI
 
@@ -72,26 +73,30 @@ Create a GitLab API client.
 ## Keywords
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
 - `url::$AStr"$DEFAULT_URL"`: Base URL of the target GitLab instance.
+- `has_rate_limits::Bool=true`: Whether or not the GitLab server has rate limits.
 - `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
 """
 struct GitLabAPI <: Forge
     token::AbstractToken
     url::String
+    hasrl::Bool
     orl::OnRateLimit
     rl::RateLimiter
 
     function GitLabAPI(;
         token::AbstractToken=NoToken(),
         url::AStr=DEFAULT_URL,
+        has_rate_limits::Bool=true,
         on_rate_limit::OnRateLimit=ORL_RETURN,
     )
-        return new(token, url, on_rate_limit, RateLimiter())
+        return new(token, url, has_rate_limits, on_rate_limit, RateLimiter())
     end
 end
 
 GitForge.base_url(g::GitLabAPI) = g.url
 GitForge.request_headers(g::GitLabAPI, ::Function) = [HEADERS; auth_headers(g.token)]
 GitForge.postprocessor(::GitLabAPI, ::Function) = JSON()
+GitForge.has_rate_limits(g::GitLabAPI, ::Function) = g.hasrl
 GitForge.rate_limit_check(g::GitLabAPI, ::Function) = GitForge.rate_limit_check(g.rl)
 GitForge.on_rate_limit(g::GitLabAPI, ::Function) = g.orl
 GitForge.rate_limit_wait(g::GitLabAPI, ::Function) = GitForge.rate_limit_wait(g.rl)

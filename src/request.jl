@@ -121,7 +121,7 @@ function request(
 )
     T = into(f, fun)
 
-    if rate_limit_check(f, fun)
+    if has_rate_limits(f, fun) && rate_limit_check(f, fun)
         orl = on_rate_limit(f, fun)
         if orl === ORL_RETURN
             return Result{T}(RateLimited(rate_limit_period(f, fun)), backtrace())
@@ -153,7 +153,7 @@ function request(
         return Result{T}(e, catch_backtrace())
     end
 
-    rate_limit_update!(f, fun, resp)
+    has_rate_limits(f, fun) && rate_limit_update!(f, fun, resp)
 
     resp.status >= 300 && !(resp.status == 404 && ep.allow_404) &&
         return Result{T}(HTTP.StatusError(resp.status, resp), backtrace(), resp)
