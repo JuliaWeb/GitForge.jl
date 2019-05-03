@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.GitHub.GitHubAPI",
     "category": "type",
-    "text": "GitHubAPI(;\n    token::AbstractToken=NoToken(),\n    url::AbstractString=\"https://api.github.com\",\n    on_rate_limit::OnRateLimit=ORL_RETURN,\n) -> GitHubAPI\n\nCreate a GitHub API client.\n\nKeywords\n\ntoken::AbstractToken=NoToken(): Authorization token (or lack thereof).\nurl::AbstractString=\"https://api.github.com\": Base URL of the target GitHub instance.\non_rate_limit::OnRateLimit=ORL_RETURN: Behaviour on exceeded rate limits.\n\n\n\n\n\n"
+    "text": "GitHubAPI(;\n    token::AbstractToken=NoToken(),\n    url::AbstractString=\"https://api.github.com\",\n    has_rate_limits::Bool=true,\n    on_rate_limit::OnRateLimit=ORL_RETURN,\n) -> GitHubAPI\n\nCreate a GitHub API client.\n\nKeywords\n\ntoken::AbstractToken=NoToken(): Authorization token (or lack thereof).\nurl::AbstractString=\"https://api.github.com\": Base URL of the target GitHub instance.\nhas_rate_limits::Bool=true: Whether or not the GitHub server has rate limits.\non_rate_limit::OnRateLimit=ORL_RETURN: Behaviour on exceeded rate limits.\n\n\n\n\n\n"
 },
 
 {
@@ -77,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.GitLab.GitLabAPI",
     "category": "type",
-    "text": "GitLabAPI(;\n    token::AbstractToken=NoToken(),\n    url::AbstractString=\"https://gitlab.com/api/v4\",\n    on_rate_limit::OnRateLimit=ORL_RETURN,\n) -> GitLabAPI\n\nCreate a GitLab API client.\n\nKeywords\n\ntoken::AbstractToken=NoToken(): Authorization token (or lack thereof).\nurl::AbstractString=\"https://gitlab.com/api/v4\": Base URL of the target GitLab instance.\non_rate_limit::OnRateLimit=ORL_RETURN: Behaviour on exceeded rate limits.\n\n\n\n\n\n"
+    "text": "GitLabAPI(;\n    token::AbstractToken=NoToken(),\n    url::AbstractString=\"https://gitlab.com/api/v4\",\n    has_rate_limits::Bool=true,\n    on_rate_limit::OnRateLimit=ORL_RETURN,\n) -> GitLabAPI\n\nCreate a GitLab API client.\n\nKeywords\n\ntoken::AbstractToken=NoToken(): Authorization token (or lack thereof).\nurl::AbstractString\"https://gitlab.com/api/v4\": Base URL of the target GitLab instance.\nhas_rate_limits::Bool=true: Whether or not the GitLab server has rate limits.\non_rate_limit::OnRateLimit=ORL_RETURN: Behaviour on exceeded rate limits.\n\n\n\n\n\n"
 },
 
 {
@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.exception",
     "category": "function",
-    "text": "exception(::Result{T}) -> Union{Tuple{Exception, Vector}, Nothing}\n\nReturns the result\'s thrown exception and the backtrace, if any exists.\n\n\n\n\n\n"
+    "text": "exception(::Result{T}) -> Union{Tuple{Exception, Vector{StackFrame}}, Nothing}\n\nReturns the result\'s thrown exception and stack trace, if any exists.\n\n\n\n\n\n"
 },
 
 {
@@ -217,11 +217,83 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "#GitForge.get_repos",
+    "location": "#GitForge.get_user_repos",
     "page": "Home",
-    "title": "GitForge.get_repos",
+    "title": "GitForge.get_user_repos",
     "category": "function",
-    "text": "get_repos(::Forge[, name_or_id::Union{AbstractString, Integer}])\n\nGet the currently authenticated user\'s repositories, or those of a user by name or ID.\n\n\n\n\n\n"
+    "text": "get_user_repos(::Forge[, name_or_id::Union{AbstractString, Integer}])\n\nGet the currently authenticated user\'s repositories, or those of a user by name or ID.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.get_repo",
+    "page": "Home",
+    "title": "GitForge.get_repo",
+    "category": "function",
+    "text": "get_repo(::Forge, owner::AbstractString, repo::AbstractString)\nget_repo(::Forge, id::Integer)\n\nGet a repository by owner and name or ID.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.get_branch",
+    "page": "Home",
+    "title": "GitForge.get_branch",
+    "category": "function",
+    "text": "get_branch(::Forge, owner::AbstractString, repo::AbstractString, branch::AbstractString)\n\nGet a branch from a repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.get_file_contents",
+    "page": "Home",
+    "title": "GitForge.get_file_contents",
+    "category": "function",
+    "text": "get_file_contents(\n    ::Forge,\n    owner::AbstractString,\n    repo::AbstractString,\n    path::AbstractString,\n)\nget_file_contents(f::Forge, id::Integer, path::AbstractString)\n\nGet a file from a repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.get_pull_request",
+    "page": "Home",
+    "title": "GitForge.get_pull_request",
+    "category": "function",
+    "text": "get_pull_request(::Forge, owner::AbstractString, repo::AbstractString, number::Integer)\nget_pull_request(::Forge, project::Integer, number::Integer)\n\nGet a specific pull request.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.get_pull_requests",
+    "page": "Home",
+    "title": "GitForge.get_pull_requests",
+    "category": "function",
+    "text": "get_pull_requests(::Forge, owner::AbstractString, repo::AbstractString)\nget_pull_requests(::Forge, project::Integer)\n\nList a repository\'s pull requests.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.create_pull_request",
+    "page": "Home",
+    "title": "GitForge.create_pull_request",
+    "category": "function",
+    "text": "create_pull_requests(::Forge, owner::AbstractString, repo::AbstractString; kwargs...)\ncreate_pull_requests(::Forge, project::Integer; kwargs...)\n\nCreate a pull request.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.get_commit",
+    "page": "Home",
+    "title": "GitForge.get_commit",
+    "category": "function",
+    "text": "get_commit(::Forge, owner::AbstractString, repo::AbstractString, ref::AbstractString)\nget_commit(::Forge, project::Integer, ref::AbstractString)\n\nGet a commit from a repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.is_collaborator",
+    "page": "Home",
+    "title": "GitForge.is_collaborator",
+    "category": "function",
+    "text": "is_collaborator(\n    ::Forge,\n    owner::AbstractString,\n    repo::AbstractString,\n    name_or_id::Union{AbstractString, Integer},\n)\n\nCheck whether or not a user is a collaborator on a repository.\n\n\n\n\n\n"
+},
+
+{
+    "location": "#GitForge.is_member",
+    "page": "Home",
+    "title": "GitForge.is_member",
+    "category": "function",
+    "text": "is_member(::Forge, org::AbstractString, name_or_id::Union{AbstractString, Integer})\n\nCheck whether or not a user is a member of an organization.\n\n\n\n\n\n"
 },
 
 {
@@ -229,7 +301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Endpoints",
     "category": "section",
-    "text": "These functions all allow any number of trailing keywords. For more information on these keywords, see request.get_user\nget_users\nupdate_user\ncreate_user\ndelete_user\nget_repos"
+    "text": "These functions all allow any number of trailing keywords. For more information on these keywords, see request.get_user\nget_users\nupdate_user\ncreate_user\ndelete_user\nget_user_repos\nget_repo\nget_branch\nget_file_contents\nget_pull_request\nget_pull_requests\ncreate_pull_request\nget_commit\nis_collaborator\nis_member"
 },
 
 {
@@ -261,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.Endpoint",
     "category": "type",
-    "text": "Endpoint(\n    method::Symbol,\n    url::AbstractString;\n    headers::Vector{<:Pair}=HTTP.Header[],\n    query::Dict=Dict(),\n) -> Endpoint\n\nContains information on how to call an endpoint.\n\nArguments\n\nmethod::Symbol: HTTP request method to use.\nurl::AbstractString: Endpoint URL, relative to the base URL.\n\nKeywords\n\nheaders::Vector{<:Pair}=HTTP.Header[]: Request headers to add.\nquery::Dict=Dict(): Query string parameters to add.\n\n\n\n\n\n"
+    "text": "Endpoint(\n    method::Symbol,\n    url::AbstractString;\n    headers::Vector{<:Pair}=HTTP.Header[],\n    query::Dict=Dict(),\n    allow_404::Bool=false,\n) -> Endpoint\n\nContains information on how to call an endpoint.\n\nArguments\n\nmethod::Symbol: HTTP request method to use.\nurl::AbstractString: Endpoint URL, relative to the base URL.\n\nKeywords\n\nheaders::Vector{<:Pair}=HTTP.Header[]: Request headers to add.\nquery::Dict=Dict(): Query string parameters to add.\nallow_404::Bool=false: Sends responses  with 404 statuses to the postprocessor.\n\n\n\n\n\n"
 },
 
 {
@@ -345,6 +417,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "#GitForge.has_rate_limits",
+    "page": "Home",
+    "title": "GitForge.has_rate_limits",
+    "category": "function",
+    "text": "has_rate_limits(::Forge, ::Function) -> Bool\n\nReturns whether or not the forge server uses rate limiting.\n\n\n\n\n\n"
+},
+
+{
     "location": "#GitForge.rate_limit_check",
     "page": "Home",
     "title": "GitForge.rate_limit_check",
@@ -389,7 +469,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Rate Limiting",
     "category": "section",
-    "text": "These functions and types handle certain generic rate limiters.RateLimiter\nOnRateLimit\nRateLimited\nrate_limit_check\non_rate_limit\nrate_limit_wait\nrate_limit_period\nrate_limit_update!"
+    "text": "These functions and types handle certain generic rate limiters.RateLimiter\nOnRateLimit\nRateLimited\nhas_rate_limits\nrate_limit_check\non_rate_limit\nrate_limit_wait\nrate_limit_period\nrate_limit_update!"
 },
 
 {
@@ -397,7 +477,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.postprocessor",
     "category": "function",
-    "text": "postprocessor(::Forge, ::Function) -> Type{<:PostProcessor}\n\nReturns the PostProcessor to be used. Type parameters must not be included (they are produced by into).\n\n\n\n\n\n"
+    "text": "postprocessor(::Forge, ::Function) -> PostProcessor\n\nReturns the PostProcessor to be used.\n\n\n\n\n\n"
 },
 
 {
@@ -413,7 +493,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.PostProcessor",
     "category": "type",
-    "text": "Determines the behaviour of postprocess. Subtypes must have one type parameter, which is determined by into.\n\n\n\n\n\n"
+    "text": "Determines the behaviour of postprocess.\n\n\n\n\n\n"
 },
 
 {
@@ -421,7 +501,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.postprocess",
     "category": "function",
-    "text": "postprocess(::Type{<:PostProcessor}, ::HTTP.Response)\n\nComputes a value from an HTTP response. This is what is returned by value.\n\n\n\n\n\n"
+    "text": "postprocess(::PostProcessor, ::HTTP.Response, ::Type{T})\n\nComputes a value from an HTTP response. This is what is returned by value.\n\n\n\n\n\n"
 },
 
 {
@@ -433,11 +513,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "#GitForge.DoSomething",
+    "page": "Home",
+    "title": "GitForge.DoSomething",
+    "category": "type",
+    "text": "DoSomething(::Function) -> DoSomething\n\nRuns a user-defined postprocessor.\n\n\n\n\n\n"
+},
+
+{
     "location": "#GitForge.JSON",
     "page": "Home",
     "title": "GitForge.JSON",
     "category": "type",
-    "text": "Parses a JSON response into a given type and returns that object.\n\n\n\n\n\n"
+    "text": "JSON(f::Function=identity) -> JSON\n\nParses a JSON response into a given type and runs f on that object.\n\n\n\n\n\n"
 },
 
 {
@@ -453,7 +541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Post Processing",
     "category": "section",
-    "text": "These functions and types process HTTP responses.postprocessor\ninto\nPostProcessor\npostprocess\nDoNothing\nJSON\n@json"
+    "text": "These functions and types process HTTP responses.postprocessor\ninto\nPostProcessor\npostprocess\nDoNothing\nDoSomething\nJSON\n@json"
 },
 
 ]}
