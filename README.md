@@ -21,3 +21,8 @@ julia> GitForge.response(result).status
 julia> GitForge.value(result).login
 "christopher-dG"
 ```
+
+### API Coverage
+
+Eventually, the goal is to cover all the "basic" parts of services like GitHub, such as repositories, issues, pull requests, etc.
+However, this library was mostly motivated by development on [Registrator](https://github.com/JuliaRegistries/Registrator.jl), so at the moment most of the wrapped endpoints are just the ones needed for that specific task.
