@@ -94,7 +94,7 @@ Trailing arguments are usually important for routing.
 For example, [`get_user`](@ref) can take some ID parameter which becomes part of the URL.
 """
 endpoint(f::T, ::Function, args...) where T <: Forge =
-    error("$T has not implimented this function")
+    error("$T has not implemented this function")
 
 """
     has_rate_limits(::Forge, ::Function) -> Bool
