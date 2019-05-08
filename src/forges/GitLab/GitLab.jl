@@ -112,6 +112,7 @@ include("commits.jl")
 include("branches.jl")
 
 encode(owner::AStr, repo::AStr) = HTTP.escapeuri("$owner/$repo")
+encode(org::AStr) = HTTP.escapeuri(org)
 
 function ismember(r::HTTP.Response)
     r.status == 404 && return false
