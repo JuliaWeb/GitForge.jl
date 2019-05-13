@@ -24,9 +24,9 @@ using JSON2
 export GitHubAPI, NoToken, Token, JWT
 
 const DEFAULT_URL = "https://api.github.com"
-const JSON_OPTS = Dict(
-    :dateformat => dateformat"y-m-d",
-    :datetimeformat => dateformat"y-m-dTH:M:SZ",
+const JSON_OPTS = (
+    dateformat=dateformat"y-m-d",
+    datetimeformat=dateformat"y-m-dTH:M:SZ",
 )
 
 abstract type AbstractToken end

@@ -34,10 +34,10 @@ deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[JSON2]]
-deps = ["Dates", "Parsers"]
-git-tree-sha1 = "36180793e9b043af9d07966482eb3a16f903649f"
+deps = ["Dates", "Parsers", "Test"]
+git-tree-sha1 = "6cbbbab27d9411946725f5d5c91e8b8fb5f7d5db"
 uuid = "2535ab7d-5cd8-5a07-80ac-9b1792aadce3"
-version = "0.3.0"
+version = "0.3.1"
 
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -57,9 +57,9 @@ version = "0.6.8"
 
 [[Parsers]]
 deps = ["Dates", "Test"]
-git-tree-sha1 = "6eae3454d1fd3097b1e5d81dbe11db849225cb8b"
+git-tree-sha1 = "e2e65679cc0b70f2baeb504c8d99c2fc6d1a5cdc"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "0.3.2"
+version = "0.3.3"
 
 [[Printf]]
 deps = ["Unicode"]
