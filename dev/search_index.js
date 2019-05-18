@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "GitForge.@paginate",
     "category": "macro",
-    "text": "@paginate fun(args...; kwargss...) page=1 per_page=100 -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(args...; kwargs...). fun must take a Forge as its first argument and return a Result{Vector{T}}.\n\nKeywords\n\npage::Int=1: Starting page.\nper_page::Int=100: Number of entries per page.\n\n\n\n\n\n"
+    "text": "@paginate fun(args...; kwargs...) page=1 per_page=100 -> Paginator\n\nCreate an iterator that paginates the results of repeatedly calling fun(args...; kwargs...). fun must take a Forge as its first argument and return a Result{Vector{T}}.\n\nKeywords\n\npage::Int=1: Starting page.\nper_page::Int=100: Number of entries per page.\n\n\n\n\n\n"
 },
 
 {
