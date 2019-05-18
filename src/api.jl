@@ -101,6 +101,15 @@ Create a pull request.
 @endpoint create_pull_request(project::Integer)
 
 """
+    update_pull_request(::Forge, owner::$AStr, repo::$AStr, number::Integer; kwargs...)
+    update_pull_request(::Forge, project::Integer, number::Integer; kwargs...)
+
+Update a pull request.
+"""
+@endpoint update_pull_request(owner::AStr, repo::AStr, number::Integer)
+@endpoint update_pull_request(project::Integer, number::Integer)
+
+"""
     get_commit(::Forge, owner::$AStr, repo::$AStr, ref::$AStr)
     get_commit(::Forge, project::Integer, ref::$AStr)
 

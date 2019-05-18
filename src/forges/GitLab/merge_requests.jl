@@ -84,10 +84,10 @@ endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer) =
     Endpoint(:GET, "/projects/$project/merge_requests")
 into(::GitLabAPI, ::typeof(get_pull_requests)) = Vector{MergeRequest}
 
-endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer, number::Integer) =
+endpoint(::GitLabAPI, ::typeof(get_pull_request), project::Integer, number::Integer) =
     Endpoint(:GET, "/projects/$project/merge_requests/$number")
 endpoint(
-    ::GitLabAPI, ::typeof(get_pull_requests),
+    ::GitLabAPI, ::typeof(get_pull_request),
     owner::AStr, repo::AStr, number::Integer,
 ) = Endpoint(:GET, "/projects/$(encode(owner, repo))/merge_requests/$number")
 into(::GitLabAPI, ::typeof(get_pull_request)) = MergeRequest
@@ -97,3 +97,11 @@ endpoint(::GitLabAPI, ::typeof(create_pull_request), project::Integer) =
 endpoint(::GitLabAPI, ::typeof(create_pull_request), owner::AStr, repo::AStr) =
     Endpoint(:POST, "/projects/$(encode(owner, repo))/merge_requests")
 into(::GitLabAPI, ::typeof(create_pull_request)) = MergeRequest
+
+endpoint(::GitLabAPI, ::typeof(update_pull_request), project::Integer, number::Integer) =
+    Endpoint(:PUT, "/projects/$project/merge_requests/$number")
+endpoint(
+    ::GitLabAPI, ::typeof(update_pull_request),
+    owner::AStr, repo::AStr, number::Integer,
+) = Endpoint(:PUT, "/projects/$(encode(owner, repo))/merge_requests/$number")
+into(::GitLabAPI, ::typeof(update_pull_request)) = MergeRequest
