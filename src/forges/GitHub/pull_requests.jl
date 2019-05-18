@@ -128,3 +128,7 @@ into(::GitHubAPI, ::typeof(get_pull_request)) = PullRequest
 endpoint(::GitHubAPI, ::typeof(create_pull_request), owner::AStr, repo::AStr) =
     Endpoint(:POST, "/repos/$owner/$repo/pulls")
 into(::GitHubAPI, ::typeof(create_pull_request)) = PullRequest
+
+endpoint(::GitHubAPI, ::typeof(update_pull_request), owner::AStr, repo::AStr, number::Integer) =
+    Endpoint(:PATCH, "/repos/$owner/$repo/pulls/$number")
+into(::GitHubAPI, ::typeof(update_pull_request)) = PullRequest
