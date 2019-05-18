@@ -3,7 +3,7 @@
 export @paginate
 
 """
-    @paginate fun(args...; kwargss...) page=1 per_page=100 -> Paginator
+    @paginate fun(args...; kwargs...) page=1 per_page=100 -> Paginator
 
 Create an iterator that paginates the results of repeatedly calling `fun(args...; kwargs...)`.
 `fun` must take a [`Forge`](@ref) as its first argument and return a `Result{Vector{T}}`.
