@@ -136,3 +136,12 @@ Check whether or not a user is a collaborator on a repository.
 Check whether or not a user is a member of an organization.
 """
 @endpoint is_member(org::AStr, name_or_id::Union{AStr, Integer})
+
+"""
+    get_tags(::Forge, owner::$AStr, repo::$AStr)
+    get_tags(::Forge, project::Integer)
+
+Get a list of tags from a repository.
+"""
+@endpoint get_tags(owner::AStr, repo::AStr)
+@endpoint get_tags(project::Integer)
