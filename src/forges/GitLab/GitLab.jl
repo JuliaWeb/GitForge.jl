@@ -110,6 +110,7 @@ include("merge_requests.jl")
 include("groups.jl")
 include("commits.jl")
 include("branches.jl")
+include("tags.jl")
 
 encode(owner::AStr, repo::AStr) = HTTP.escapeuri("$owner/$repo")
 encode(org::AStr) = HTTP.escapeuri(org)
