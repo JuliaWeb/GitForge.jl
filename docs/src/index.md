@@ -68,6 +68,7 @@ get_pull_request
 get_pull_requests
 create_pull_request
 get_commit
+get_tags
 is_collaborator
 is_member
 ```
