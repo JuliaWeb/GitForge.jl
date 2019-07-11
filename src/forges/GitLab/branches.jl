@@ -9,6 +9,8 @@
     commit::Commit
 end
 
+nameof(b::Branch) = b.name
+
 endpoint(::GitLabAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/branches/$branch")
 into(::GitLabAPI, ::typeof(get_branch)) = Branch

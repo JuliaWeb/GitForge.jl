@@ -2,6 +2,7 @@
 
 module GitHub
 
+import Base: nameof
 import ..GitForge: endpoint, into, postprocessor
 
 using ..GitForge

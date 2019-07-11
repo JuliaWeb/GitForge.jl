@@ -57,6 +57,8 @@ end
     files::Vector{CommitFile}
 end
 
+nameof(c::Commit) = c.sha
+
 endpoint(::GitHubAPI, ::typeof(get_commit), owner::AStr, repo::AStr, ref::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/commits/$ref")
 into(::GitHubAPI, ::typeof(get_commit)) = Commit

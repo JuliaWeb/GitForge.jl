@@ -46,6 +46,8 @@ end
     plan::Plan
 end
 
+nameof(u::User) = u.login
+
 endpoint(::GitHubAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
 endpoint(::GitHubAPI, ::typeof(get_user), name::AStr) = Endpoint(:GET, "/users/$name")
 into(::GitHubAPI, ::typeof(get_user)) = User

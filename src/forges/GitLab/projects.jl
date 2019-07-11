@@ -98,6 +98,8 @@ end
     _links => links::Links
 end
 
+nameof(p::Project) = r.path_with_namespace
+
 @json struct FileContents
     file_name::String
     file_path::String

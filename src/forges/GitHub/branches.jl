@@ -22,6 +22,8 @@ end
     protection_url::String
 end
 
+nameof(b::Branch) = b.name
+
 endpoint(::GitHubAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/branches/$branch")
 into(::GitHubAPI, ::typeof(get_branch)) = Branch

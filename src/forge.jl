@@ -62,14 +62,14 @@ request_headers(::Forge, ::Function) = HEADERS
 
 Returns the query string parameters that should be added to each request.
 """
-request_query(::Forge, ::Function) = Dict()
+request_query(::Forge, ::Function) = Dict{String, Any}()
 
 """
     request_kwargs(::Forge, ::Function) -> Dict{Symbol}
 
 Returns the extra keyword arguments that should be passed to `HTTP.request`.
 """
-request_kwargs(::Forge, ::Function) = Dict()
+request_kwargs(::Forge, ::Function) = Dict{Symbol, Any}()
 
 """
     postprocessor(::Forge, ::Function) -> PostProcessor

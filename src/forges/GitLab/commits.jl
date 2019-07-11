@@ -15,6 +15,8 @@
     status::String
 end
 
+nameof(c::Commit) = c.id
+
 endpoint(::GitLabAPI, ::typeof(get_commit), owner::AStr, repo::AStr, ref::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/commits/$ref")
 endpoint(::GitLabAPI, ::typeof(get_commit), project::Integer, ref::AStr) =

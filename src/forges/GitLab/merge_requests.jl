@@ -80,6 +80,8 @@ end
     diff_refs::DiffRefs
 end
 
+nameof(m::MergeRequest) = m.iid
+
 endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer) =
     Endpoint(:GET, "/projects/$project/merge_requests")
 into(::GitLabAPI, ::typeof(get_pull_requests)) = Vector{MergeRequest}

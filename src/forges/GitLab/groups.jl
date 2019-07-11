@@ -9,6 +9,8 @@
     access_level::Int
 end
 
+nameof(m::Member) = m.username
+
 endpoint(::GitLabAPI, ::typeof(is_member), org::AStr, id::Integer) =
     Endpoint(:GET, "/groups/$(encode(org))/members/$id"; allow_404=true)
 postprocessor(::GitLabAPI, ::typeof(is_member)) = DoSomething(ismember)

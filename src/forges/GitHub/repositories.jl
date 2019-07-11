@@ -96,6 +96,8 @@ end
     source::Repo
 end
 
+nameof(r::Repo) = r.full_name
+
 @json struct FileContentsLinks
     self::String
     git::String

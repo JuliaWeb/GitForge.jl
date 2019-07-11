@@ -117,6 +117,8 @@ end
     changed_files::Int
 end
 
+nameof(p::PullRequest) = p.number
+
 endpoint(::GitHubAPI, ::typeof(get_pull_requests), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/pulls")
 into(::GitHubAPI, ::typeof(get_pull_requests)) = Vector{PullRequest}

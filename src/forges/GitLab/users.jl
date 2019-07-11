@@ -38,6 +38,8 @@ end
     shared_runners_minutes_limit::Int
 end
 
+nameof(u::User) = u.username
+
 endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
 endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = Endpoint(:GET, "/users/$id")
 endpoint(::GitLabAPI, ::typeof(get_user), name::AStr) =

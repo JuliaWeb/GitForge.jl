@@ -11,6 +11,8 @@ end
     message::String
 end
 
+nameof(t::Tag) = t.name
+
 endpoint(::GitLabAPI, ::typeof(get_tags), project::Integer) =
     Endpoint(:GET, "/projects/$project/repository/tags")
 endpoint(::GitLabAPI, ::typeof(get_tags), owner::AStr, repo::AStr) =

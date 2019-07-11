@@ -19,6 +19,7 @@ include("request.jl")
 include("pagination.jl")
 include("helpers.jl")
 include("api.jl")
+include("compat.jl")
 include(joinpath("forges", "GitHub", "GitHub.jl"))
 include(joinpath("forges", "GitLab", "GitLab.jl"))
 

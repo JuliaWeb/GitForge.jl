@@ -11,6 +11,8 @@ end
     object::Object
 end
 
+nameof(t::Tag) = split(t.ref, "/")[end]
+
 endpoint(::GitHubAPI, ::typeof(get_tags), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/git/refs/tags")
 into(::GitHubAPI, ::typeof(get_tags)) = Vector{Tag}
