@@ -281,6 +281,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "#GitForge.get_tags",
+    "page": "Home",
+    "title": "GitForge.get_tags",
+    "category": "function",
+    "text": "get_tags(::Forge, owner::AbstractString, repo::AbstractString)\nget_tags(::Forge, project::Integer)\n\nGet a list of tags from a repository.\n\n\n\n\n\n"
+},
+
+{
     "location": "#GitForge.is_collaborator",
     "page": "Home",
     "title": "GitForge.is_collaborator",
@@ -301,7 +309,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Endpoints",
     "category": "section",
-    "text": "These functions all allow any number of trailing keywords. For more information on these keywords, see request.get_user\nget_users\nupdate_user\ncreate_user\ndelete_user\nget_user_repos\nget_repo\nget_branch\nget_file_contents\nget_pull_request\nget_pull_requests\ncreate_pull_request\nget_commit\nis_collaborator\nis_member"
+    "text": "These functions all allow any number of trailing keywords. For more information on these keywords, see request.get_user\nget_users\nupdate_user\ncreate_user\ndelete_user\nget_user_repos\nget_repo\nget_branch\nget_file_contents\nget_pull_request\nget_pull_requests\ncreate_pull_request\nget_commit\nget_tags\nis_collaborator\nis_member"
 },
 
 {
