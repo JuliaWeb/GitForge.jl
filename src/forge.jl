@@ -84,7 +84,7 @@ postprocessor(::Forge, ::Function) = DoNothing()
 Returns the type that the [`PostProcessor`](@ref) should create from the response.
 
 """
-into(::Forge, ::Function) = Nothing
+into(::Forge, ::Function) = Any
 
 """
     endpoint(::Forge, ::Function, args...) -> Endpoint
