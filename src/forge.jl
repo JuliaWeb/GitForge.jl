@@ -116,7 +116,7 @@ rate_limit_check(::Forge, ::Function) = false
 
 Returns an [`OnRateLimit`](@ref) that determines how to react to an exceeded rate limit.
 """
-on_rate_limit(::Forge, ::Function) = ORL_RETURN
+on_rate_limit(::Forge, ::Function) = ORL_THROW
 
 """
     rate_limit_wait(::Forge, ::Function)

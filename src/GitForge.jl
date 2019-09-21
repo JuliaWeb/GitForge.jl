@@ -1,8 +1,11 @@
 module GitForge
 
-using Dates
-using HTTP
-using JSON2
+using Base.Iterators: Pairs
+using Base.StackTraces: StackTrace
+
+using Dates: Period, UTC, now
+using HTTP: HTTP
+using JSON2: JSON2
 
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]

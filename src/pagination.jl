@@ -6,7 +6,7 @@ export @paginate
     @paginate fun(args...; kwargs...) page=1 per_page=100 -> Paginator
 
 Create an iterator that paginates the results of repeatedly calling `fun(args...; kwargs...)`.
-`fun` must take a [`Forge`](@ref) as its first argument and return a `Result{Vector{T}}`.
+The first argument of `fun` must be a [`Forge`](@ref) and it must return a `Tuple{Vector{T}, HTTP.Response}`.
 
 ## Keywords
 - `page::Int=1`: Starting page.
@@ -22,24 +22,23 @@ macro paginate(ex::Expr, kws::Expr...)
     esc(ex)
 end
 
-mutable struct Paginator{T}
-    f::Function
+mutable struct Paginator{T, F<:Function}
+    f::F
+    xs::Vector{T}
     page::Int
-    next::Dict
+    next::Dict{String, String}
     last::Int
-    r::Result{Vector{T}}
+    resp::HTTP.Response
 
-    function Paginator{T}(
-        f::Function, args::Tuple, kwargs::Iterators.Pairs,
-        page::Int, per_page::Int,
-    ) where T
-        pager = Dict("page" => page, "per_page" => per_page)
-        query = merge(get(kwargs, :query, Dict()), pager)
-        return new{T}(
-            q::Dict -> f(args...; kwargs..., query=merge(query, q)),
-            page, Dict(), typemax(Int),
-        )
-    end
+    Paginator{T}(f::F) where {T, F <: Function} = new{T, F}(f, T[], 1, Dict(), typemax(Int))
+end
+
+function Paginator{T}(
+    f::Function, args::Tuple, kwargs::Pairs, page::Int, per_page::Int,
+) where T
+    pages = Dict("page" => page, "per_page" => per_page)
+    query = merge(get(kwargs, :query, Dict()), pages)
+    return Paginator{T}(q -> f(args...; kwargs..., query=merge(query, q)))
 end
 
 function paginate(
@@ -47,36 +46,37 @@ function paginate(
     page::Int=1, per_page::Int=100, kwargs...,
 )
     V = into(f, fun)
-    V <: Vector || throw(ArgumentError("Function must return Result{Vector{T}}"))
+    V <: Vector || throw(ArgumentError("Function must return Vector{T}"))
     return Paginator{eltype(V)}(fun, (f, args...), kwargs, page, per_page)
 end
 
 function Base.iterate(p::Paginator, state=nothing)
-    # If we have no results yet, fetch one.
-    isdefined(p, :r) || (p.r = p.f(p.next))
-    exception(p.r) === nothing || return nothing
-
     # The state is nothing when we are starting a new page.
-    it = state === nothing ? iterate(value(p.r)) : iterate(value(p.r), state)
+    it = state === nothing ? iterate(p.xs) : iterate(p.xs, state)
     if it === nothing
         # This page is finished, so either fetch a new page or quit.
         p.page > p.last && return nothing
-        nextpage!(p) || return nothing
+        nextpage!(p)
         return iterate(p)
     else
         # More results in the page.
-        return it
+        x, state = it
+        return (x, p.resp), state
     end
 end
 
+Base.collect(p::Paginator{T}) where T = foldl((acc, (x, _)) -> push!(acc, x), p; init=T[])
+
 function nextpage!(p::Paginator)
-    p.r = p.f(p.next)
-    exception(p.r) === nothing || return false
+    xs, p.resp = p.f(p.next)
+    empty!(p.xs)
+    append!(p.xs, xs)
     p.page += 1
-    next, last = parserels(HTTP.header(response(p.r), "Link"))
+    next, last = parserels(HTTP.header(p.resp, "Link"))
     next === nothing || (p.next = next)
-    last === nothing || (p.last = last)
-    return true
+    # If we didn't get any result for the next page, assume this is the last one.
+    p.last = last === nothing ? p.page - 1 : last
+    return p
 end
 
 function unescape(url::AStr)

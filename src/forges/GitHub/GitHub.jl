@@ -15,7 +15,7 @@ using ..GitForge:
     OnRateLimit,
     RateLimiter,
     HEADERS,
-    ORL_RETURN
+    ORL_THROW
 
 using Dates
 using HTTP
@@ -33,7 +33,7 @@ const JSON_OPTS = (
 abstract type AbstractToken end
 
 """
-    NoToken() -> NoToken
+    NoToken()
 
 Represents no authentication.
 Only public data will be available.
@@ -41,7 +41,7 @@ Only public data will be available.
 struct NoToken <: AbstractToken end
 
 """
-    Token(token::$AStr) -> Token
+    Token(token::$AStr)
 
 An [OAuth2 token](https://developer.github.com/v3/#authentication),
 or a [personal access token](https://developer.github.com/v3/#authentication).
@@ -51,6 +51,8 @@ struct Token <: AbstractToken
 end
 
 """
+    JWT(token::$AStr)
+
 A JWT signed by a [private key](https://developer.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) for GitHub Apps.
 """
 struct JWT <: AbstractToken
@@ -66,8 +68,8 @@ auth_headers(t::JWT) = ["Authorization" => "Bearer $(t.token)"]
         token::AbstractToken=NoToken(),
         url::$AStr="$DEFAULT_URL",
         has_rate_limits::Bool=true,
-        on_rate_limit::OnRateLimit=ORL_RETURN,
-    ) -> GitHubAPI
+        on_rate_limit::OnRateLimit=ORL_THROW,
+    )
 
 Create a GitHub API client.
 
@@ -75,7 +77,7 @@ Create a GitHub API client.
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
 - `url::$AStr="$DEFAULT_URL"`: Base URL of the target GitHub instance.
 - `has_rate_limits::Bool=true`: Whether or not the GitHub server has rate limits.
-- `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
+- `on_rate_limit::OnRateLimit=ORL_THROW`: Behaviour on exceeded rate limits.
 """
 struct GitHubAPI <: Forge
     token::AbstractToken
@@ -89,7 +91,7 @@ struct GitHubAPI <: Forge
         token::AbstractToken=NoToken(),
         url::AStr=DEFAULT_URL,
         has_rate_limits::Bool=true,
-        on_rate_limit::OnRateLimit=ORL_RETURN,
+        on_rate_limit::OnRateLimit=ORL_THROW,
     )
         return new(token, url, has_rate_limits, on_rate_limit, RateLimiter(), RateLimiter())
     end

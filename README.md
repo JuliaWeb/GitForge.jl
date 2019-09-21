@@ -10,16 +10,11 @@ julia> using GitForge, GitForge.GitHub
 
 julia> gh = GitHubAPI();
 
-julia> result = get_user(gh, "christopher-dG");
+julia> user, resp = get_user(gh, "christopher-dG");
 
-julia> isnothing(GitForge.exception(result))
-true
+julia> @assert resp.status == 200
 
-julia> GitForge.response(result).status
-200
-
-julia> GitForge.value(result).login
-"christopher-dG"
+julia> @assert user.login == "christopher-dG"
 ```
 
 ### API Coverage
