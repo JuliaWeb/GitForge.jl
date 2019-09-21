@@ -96,6 +96,14 @@ Accessors.updated_at
 Accessors.web_url
 ```
 
+## Compat API
+
+```@docs
+Compat
+Compat.get_pull_requests
+Compat.create_pull_request
+```
+
 # Internals
 
 The following resources are useful for implementing new forges, or customizing behaviour.

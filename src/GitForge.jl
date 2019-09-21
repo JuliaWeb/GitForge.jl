@@ -25,5 +25,6 @@ include("api.jl")
 include("accessors.jl")
 include(joinpath("forges", "GitHub", "GitHub.jl"))
 include(joinpath("forges", "GitLab", "GitLab.jl"))
+include("compat.jl")
 
 end
