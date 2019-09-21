@@ -1,13 +1,13 @@
 @json struct Commit
-    id::String
-    short_id::String
-    title::String
+    id::String <- sha_of
+    short_id::String <- name_of
+    title::String <- title_of
     author_name::String
     author_email::String
     committer_name::String
     committer_email::String
-    created_at::DateTime
-    message::String
+    created_at::DateTime <- created_at
+    message::String <- description_of
     committed_date::DateTime
     authored_date::DateTime
     parent_ids::Vector{String}

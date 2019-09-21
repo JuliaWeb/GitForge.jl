@@ -7,22 +7,22 @@
 end
 
 @json struct License
-    key::String
-    name::String
+    key::String <- id_of
+    name::String <- name_of
     spdx_id::String
     url::String
     node_id::String
 end
 
 @json struct Repo
-    id::Int
+    id::Int <- id_of
     node_id::String
-    name::String
+    name::String <- name_of
     full_name::String
-    owner::User
-    private::Bool
-    html_url::String
-    description::String
+    owner::User <- owner_of
+    private::Bool <- is_private
+    html_url::String <- web_url
+    description::String <- description_of
     fork::Bool
     url::String
     archive_url::String
@@ -62,7 +62,7 @@ end
     tags_url::String
     teams_url::String
     trees_url::String
-    clone_url::String
+    clone_url::String <- clone_url
     mirror_url::String
     hooks_url::String
     svn_url::String
@@ -82,8 +82,8 @@ end
     has_downloads::Bool
     archived::Bool
     pushed_at::DateTime
-    created_at::DateTime
-    updated_at::DateTime
+    created_at::DateTime <- created_at
+    updated_at::DateTime <- updated_at
     permissions::Permissions
     allow_rebase_merge::Bool
     allow_squash_merge::Bool
@@ -96,23 +96,25 @@ end
     source::Repo
 end
 
+is_owned_by_organization(r::Repo) = r.organization !== nothing
+
 @json struct FileContentsLinks
     self::String
     git::String
-    html::String
+    html::String <- web_url
 end
 
 @json struct FileContents
     type::String
     encoding::String
     size::Int
-    name::String
+    name::String <- name_of
     path::String
     content::String
-    sha::String
+    sha::String <- sha_of
     url::String
     git_url::String
-    html_url::String
+    html_url::String <- web_url
     download_url::String
     _links => links::FileContentsLinks
 end

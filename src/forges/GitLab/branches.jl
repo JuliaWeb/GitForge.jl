@@ -1,5 +1,5 @@
 @json struct Branch
-    name::String
+    name::String <- name_of
     merged::Bool
     protected::Bool
     default::Bool
@@ -8,6 +8,8 @@
     can_push::Bool
     commit::Commit
 end
+
+sha_of(b::Branch) = sha_of(b.commit)
 
 endpoint(::GitLabAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/branches/$branch")

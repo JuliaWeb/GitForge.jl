@@ -5,8 +5,8 @@ macro endpoint(fun::Expr, epargs=:auto)
 
     ex = quote
         export $fname
-        Base.@__doc__ $fname(f::Forge, $(fargs...); kwargs...) =
-            request(f, $fname, endpoint(f, $fname, $epargs...); kwargs...)
+        Base.@__doc__ $fname(f::GitForge.Forge, $(fargs...); kwargs...) =
+            GitForge.request(f, $fname, endpoint(f, $fname, $epargs...); kwargs...)
     end
 
     esc(ex)
@@ -16,11 +16,33 @@ end
     @json struct T ... end
 
 Create a type that can be parsed from JSON.
+
+## Example
+
+```julia
+@json struct Foo
+    x::Int
+    y::String
+    _z => z::Vector{Int}
+    identifier::Int <- id_of
+end
+```
+
+The following transformations are made:
+
+- Each field becomes nullable (`Union{T, Nothing}`).
+- `from => to::T` will parse a key named `from`, and store it as `to`'s value.
+- `<- id_of` implements [`Accessors.id_of`](@ref) for the type, returning that field.
+  Other function names can be used as well, provided they are owned by the `Accessors` module.
+
+!!! note
+    Currently, `=>` and `<-` cannot coexist on the same field.
 """
 macro json(def::Expr)
     T = def.args[2]
     renames = Expr[]
     names = Symbol[]
+    impls = Expr[]
 
     for field in def.args[3].args
         field isa Expr || continue
@@ -28,14 +50,27 @@ macro json(def::Expr)
             push!(names, field.args[1])
             # Make the field nullable.
             field.args[2] = :(Union{$(field.args[2]), Nothing})
+        elseif field.head === :call && field.args[1] === :<
+            # "Getter" implementation.
+            name = field.args[2].args[1]
+            push!(names, name)
+            fun = field.args[3].args[2]
+            push!(impls, :(GitForge.Accessors.$fun(x::$T) = x.$name))
+            # Remove the <- syntax.
+            field.head = :(::)
+            field.args = field.args[2].args
+            # Make the field nullable.
+            field.args[2] = :(Union{$(field.args[2]), Nothing})
         elseif field.head === :call && field.args[1] === :(=>)
             push!(names, field.args[2])
             # Convert from => to::F to to::F, and record the old name.
             from = QuoteNode(field.args[2])
             to, F = field.args[3].args
-            field.head = :(::)
-            field.args = [to, :(Union{$F, Nothing})]
             push!(renames, :($to => (; name=$from)))
+            # Remove the => syntax.
+            field.head = :(::)
+            # Make the field nulllable.
+            field.args = [to, :(Union{$F, Nothing})]
         else
             @warn "Invalid field expression $field"
         end
@@ -64,5 +99,5 @@ macro json(def::Expr)
         end
     end
 
-    esc(Expr(:block, def, cons, fmt, dfkws))
+    esc(Expr(:block, def, cons, fmt, dfkws, impls...))
 end

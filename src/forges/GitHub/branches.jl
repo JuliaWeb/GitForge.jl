@@ -9,18 +9,20 @@ end
 end
 
 @json struct BranchLinks
-    html::String
+    html::String <- web_url
     self::String
 end
 
 @json struct Branch
-    name::String
+    name::String <- name_of
     commit::Commit
     _links => links::BranchLinks
     protected::Bool
     protection::BranchProtection
     protection_url::String
 end
+
+sha_of(b::Branch) = sha_of(b.commit)
 
 endpoint(::GitHubAPI, ::typeof(get_branch), owner::AStr, repo::AStr, branch::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/branches/$branch")

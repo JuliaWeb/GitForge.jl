@@ -34,6 +34,8 @@ GitLab.PersonalAccessToken
 
 # API
 
+## Exceptions 
+
 Each API function ([`get_user`](@ref), [`get_repo`](@ref), etc.) returns a `Tuple{T, HTTP.Response}`.
 The value of `T` depends on what function you've called.
 For example, `get_user` will generally return some `User` type for your forge.
@@ -62,9 +64,6 @@ For more information on these keywords, see [`request`](@ref).
 ```@docs
 get_user
 get_users
-update_user
-create_user
-delete_user
 get_user_repos
 get_repo
 get_branch
@@ -77,6 +76,24 @@ get_commit
 get_tags
 is_collaborator
 is_member
+```
+
+## Accessors
+
+```@docs
+Accessors
+Accessors.clone_url
+Accessors.created_at
+Accessors.description_of
+Accessors.id_of
+Accessors.is_owned_by_organization
+Accessors.is_private
+Accessors.name_of
+Accessors.owner_of
+Accessors.sha_of
+Accessors.title_of
+Accessors.updated_at
+Accessors.web_url
 ```
 
 # Internals

@@ -1,10 +1,10 @@
 @json struct Member
-    id::Int
-    username::String
-    name::String
+    id::Int <- id_of
+    username::String <- name_of
+    name::String <- title_of
     state::String
     avatar_url::String
-    web_url::String
+    web_url::String <- web_url
     expires_at::DateTime
     access_level::Int
 end

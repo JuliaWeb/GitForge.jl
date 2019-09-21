@@ -1,18 +1,18 @@
 @json struct Plan
-    name::String
+    name::String <- name_of
     space::Int
     private_repos::Int
     collaborators::Int
 end
 
 @json struct User
-    login::String
-    id::Int
+    login::String <- name_of
+    id::Int <- id_of
     node_id::String
     avatar_url::String
     gravatar_id::String
     url::String
-    html_url::String
+    html_url::String <- web_url
     followers_url::String
     following_url::String
     gists_url::String
@@ -24,19 +24,19 @@ end
     received_events_url::String
     type::String
     site_admin::Bool
-    name::String
+    name::String <- title_of
     company::String
     blog::String
     location::String
     email::String
     hireable::Bool
-    bio::String
+    bio::String <- description_of
     public_repos::Int
     public_gists::Int
     followers::Int
     following::Int
-    created_at::DateTime
-    updated_at::DateTime
+    created_at::DateTime <- created_at
+    updated_at::DateTime <- updated_at
     private_gists::Int
     total_private_repos::Int
     owned_private_repos::Int

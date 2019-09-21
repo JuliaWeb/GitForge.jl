@@ -2,7 +2,19 @@
 
 module GitHub
 
-import ..GitForge: endpoint, into, postprocessor
+import ..GitForge:
+    endpoint,
+    into,
+    postprocessor
+
+import GitForge.Accessors:
+    created_at,
+    description_of,
+    is_owned_by_organization,
+    name_of,
+    sha_of,
+    title_of,
+    web_url
 
 using ..GitForge
 using ..GitForge:
@@ -17,11 +29,15 @@ using ..GitForge:
     HEADERS,
     ORL_THROW
 
-using Dates
-using HTTP
-using JSON2
+using Dates: @dateformat_str, DateTime
+using HTTP: HTTP
+using JSON2: JSON2
 
-export GitHubAPI, NoToken, Token, JWT
+export
+    GitHubAPI,
+    NoToken,
+    Token,
+    JWT
 
 const DEFAULT_URL = "https://api.github.com"
 const JSON_OPTS = (

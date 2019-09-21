@@ -1,10 +1,10 @@
 """
-    get_user(::Forge[, name_or_id::Union{$AStr, Integer}])
+    get_user(::Forge[, name::$AStr])
 
-Get the currently authenticated user, or a user by name or ID.
+Get the currently authenticated user, or a user by name.
 """
 @endpoint get_user()
-@endpoint get_user(name_or_id::Union{AStr, Integer})
+@endpoint get_user(name::AStr)
 
 """
     get_users(::Forge)
@@ -14,17 +14,17 @@ Get all users.
 @endpoint get_users()
 
 """
-    get_user_repos(::Forge[, name_or_id::Union{$AStr, Integer}])
+    get_user_repos(::Forge[, name::$AStr])
 
-Get the currently authenticated user's repositories, or those of a user by name or ID.
+Get the currently authenticated user's repositories, or those of a user by name.
 """
 @endpoint get_user_repos()
-@endpoint get_user_repos(name_or_id::Union{AStr, Integer})
+@endpoint get_user_repos(name::AStr)
 
 """
     get_repo(::Forge, owner::$AStr, repo::$AStr)
 
-Get a repository by owner and name or ID.
+Get a repository by owner and name.
 """
 @endpoint get_repo(owner::AStr, repo::AStr)
 
@@ -97,6 +97,9 @@ Get a commit from a repository.
     )
 
 Check whether or not a user is a collaborator on a repository.
+
+- For [`GitHub.GitHubAPI`](@ref), use a username.
+- For [`GitLab.GitLabAPI`](@ref), use a user ID.
 """
 @endpoint is_collaborator(owner::AStr, repo::AStr, name_or_id::Union{AStr, Integer})
 
@@ -104,6 +107,9 @@ Check whether or not a user is a collaborator on a repository.
     is_member(::Forge, org::$AStr, name_or_id::Union{$AStr, Integer})
 
 Check whether or not a user is a member of an organization.
+
+- For [`GitHub.GitHubAPI`](@ref), use a username.
+- For [`GitLab.GitLabAPI`](@ref), use a user ID.
 """
 @endpoint is_member(org::AStr, name_or_id::Union{AStr, Integer})
 

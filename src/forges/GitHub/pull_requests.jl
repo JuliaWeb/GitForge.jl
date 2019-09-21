@@ -1,58 +1,58 @@
 @json struct Label
-    id::Int
+    id::Int <- id_of
     node_id::String
     url::String
-    name::String
-    description::String
+    name::String <- name_of
+    description::String <- description_of
     color::String
     default::Bool
 end
 
 @json struct Milestone
     url::String
-    html_url::String
+    html_url::String <- web_url
     labels_url::String
-    id::Int
+    id::Int <- id_of
     node_id::String
-    number::Int
+    number::Int <- name_of
     state::String
-    title::String
-    description::String
-    creator::User
+    title::String <- title_of
+    description::String <- description_of
+    creator::User <- owner_of
     open_issues::Int
     closed_issues::Int
-    created_at::DateTime
-    updated_at::DateTime
+    created_at::DateTime <- created_at
+    updated_at::DateTime <- updated_at
     closed_at::DateTime
     due_on::DateTime
 end
 
 @json struct Team
-    id::Int
+    id::Int <- id_of
     node_id::String
     url::String
-    name::String
+    name::String <- name_of
     slug::String
-    description::String
+    description::String <- description_of
     privacy::String
     permission::String
     members_url::String
     repositories_url::String
-    parent::Team
+    parent::Team <- owner_of
 end
 
 # TODO: I don't really know what the right name for this is.
 @json struct Head
     label::String
     ref::String
-    sha::String
+    sha::String <- sha_of
     user::User
     repo::Repo
     base::Head
 end
 
 @json struct Link
-    href::String
+    href::String <- web_url
 end
 
 @json struct Links
@@ -66,11 +66,13 @@ end
     statuses::Link
 end
 
+web_url(l::Links) = web_url(l.html)
+
 @json struct PullRequest
     url::String
-    id::Int
+    id::Int <- id_of
     node_id::String
-    html_url::String
+    html_url::String <- web_url
     diff_url::String
     patch_url::String
     issue_url::String
@@ -79,17 +81,17 @@ end
     review_comment_url::String
     comments_url::String
     statuses_url::String
-    number::Int
+    number::Int <- name_of
     state::String
     locked::Bool
-    title::String
+    title::String <- title_of
     user::User
-    body::String
+    body::String <- description_of
     labels::Vector{Label}
     milestone::Milestone
     active_lock_reason::String
-    created_at::DateTime
-    updated_at::DateTime
+    created_at::DateTime <- created_at
+    updated_at::DateTime <- updated_at
     closed_at::DateTime
     merged_at::DateTime
     merge_commit_sha::String

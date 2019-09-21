@@ -4,16 +4,16 @@
 end
 
 @json struct User
-    id::Int
-    username::String
+    id::Int <- id_of
+    username::String <- name_of
     email::String
-    name::String
+    name::String <- title_of
     state::String
     avatar_url::String
-    web_url::String
-    created_at::DateTime
+    web_url::String <- web_url
+    created_at::DateTime <- created_at
     is_admin::Bool
-    bio::String
+    bio::String <- description_of
     location::String
     public_email::String
     skype::String
@@ -24,7 +24,7 @@ end
     last_sign_in_at::DateTime
     confirmed_at::DateTime
     theme_id::Int
-    last_activity_on::Date
+    last_activity_on::Date <- updated_at
     color_scheme_id::Int
     projects_limit::Int
     current_sign_in_at::DateTime
@@ -33,7 +33,7 @@ end
     can_create_project::Bool
     two_factor_enabled::Bool
     external::Bool
-    private_profile::Bool
+    private_profile::Bool <- is_private
     # Undocumented
     shared_runners_minutes_limit::Int
 end

@@ -1,6 +1,14 @@
 module GitLab
 
-import ..GitForge: endpoint, into, postprocessor
+import ..GitForge:
+    endpoint,
+    into,
+    postprocessor
+
+import GitForge.Accessors:
+    is_owned_by_organization,
+    is_private,
+    sha_of
 
 using ..GitForge
 using ..GitForge:
@@ -19,11 +27,15 @@ using ..GitForge:
     ORL_THROW,
     request
 
-using Dates
-using HTTP
-using JSON2
+using Dates: @dateformat_str, Date, DateTime
+using HTTP: HTTP
+using JSON2: JSON2
 
-export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
+export
+    GitLabAPI,
+    NoToken,
+    OAuth2Token,
+    PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
 const JSON_OPTS = (

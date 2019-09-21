@@ -1,15 +1,15 @@
 @json struct Milestone
-    id::Int
-    iid::Int
+    id::Int <- id_of
+    iid::Int <- name_of
     project_id::Int
-    title::String
-    description::String
+    title::String <- title_of
+    description::String <- description_of
     state::String
-    created_at::DateTime
-    updated_at::DateTime
+    created_at::DateTime <- created_at
+    updated_at::DateTime <- updated_at
     due_date::Date
     start_date::Date
-    web_url::String
+    web_url::String <- web_url
 end
 
 @json struct TimeStats
@@ -20,11 +20,11 @@ end
 end
 
 @json struct Pipeline
-    id::Int
-    sha::String
+    id::Int <- id_of
+    sha::String <- sha_of
     ref::String
     status::String
-    web_url::String
+    web_url::String <- web_url
 end
 
 @json struct DiffRefs
@@ -34,14 +34,14 @@ end
 end
 
 @json struct MergeRequest
-    id::Int
-    iid::Int
+    id::Int <- id_of
+    iid::Int <- name_of
     project_id::Int
-    title::String
-    description::String
+    title::String <- title_of
+    description::String <- description_of
     state::String
-    created_at::DateTime
-    updated_at::DateTime
+    created_at::DateTime <- created_at
+    updated_at::DateTime <- updated_at
     target_branch::String
     source_branch::String
     upvotes::Int
@@ -56,7 +56,7 @@ end
     merge_when_pipeline_succeeds::Bool
     merge_status::String
     merge_error::String
-    sha::String
+    sha::String <- sha_of
     merge_commit_sha::String
     user_notes_count::Int
     discussion_locked::Bool
@@ -64,7 +64,7 @@ end
     force_remove_source_branch::Bool
     allow_collaboration::Bool
     allow_maintainer_to_push::Bool
-    web_url::String
+    web_url::String <- web_url
     time_stats::TimeStats
     squash::Bool
     subscribed::Bool

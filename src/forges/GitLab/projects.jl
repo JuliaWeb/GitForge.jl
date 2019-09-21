@@ -1,9 +1,9 @@
 @json struct Namespace
-    id::Int
+    id::Int <- id_of
     name::String
     path::String
     kind::String
-    full_path::String
+    full_path::String <- name_of
 end
 
 @json struct Access
@@ -17,17 +17,17 @@ end
 end
 
 @json struct License
-    key::String
-    name::String
+    key::String <- id_of
+    name::String <- name_of
     nickname::String
-    html_url::String
+    html_url::String <- web_url
     source_url::String
 end
 
 @json struct Group
-    group_id::Int
+    group_id::Int <- id_of
     group_name::String
-    group_full_path::String
+    group_full_path::String <- name_of
     group_access_level::Int
 end
 
@@ -50,19 +50,19 @@ end
 end
 
 @json struct Project
-    id::Int
-    description::String
+    id::Int <- id_of
+    description::String <- description_of
     default_branch::String
     visibility::String
     ssh_url_to_repo::String
-    http_url_to_repo::String
-    web_url::String
+    http_url_to_repo::String <- clone_url
+    web_url::String <- web_url
     readme_url::String
     tag_list::Vector{String}
-    owner::User
-    name::String
+    owner::User <- owner_of
+    name::String <- title_of
     name_with_namespace::String
-    path::String
+    path::String <- name_of
     path_with_namespace::String
     issues_enabled::Bool
     open_issues_count::Int
@@ -72,8 +72,8 @@ end
     snippets_enabled::Bool
     resolve_outdated_diff_discussions::Bool
     container_registry_enabled::Bool
-    created_at::DateTime
-    last_activity_at::DateTime
+    created_at::DateTime <- created_at
+    last_activity_at::DateTime <- updated_at
     creator_id::Int
     namespace::Namespace
     import_status::String
@@ -98,13 +98,16 @@ end
     _links => links::Links
 end
 
+is_private(p::Project) = p.visibility == "private"
+is_owned_by_organization(p::Project) = p.namespace.kind == "group"
+
 @json struct FileContents
-    file_name::String
+    file_name::String <- name_of
     file_path::String
     size::Int
     encoding::String
     content::String
-    content_sha256::String
+    content_sha256::String <- sha_of
     ref::String
     blob_id::String
     commit_id::String
