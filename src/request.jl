@@ -163,6 +163,10 @@ function request(
     return try
         postprocess(postprocessor(f, fun), resp, into(f, fun)), resp
     catch e
-        throw(PostProcessorError(resp, e, stacktrace(catch_backtrace())))
+        if e isa ForgeError
+            rethrow()
+        else
+            rethrow(PostProcessorError(resp, e, stacktrace(catch_backtrace())))
+        end
     end
 end

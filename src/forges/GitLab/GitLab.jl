@@ -10,11 +10,14 @@ using ..GitForge:
     DoSomething,
     Endpoint,
     Forge,
+    HTTP,
+    HTTPError,
     JSON,
     OnRateLimit,
     RateLimiter,
     HEADERS,
-    ORL_THROW
+    ORL_THROW,
+    request
 
 using Dates
 using HTTP
@@ -112,8 +115,7 @@ include("commits.jl")
 include("branches.jl")
 include("tags.jl")
 
-encode(owner::AStr, repo::AStr) = HTTP.escapeuri("$owner/$repo")
-encode(org::AStr) = HTTP.escapeuri(org)
+encode(s::AbstractString...) = HTTP.escapeuri(join(s, "/"))
 
 function ismember(r::HTTP.Response)
     r.status == 404 && return false

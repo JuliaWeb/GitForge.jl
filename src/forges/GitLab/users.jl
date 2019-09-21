@@ -39,15 +39,16 @@ end
 end
 
 endpoint(::GitLabAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
-endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = Endpoint(:GET, "/users/$id")
 endpoint(::GitLabAPI, ::typeof(get_user), name::AStr) =
     Endpoint(:GET, "/users"; query=Dict(:username => name))
-postprocessor(::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
-    v = JSON2.read(IOBuffer(r.body), Union{User, Vector{User}})
-    return if v isa User
-        v
+postprocessor(f::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
+    val = JSON2.read(IOBuffer(r.body), Union{User, Vector{User}})
+    return if val isa User
+        val
     else
-        isempty(v) ? nothing : v[1]
+        isempty(val) && throw(HTTPError(HTTP.StatusError(404, r), stacktrace()))
+        u = first(val)
+        try internal_get_user(f, u.id) catch; u end
     end
 end
 into(::GitLabAPI, ::typeof(get_user)) = User
@@ -55,11 +56,5 @@ into(::GitLabAPI, ::typeof(get_user)) = User
 endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
 
-endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) = Endpoint(:PUT, "/users/$id")
-postprocessor(::GitLabAPI, ::typeof(update_user)) = DoNothing
-
-endpoint(::GitLabAPI, ::typeof(create_user)) = Endpoint(:POST, "/users")
-into(::GitLabAPI, ::typeof(create_user)) = User
-
-endpoint(::GitLabAPI, ::typeof(delete_user), id::Integer) = Endpoint(:DELETE, "/users/$id")
-postprocessor(::GitLabAPI, ::typeof(delete_user)) = DoNothing
+internal_get_user(f::GitLabAPI, id::Integer) =
+    request(f, get_user, Endpoint(:GET, "/users/$id"))

@@ -52,6 +52,3 @@ into(::GitHubAPI, ::typeof(get_user)) = User
 
 endpoint(::GitHubAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 into(::GitHubAPI, ::typeof(get_users)) = Vector{User}
-
-endpoint(::GitHubAPI, ::typeof(update_user)) = Endpoint(:PATCH, "/user")
-into(::GitHubAPI, ::typeof(update_user)) = User

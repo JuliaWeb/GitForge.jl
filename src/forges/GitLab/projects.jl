@@ -114,18 +114,20 @@ end
 endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
 endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AStr) =
-    Endpoint(:GET, "/users/$name/repos")
+    Endpoint(:GET, "/users/$name/projects")
 into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
 
 endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))")
 into(::GitLabAPI, ::typeof(get_repo)) = Project
 
+# GitLab does not support usernames here.
 endpoint(::GitLabAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, id::Integer) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/members/$id"; allow_404=true)
 postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
 into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
 
-endpoint(::GitLabAPI, ::typeof(get_file_contents), id::Integer, path::AStr) =
-    Endpoint(:GET, "/projects/$id/repository/files/$path"; query=Dict(:ref => "master"))
+endpoint(::GitLabAPI, ::typeof(get_file_contents), owner::AStr, repo::AStr, path::AStr) =
+    Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/files/$(encode(path))";
+             query=Dict(:ref => "master"))
 into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents

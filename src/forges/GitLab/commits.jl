@@ -17,6 +17,4 @@ end
 
 endpoint(::GitLabAPI, ::typeof(get_commit), owner::AStr, repo::AStr, ref::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/commits/$ref")
-endpoint(::GitLabAPI, ::typeof(get_commit), project::Integer, ref::AStr) =
-    Endpoint(:GET, "/projects/$project/repository/commits/$ref")
 into(::GitLabAPI, ::typeof(get_commit)) = Commit

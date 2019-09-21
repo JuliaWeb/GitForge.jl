@@ -103,7 +103,7 @@ end
 end
 
 @json struct FileContents
-    _type::String
+    type::String
     encoding::String
     size::Int
     name::String
@@ -118,8 +118,8 @@ end
 end
 
 endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user/repos")
-endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
-    Endpoint(:GET, "/users/$id/projects")
+endpoint(::GitHubAPI, ::typeof(get_user_repos), owner::AStr) =
+    Endpoint(:GET, "/users/$owner/projects")
 into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}
 
 endpoint(::GitHubAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
