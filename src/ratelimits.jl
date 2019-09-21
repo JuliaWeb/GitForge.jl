@@ -1,18 +1,10 @@
 """
 Determines how to react to an exceeded rate limit.
 
-- `ORL_RETURN`: Return a [`Result`](@ref) containing a [`RateLimited`](@ref) exception.
+- `ORL_THROW`: Throw a [`RateLimitedError`](@ref).
 - `ORL_WAIT`: Block and wait for the rate limit to expire.
 """
-@enum OnRateLimit ORL_RETURN ORL_WAIT
-
-"""
-A signal that a rate limit has been exceeded.
-Can contain the amount of time until its expiry.
-"""
-struct RateLimited <: Exception
-    period::Union{Period, Nothing}
-end
+@enum OnRateLimit ORL_THROW ORL_WAIT
 
 """
 A generic rate limiter using the `[X-]RateLimit-Remaining` and `[X-]RateLimit-Reset` response headers.

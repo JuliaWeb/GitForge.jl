@@ -14,7 +14,7 @@ using ..GitForge:
     OnRateLimit,
     RateLimiter,
     HEADERS,
-    ORL_RETURN
+    ORL_THROW
 
 using Dates
 using HTTP
@@ -31,7 +31,7 @@ const JSON_OPTS = (
 abstract type AbstractToken end
 
 """
-    NoToken() -> NoToken
+    NoToken()
 
 Represents no authentication.
 Only public data will be available.
@@ -39,7 +39,7 @@ Only public data will be available.
 struct NoToken <: AbstractToken end
 
 """
-    OAuth2Token(token::$AStr) -> OAuth2Token
+    OAuth2Token(token::$AStr)
 
 An [OAuth2 bearer token](https://docs.gitlab.com/ce/api/#oauth2-tokens).
 """
@@ -48,7 +48,7 @@ struct OAuth2Token <: AbstractToken
 end
 
 """
-    PersonalAccessToken(token::$AStr) -> PersonalAccessToken
+    PersonalAccessToken(token::$AStr)
 
 A [private access token](https://docs.gitlab.com/ce/api/#personal-access-tokens).
 """
@@ -65,8 +65,8 @@ auth_headers(t::PersonalAccessToken) = ["Private-Token" => t.token]
         token::AbstractToken=NoToken(),
         url::$AStr="$DEFAULT_URL",
         has_rate_limits::Bool=true,
-        on_rate_limit::OnRateLimit=ORL_RETURN,
-    ) -> GitLabAPI
+        on_rate_limit::OnRateLimit=ORL_THROW,
+    )
 
 Create a GitLab API client.
 
@@ -74,7 +74,7 @@ Create a GitLab API client.
 - `token::AbstractToken=NoToken()`: Authorization token (or lack thereof).
 - `url::$AStr"$DEFAULT_URL"`: Base URL of the target GitLab instance.
 - `has_rate_limits::Bool=true`: Whether or not the GitLab server has rate limits.
-- `on_rate_limit::OnRateLimit=ORL_RETURN`: Behaviour on exceeded rate limits.
+- `on_rate_limit::OnRateLimit=ORL_THROW`: Behaviour on exceeded rate limits.
 """
 struct GitLabAPI <: Forge
     token::AbstractToken
@@ -87,7 +87,7 @@ struct GitLabAPI <: Forge
         token::AbstractToken=NoToken(),
         url::AStr=DEFAULT_URL,
         has_rate_limits::Bool=true,
-        on_rate_limit::OnRateLimit=ORL_RETURN,
+        on_rate_limit::OnRateLimit=ORL_THROW,
     )
         return new(token, url, has_rate_limits, on_rate_limit, RateLimiter())
     end

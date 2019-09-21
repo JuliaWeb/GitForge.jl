@@ -3,11 +3,16 @@ using GitForge
 
 makedocs(;
     modules=[GitForge],
-    format=Documenter.HTML(),
-    pages=["Home" => "index.md"],
+    authors="Chris de Graaf <chrisadegraaf@gmail.com>",
     repo="https://github.com/christopher-dG/GitForge.jl/blob/{commit}{path}#L{line}",
     sitename="GitForge.jl",
-    authors="Chris de Graaf",
+    format=Documenter.HTML(;
+        canonical="https://christopher-dg.github.io/GitForge.jl",
+        assets=String[],
+    ),
+    pages=[
+        "Home" => "index.md",
+    ],
 )
 
 deploydocs(; repo="github.com/christopher-dG/GitForge.jl")
