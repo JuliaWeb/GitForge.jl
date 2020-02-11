@@ -42,6 +42,10 @@ mutable struct Paginator{T}
     end
 end
 
+Base.IteratorSize(::GitForge.Paginator) = Base.SizeUnknown()
+Base.IteratorEltype(::GitForge.Paginator) = Base.HasEltype()
+Base.eltype(::GitForge.Paginator{T}) where T = T
+
 function paginate(
     fun::Function, f::Forge, args...;
     page::Int=1, per_page::Int=100, kwargs...,
