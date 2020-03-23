@@ -114,6 +114,7 @@ include("tags.jl")
 
 encode(owner::AStr, repo::AStr) = HTTP.escapeuri("$owner/$repo")
 encode(org::AStr) = HTTP.escapeuri(org)
+encode(owner::AStr, subgroup::AStr, repo::AStr) = HTTP.escapeuri("$owner/$subgroup/$repo")
 
 function ismember(r::HTTP.Response)
     r.status == 404 && return false

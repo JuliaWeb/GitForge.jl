@@ -126,6 +126,12 @@ endpoint(::GitHubAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo")
 into(::GitHubAPI, ::typeof(get_repo)) = Repo
 
+endpoint(::GitHubAPI, ::typeof(create_repo)) =
+    Endpoint(:POST, "/user/repos")
+endpoint(::GitHubAPI, ::typeof(create_repo), org::AStr) =
+    Endpoint(:POST, "/orgs/$org/repos")
+into(::GitHubAPI, ::typeof(create_repo)) = Repo
+
 endpoint(::GitHubAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, user::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/collaborators/$user"; allow_404=true)
 postprocessor(::GitHubAPI, ::typeof(is_collaborator)) = DoSomething(ismemberorcollaborator)

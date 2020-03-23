@@ -46,11 +46,22 @@ Get the currently authenticated user's repositories, or those of a user by name 
 """
     get_repo(::Forge, owner::$AStr, repo::$AStr)
     get_repo(::Forge, id::Integer)
+    get_repo(::Forge, owner::$AStr, subgroup::$AStr, repo::$AStr)
 
 Get a repository by owner and name or ID.
 """
 @endpoint get_repo(owner::AStr, repo::AStr)
 @endpoint get_repo(id::Integer)
+@endpoint get_repo(owner::AStr, subgroup::AStr, repo::AStr)
+
+"""
+    create_repo(::Forge, owner::$AStr)
+    create_repo(::Forge)
+Create a repository.
+If using GitHub and you want to create a repository in an organization, pass the organization name as argument.
+"""
+@endpoint create_repo(owner::Union{AStr, Integer})
+@endpoint create_repo()
 
 """
     get_branch(::Forge, owner::AbstractString, repo::AbstractString, branch::AbstractString)
@@ -136,6 +147,12 @@ Check whether or not a user is a collaborator on a repository.
 Check whether or not a user is a member of an organization.
 """
 @endpoint is_member(org::AStr, name_or_id::Union{AStr, Integer})
+
+"""
+    groups(::Forge)
+Search for groups in GitLab.
+"""
+@endpoint groups()
 
 """
     get_tags(::Forge, owner::$AStr, repo::$AStr)
