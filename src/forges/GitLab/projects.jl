@@ -24,7 +24,7 @@ end
     source_url::String
 end
 
-@json struct Group
+@json struct ProjectGroup
     group_id::Int
     group_name::String
     group_full_path::String
@@ -88,7 +88,7 @@ end
     star_count::Int
     runners_token::String
     public_jobs::Bool
-    shared_with_groups::Vector{Group}
+    shared_with_groups::Vector{ProjectGroup}
     only_allow_merge_if_pipeline_succeeds::Bool
     only_allow_merge_if_all_discussions_are_resolved::Bool
     printing_merge_requests_link_enabled::Bool
@@ -119,7 +119,15 @@ into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
 
 endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))")
+endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, subgroup::AStr, repo::AStr) =
+    Endpoint(:GET, "/projects/$(encode(owner, subgroup, repo))")
 into(::GitLabAPI, ::typeof(get_repo)) = Project
+
+endpoint(::GitLabAPI, ::typeof(create_repo)) =
+    Endpoint(:POST, "/projects")
+endpoint(::GitLabAPI, ::typeof(create_repo), id::Integer) =
+    Endpoint(:POST, "/projects/user/$id")
+into(::GitLabAPI, ::typeof(create_repo)) = Project
 
 endpoint(::GitLabAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, id::Integer) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/members/$id"; allow_404=true)
