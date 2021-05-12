@@ -1,7 +1,7 @@
 # GitForge
 
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://christopher-dg.github.io/GitForge.jl/dev)
-[![Build Status](https://travis-ci.com/github/JuliaWeb/GitForge.jl.svg?branch=master)](https://travis-ci.com/github/JuliaWeb/GitForge.jl)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaweb.github.io/GitForge.jl/dev)
+[![CI](https://github.com/JuliaWeb/GitForge.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaWeb/GitForge.jl/actions/workflows/CI.yml)
 
 **GitForge.jl is a unified interface for interacting with Git ["forges"](https://en.wikipedia.org/wiki/Forge_(software)).**
 
