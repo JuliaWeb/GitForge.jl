@@ -1,10 +1,8 @@
 using GitForge
 const GF = GitForge
 
-using HTTP: HTTP
-using JSON2: JSON2
+using HTTP, JSON3, Logging
 using Test: @test, @testset, TestLogger
-using Logging
 
 function capture(f::Function)
     t = TestLogger()
@@ -35,7 +33,7 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
     end
 
     @testset "Request options" begin
-        body = JSON2.read(IOBuffer(resp.body))
+        body = JSON3.read(IOBuffer(resp.body))
         @test startswith(get(body, :url, ""), "https://httpbin.org")
         @test get(get(body, :headers, Dict()), :Foo, "") == "Bar"
         @test get(get(body, :args, Dict()), :foo, "") == "bar"
@@ -55,7 +53,7 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
 
         @test isempty(out)
 
-        body = JSON2.read(IOBuffer(resp.body))
+        body = JSON3.read(IOBuffer(resp.body))
         @test haskey(body.headers, :Foo)
         @test get(body.headers, :A, "") == "B"
         @test haskey(get(body, :args, Dict()), :foo)

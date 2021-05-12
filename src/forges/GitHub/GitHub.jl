@@ -19,7 +19,7 @@ using ..GitForge:
 
 using Dates
 using HTTP
-using JSON2
+using JSON3: JSON3
 
 export GitHubAPI, NoToken, Token, JWT
 

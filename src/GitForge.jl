@@ -5,7 +5,8 @@ using Base.StackTraces: StackTrace
 
 using Dates: Period, UTC, now
 using HTTP: HTTP
-using JSON2: JSON2
+using JSON3: JSON3
+using StructTypes: StructTypes, UnorderedStruct
 
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]

@@ -18,7 +18,7 @@ using ..GitForge:
 
 using Dates
 using HTTP
-using JSON2
+using JSON3: JSON3
 
 export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
 
@@ -121,7 +121,7 @@ encode(owner::AStr, subgroup::AStr, repo::AStr) = HTTP.escapeuri("$owner/$subgro
 
 function ismember(r::HTTP.Response)
     r.status == 404 && return false
-    m = JSON2.read(IOBuffer(r.body), Member)
+    m = JSON3.read(IOBuffer(r.body), Member)
     return m.access_level !== nothing && m.access_level >= 30
 end
 

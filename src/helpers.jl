@@ -18,9 +18,11 @@ end
 Create a type that can be parsed from JSON.
 """
 macro json(def::Expr)
-    T = def.args[2]
-    renames = Expr[]
+    T = esc(def.args[2])
+    renames = Tuple{Symbol, Symbol}[]
     names = Symbol[]
+
+    code = Expr[]
 
     for field in def.args[3].args
         field isa Expr || continue
@@ -31,11 +33,11 @@ macro json(def::Expr)
         elseif field.head === :call && field.args[1] === :(=>)
             push!(names, field.args[2])
             # Convert from => to::F to to::F, and record the old name.
-            from = QuoteNode(field.args[2])
+            from = field.args[2]
             to, F = field.args[3].args
             field.head = :(::)
             field.args = [to, :(Union{$F, Nothing})]
-            push!(renames, :($to => (; name=$from)))
+            push!(renames, (to, from))
         else
             @warn "Invalid field expression $field"
         end
@@ -45,24 +47,16 @@ macro json(def::Expr)
     push!(def.args[3].args, :(_extras::NamedTuple))
 
     # Document the struct.
-    def = :(Base.@__doc__ $def)
+    push!(code, :(Base.@__doc__ $def))
 
     # Create a keyword constructor.
+    splat = esc(:kwargs)  # TODO: This seems... wrong. Hygiene is weird.
     kws = map(name -> Expr(:kw, name, :nothing), names)
-    cons = :($T(; $(kws...), kwargs...) = $T($(names...), (; kwargs...)))
+    push!(code, :($T(; $(kws...), $splat...) = $T($(names...), (; $splat...))))
 
-    # Apply the kwargs format with any renames.
-    fmt = :(JSON2.@format $T keywordargs)
-    isempty(renames) || push!(fmt.args, Expr(:block, renames...))
+    # Register the type with StructTypes with any renames.
+    push!(code, :(StructTypes.StructType(::Type{$T}) = UnorderedStruct()))
+    push!(code, :(StructTypes.names(::Type{$T}) = $(tuple(renames...))))
 
-    # Set the default parse options,
-    dfkws = quote
-        if isdefined(@__MODULE__, :JSON_OPTS)
-            # This isn't how you're "supposed" to do this, but I'm not quite sure
-            # how to pass these options as literal keywords to @format.
-            JSON2.defaultkwargs(::Type{$T}) = JSON_OPTS
-        end
-    end
-
-    esc(Expr(:block, def, cons, fmt, dfkws))
+    return Expr(:block, code...)
 end
