@@ -3,11 +3,11 @@ using GitForge
 
 makedocs(;
     modules=[GitForge],
-    authors="Chris de Graaf <chrisadegraaf@gmail.com>",
-    repo="https://github.com/christopher-dG/GitForge.jl/blob/{commit}{path}#L{line}",
+    authors="Chris de Graaf <me@cdg.dev>",
+    repo="https://github.com/JuliaWeb/GitForge.jl/blob/{commit}{path}#{line}",
     sitename="GitForge.jl",
     format=Documenter.HTML(;
-        canonical="https://christopher-dg.github.io/GitForge.jl",
+        canonical="https://juliaweb.github.io/GitForge.jl",
         assets=String[],
     ),
     pages=[
@@ -15,4 +15,4 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo="github.com/christopher-dG/GitForge.jl")
+deploydocs(; repo="github.com/JuliaWeb/GitForge.jl")
