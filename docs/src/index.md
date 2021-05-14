@@ -34,13 +34,18 @@ GitLab.PersonalAccessToken
 
 # API
 
-## Results
+Each API function ([`get_user`](@ref), [`get_repo`](@ref), etc.) returns a `Tuple{T, HTTP.Response}`.
+The value of `T` depends on what function you've called.
+For example, `get_user` will generally return some `User` type for your forge.
+
+When things go wrong, exceptions are thrown.
+They will always be one of the following types:
 
 ```@docs
-Result
-value
-response
-exception
+ForgeError
+HTTPError
+PostProcessorError
+RateLimitedError
 ```
 
 ## Pagination
@@ -67,6 +72,7 @@ get_file_contents
 get_pull_request
 get_pull_requests
 create_pull_request
+update_pull_request
 get_commit
 get_tags
 is_collaborator
@@ -116,7 +122,6 @@ These functions and types handle certain generic rate limiters.
 ```@docs
 RateLimiter
 OnRateLimit
-RateLimited
 has_rate_limits
 rate_limit_check
 on_rate_limit

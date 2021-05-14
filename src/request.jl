@@ -1,43 +1,49 @@
-# Result type.
+# Exceptions.
 
 """
-A `Result{T}` is returned from every API function.
-It encapsulates the value, HTTP response, and thrown exception of the call.
+The supertype of all other exceptions raised by API functions.
 """
-struct Result{T}
-    val::Union{T, Nothing}
-    resp::Union{HTTP.Response, Nothing}
-    ex::Union{Exception, Nothing}
-    st::StackTraces.StackTrace
+abstract type ForgeError <: Exception end
+
+"""
+An error encountered during the HTTP request.
+
+## Fields
+- `response::Union{HTTP.Response, Nothing}`: Set for status exceptions.
+- `exception::Exception`
+- `stacktrace::StackTrace`
+"""
+struct HTTPError{E<:Exception} <: ForgeError
+    response::Union{HTTP.Response, Nothing}
+    exception::E
+    stacktrace::StackTrace
 end
 
-Result(val::T, resp::HTTP.Response) where T = Result{T}(val, resp, nothing, [])
-Result{T}(
-    e::Exception,
-    bt::Vector{Union{Ptr{Nothing}, Base.InterpreterIP}},
-    resp::Union{HTTP.Response, Nothing}=nothing,
-) where T = Result{T}(nothing, resp, e, stacktrace(bt))
+HTTPError(ex::Exception, st::StackTrace) = HTTPError(nothing, ex, st)
 
 """
-    value(::Result{T}) -> Union{T, Nothing}
+An error encountered during response postprocessing.
 
-Returns the result's value, if any exists.
+## Fields
+- `response::HTTP.Response`
+- `exception::Exception`
+- `stacktrace::StackTrace`
 """
-value(r::Result) = r.val
+struct PostProcessorError{E<:Exception} <: ForgeError
+    response::HTTP.Response
+    exception::E
+    stacktrace::StackTrace
+end
 
 """
-    response(::Result) -> Union{HTTP.Response, Nothing}
+A signal that a rate limit has been exceeded.
 
-Returns the result's HTTP response, if any exists.
+## Fields
+- `period::Union{Period, Nothing}` Amount of time until rate limit expiry, if known.
 """
-response(r::Result) = r.resp
-
-"""
-    exception(::Result{T}) -> Union{Tuple{Exception, Vector{StackFrame}}, Nothing}
-
-Returns the result's thrown exception and stack trace, if any exists.
-"""
-exception(r::Result) = r.ex === nothing ? nothing : (r.ex, r.st)
+struct RateLimitedError <: ForgeError
+    period::Union{Period, Nothing}
+end
 
 # Response postprocessing.
 
@@ -73,8 +79,7 @@ end
 """
     postprocess(::PostProcessor, ::HTTP.Response, ::Type{T})
 
-Computes a value from an HTTP response.
-This is what is returned by [`value`](@ref).
+Computes a value to be returned from an HTTP response.
 """
 postprocess(::DoNothing, ::HTTP.Response, ::Type) = nothing
 postprocess(p::JSON, r::HTTP.Response, ::Type{T}) where T =
@@ -90,10 +95,9 @@ postprocess(p::DoSomething, r::HTTP.Response, ::Type) = p.f(r)
         query::AbstractDict=Dict(),
         request_opts=Dict(),
         kwargs...,
-    ) -> Result{T}
+    ) -> T, HTTP.Response
 
-Make an HTTP request and return a [`Result`](@ref).
-`T` is determined by [`into`](@ref).
+Make an HTTP request and return `T` and the response, where `T` is determined by [`into`](@ref).
 
 ## Arguments
 - `f::Forge` A [`Forge`](@ref) subtype.
@@ -119,12 +123,10 @@ function request(
     request_opts=Dict(),
     kwargs...,
 )
-    T = into(f, fun)
-
     if has_rate_limits(f, fun) && rate_limit_check(f, fun)
         orl = on_rate_limit(f, fun)
-        if orl === ORL_RETURN
-            return Result{T}(RateLimited(rate_limit_period(f, fun)), backtrace())
+        if orl === ORL_THROW
+            throw(RateLimitedError(rate_limit_period(f, fun)))
         elseif orl === ORL_WAIT
             rate_limit_wait(f, fun)
         else
@@ -146,23 +148,21 @@ function request(
     resp = try
         HTTP.request(
             ep.method, url, headers, body;
-            # Never throw status exceptions, we'll handle the status ourselves.
-            query=query, opts..., status_exception=false,
+            query=query, opts...,
+            status_exception=false, # We handle status exceptions ourselvse.
         )
     catch e
-        return Result{T}(e, catch_backtrace())
+        throw(HTTPError(e, stacktrace(catch_backtrace())))
     end
 
     has_rate_limits(f, fun) && rate_limit_update!(f, fun, resp)
 
     resp.status >= 300 && !(resp.status == 404 && ep.allow_404) &&
-        return Result{T}(HTTP.StatusError(resp.status, resp), backtrace(), resp)
+        throw(HTTPError(resp, HTTP.StatusError(resp.status, resp), stacktrace()))
 
-    val = try
-        postprocess(postprocessor(f, fun), resp, T)
+    return try
+        postprocess(postprocessor(f, fun), resp, into(f, fun)), resp
     catch e
-        return Result{T}(e, catch_backtrace(), resp)
+        throw(PostProcessorError(resp, e, stacktrace(catch_backtrace())))
     end
-
-    return Result(val, resp)
 end
