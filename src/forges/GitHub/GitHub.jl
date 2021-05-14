@@ -24,11 +24,7 @@ using JSON3: JSON3
 export GitHubAPI, NoToken, Token, JWT
 
 const DEFAULT_URL = "https://api.github.com"
-const JSON_OPTS = (
-    dateformat=dateformat"y-m-d",
-    read_datetimeformats=[dateformat"y-m-dTH:M:SZ"],
-    write_datetimeformat=dateformat"y-m-dTH:M:SZ",
-)
+const DEFAULT_DATEFORMAT = dateformat"y-m-dTH:M:S\Z"
 
 abstract type AbstractToken end
 

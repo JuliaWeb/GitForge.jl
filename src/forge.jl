@@ -6,6 +6,19 @@ The most common example is [GitHub](https://github.com).
 """
 abstract type Forge end
 
+abstract type ForgeType end
+
+StructTypes.StructType(::Type{<:ForgeType}) = UnorderedStruct()
+
+function StructTypes.keywordargs(::Type{T}) where T <: ForgeType
+    M = parentmodule(T)
+    return if isdefined(M, :DEFAULT_DATEFORMAT)
+        (; dateformat=M.DEFAULT_DATEFORMAT)
+    else
+        NamedTuple()
+    end
+end
+
 """
     Endpoint(
         method::Symbol,

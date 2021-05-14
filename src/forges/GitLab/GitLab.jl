@@ -19,15 +19,13 @@ using ..GitForge:
 using Dates
 using HTTP
 using JSON3: JSON3
+using StructTypes: StructTypes
+using TimeZones: ZonedDateTime
 
 export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
-const JSON_OPTS = (
-    dateformat=dateformat"y-m-d",
-    read_datetimeformats=[dateformat"y-m-dTH:M:S.sZ", dateformat"y-m-dTH:M:S.s+ss:ss", dateformat"y-m-dTH:M:S.s-ss:ss"],
-    write_datetimeformat=dateformat"y-m-dTH:M:S.sZ",
-)
+const DEFAULT_DATEFORMAT = dateformat"y-m-dTH:M:S.s\Z"
 
 abstract type AbstractToken end
 

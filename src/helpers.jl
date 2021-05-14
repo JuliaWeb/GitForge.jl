@@ -16,6 +16,7 @@ end
 Create a type that can be parsed from JSON.
 """
 macro json(def::Expr)
+    # TODO: This doesn't work for parametric types or types with supertypes.
     T = esc(def.args[2])
     renames = Tuple{Symbol, Symbol}[]
     names = Symbol[]
@@ -41,19 +42,19 @@ macro json(def::Expr)
         end
     end
 
-    # Add a field for unhandled keys.
-    push!(def.args[3].args, :(_extras::NamedTuple))
+    # Make the type a subtype of `ForgeType`.
+    def.args[2] = :($T <: ForgeType)
+
+    # TODO: Add a field for unhandled keys.
 
     # Document the struct.
     push!(code, :(Base.@__doc__ $def))
 
     # Create a keyword constructor.
-    splat = esc(:kwargs)  # TODO: This seems... wrong. Hygiene is weird.
     kws = map(name -> Expr(:kw, name, :nothing), names)
-    push!(code, :($T(; $(kws...), $splat...) = $T($(names...), (; $splat...))))
+    push!(code, :($T(; $(kws...)) = $T($(names...))))
 
-    # Register the type with StructTypes with any renames.
-    push!(code, :(StructTypes.StructType(::Type{$T}) = UnorderedStruct()))
+    # Set up field renames.
     push!(code, :(StructTypes.names(::Type{$T}) = $(tuple(renames...))))
 
     return Expr(:block, code...)
