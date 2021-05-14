@@ -1,15 +1,13 @@
 macro endpoint(fun::Expr, epargs=:auto)
-    fname = fun.args[1]
+    fname = esc(fun.args[1])
     fargs = fun.args[2:end]
     epargs === :auto && (epargs = Expr(:tuple, map(ex -> ex.args[1], fargs)...))
 
-    ex = quote
+    quote
         export $fname
         Base.@__doc__ $fname(f::Forge, $(fargs...); kwargs...) =
             request(f, $fname, endpoint(f, $fname, $epargs...); kwargs...)
     end
-
-    esc(ex)
 end
 
 """
@@ -29,14 +27,14 @@ macro json(def::Expr)
         if field.head === :(::)
             push!(names, field.args[1])
             # Make the field nullable.
-            field.args[2] = :(Union{$(field.args[2]), Nothing})
+            field.args[2] = :(Union{$(esc(field.args[2])), Nothing})
         elseif field.head === :call && field.args[1] === :(=>)
             push!(names, field.args[2])
             # Convert from => to::F to to::F, and record the old name.
             from = field.args[2]
             to, F = field.args[3].args
             field.head = :(::)
-            field.args = [to, :(Union{$F, Nothing})]
+            field.args = [to, :(Union{$(esc(F)), Nothing})]
             push!(renames, (to, from))
         else
             @warn "Invalid field expression $field"
