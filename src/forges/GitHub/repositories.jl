@@ -122,6 +122,8 @@ endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
     Endpoint(:GET, "/users/$id/projects")
 into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}
 
+endpoint(::GitHubAPI, ::typeof(get_repo), owner_repo::AStr) =
+    Endpoint(:GET, "/repos/$owner_repo")
 endpoint(::GitHubAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo")
 into(::GitHubAPI, ::typeof(get_repo)) = Repo
