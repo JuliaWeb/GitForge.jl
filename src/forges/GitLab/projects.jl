@@ -117,6 +117,8 @@ endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AStr) =
     Endpoint(:GET, "/users/$name/repos")
 into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
 
+endpoint(::GitLabAPI, ::typeof(get_repo), owner_repo::AStr) =
+    Endpoint(:GET, "/projects/$(encode(owner_repo))")
 endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))")
 endpoint(::GitLabAPI, ::typeof(get_repo), owner::AStr, subgroup::AStr, repo::AStr) =
