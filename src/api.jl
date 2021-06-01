@@ -44,12 +44,14 @@ Get the currently authenticated user's repositories, or those of a user by name 
 @endpoint get_user_repos(name_or_id::Union{AStr, Integer})
 
 """
+    get_repo(::Forge, owner_repo::$AStr)
     get_repo(::Forge, owner::$AStr, repo::$AStr)
     get_repo(::Forge, id::Integer)
     get_repo(::Forge, owner::$AStr, subgroup::$AStr, repo::$AStr)
 
 Get a repository by owner and name or ID.
 """
+@endpoint get_repo(owner_repo::AStr)
 @endpoint get_repo(owner::AStr, repo::AStr)
 @endpoint get_repo(id::Integer)
 @endpoint get_repo(owner::AStr, subgroup::AStr, repo::AStr)
