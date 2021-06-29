@@ -80,6 +80,14 @@ end
     diff_refs::DiffRefs
 end
 
+endpoint(::GitLabAPI, ::typeof(subscribe_to_pull_request), project::Integer, pull_request_id::Integer) =
+    Endpoint(:POST, "/projects/$project/merge_requests/$pull_request_id/subscribe")
+into(::GitLabAPI, ::typeof(subscribe_to_pull_request)) = MergeRequest
+
+endpoint(::GitLabAPI, ::typeof(unsubscribe_from_pull_request), project::Integer, pull_request_id::Integer) =
+    Endpoint(:POST, "/projects/$project/merge_requests/$pull_request_id/unsubscribe")
+into(::GitLabAPI, ::typeof(unsubscribe_from_pull_request)) = MergeRequest
+
 endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer) =
     Endpoint(:GET, "/projects/$project/merge_requests")
 into(::GitLabAPI, ::typeof(get_pull_requests)) = Vector{MergeRequest}

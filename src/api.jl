@@ -122,6 +122,21 @@ Update a pull request.
 @endpoint update_pull_request(owner::AStr, repo::AStr, number::Integer)
 @endpoint update_pull_request(project::Integer, number::Integer)
 
+
+"""
+    subscribe_to_pull_request(::Forge, project::Integer, pull_request_id::Integer)
+
+Subscribe to notifications for the supplied project and pull request id
+"""
+@endpoint subscribe_to_pull_request(project::Integer, pull_request_id::Integer)
+
+"""
+    unsubscribe_to_pull_request(::Forge, project::Integer, pull_request_id::Integer)
+
+Unsubscribe from notifications for the supplied project and pull request id
+"""
+@endpoint unsubscribe_from_pull_request(project::Integer, pull_request_id::Integer)
+
 """
     get_commit(::Forge, owner::$AStr, repo::$AStr, ref::$AStr)
     get_commit(::Forge, project::Integer, ref::$AStr)
