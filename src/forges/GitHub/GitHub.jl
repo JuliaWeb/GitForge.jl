@@ -117,6 +117,7 @@ include("organizations.jl")
 include("commits.jl")
 include("branches.jl")
 include("tags.jl")
+include("comments.jl")
 
 ismemberorcollaborator(r::HTTP.Response) = r.status != 404
 
