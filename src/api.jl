@@ -250,7 +250,7 @@ Update the body for a given pull request comment.
         ::Forge, project::Integer, pull_request_id::Integer, comment_id::Integer
     )
 
-Delete a givent pull request comment.
+Delete a given pull request comment.
 """
 @endpoint delete_pull_request_comment(owner::AStr, repo::AStr, comment_id::Integer)
 @endpoint delete_pull_request_comment(

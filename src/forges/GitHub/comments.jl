@@ -11,7 +11,7 @@
     original_commit_id::String
     in_reply_to_id::Int
     user::User
-    bosy::String
+    body::String
     created_at::DateTime
     updated_at::DateTime
     html_url::String
