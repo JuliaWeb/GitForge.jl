@@ -197,7 +197,7 @@ Get a list of comments for a given pull request
 
 """
     get_pull_request_comment(
-        ::Forge, owner::$AStr, reo::$AStr, comment_id::Integer
+        ::Forge, owner::$AStr, repo::$AStr, comment_id::Integer
     )
     get_pull_request_comment(
         ::Forge, project::Integer, pull_request_id::Integer, comment_id::Integer
