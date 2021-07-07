@@ -55,31 +55,31 @@ function endpoint(
 end
 info(::GitHubAPI, ::typeof(get_pull_request_comment)) = Comment
 
-# Create New Pull Request (Issue) Comment
+# Create Pull Request (Issue) Comment
 # https://docs.github.com/en/rest/reference/issues#create-an-issue-comment
 function endpoint(
     ::GitHubAPI,
-    ::typeof(create_new_pull_request_comment),
+    ::typeof(create_pull_request_comment),
     owner::AStr,
     repo::AStr,
     pull_request_id::Integer,
 )
     return Endpoint(:POST, "/repos/$owner/$repo/issues/$pull_request_id/comments")
 end
-into(::GitHubAPI, ::typeof(create_new_pull_request_comment)) = Comment
+into(::GitHubAPI, ::typeof(create_pull_request_comment)) = Comment
 
-# Modify Pull Request (Issue) Comment
+# Update Pull Request (Issue) Comment
 # https://docs.github.com/en/rest/reference/issues#update-an-issue-comment
 function endpoint(
     ::GitHubAPI,
-    ::typeof(modify_pull_request_comment),
+    ::typeof(update_pull_request_comment),
     owner::AStr,
     repo::AStr,
     comment_id::Integer,
 )
     return Endpoint(:PATCH, "/repos/$owner/$repo/issues/comments/$comment_id")
 end
-into(::GitHubAPI, ::typeof(modify_pull_request_comment)) = Comment
+into(::GitHubAPI, ::typeof(update_pull_request_comment)) = Comment
 
 # Delete Pull Request (Issue) Comment
 # https://docs.github.com/en/rest/reference/issues#delete-an-issue-comment

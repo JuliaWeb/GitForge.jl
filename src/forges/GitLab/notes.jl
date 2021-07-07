@@ -42,23 +42,23 @@ function endpoint(
 end
 into(::GitLabAPI, ::typeof(get_pull_request_comment)) = Note
 
-# Create New Merge Request Note
+# Create Merge Request Note
 # https://docs.gitlab.com/ee/api/notes.html#create-new-merge-request-note
 function endpoint(
     ::GitLabAPI,
-    ::typeof(create_new_pull_request_comment),
+    ::typeof(create_pull_request_comment),
     project::Integer,
     pull_request_id::Integer,
 )
     return Endpoint(:POST, "/projects/$project/merge_requests/$pull_request_id/notes")
 end
-into(::GitLabAPI, ::typeof(create_new_pull_request_comment)) = Note
+into(::GitLabAPI, ::typeof(create_pull_request_comment)) = Note
 
-# Modify Merge Request Note
+# Update Merge Request Note
 # https://docs.gitlab.com/ee/api/notes.html#modify-existing-merge-request-note
 function endpoint(
     ::GitLabAPI,
-    ::typeof(modify_pull_request_comment),
+    ::typeof(update_pull_request_comment),
     project::Integer,
     pull_request_id::Integer,
     comment_id::Integer,
@@ -67,7 +67,7 @@ function endpoint(
         :PUT, "/projects/$project/merge_requests/$pull_request_id/notes/$comment_id"
     )
 end
-into(::GitLabAPI, ::typeof(modify_pull_request_comment)) = Note
+into(::GitLabAPI, ::typeof(update_pull_request_comment)) = Note
 
 # Delete Merge Request Note
 # https://docs.gitlab.com/ee/api/notes.html#delete-a-merge-request-note
