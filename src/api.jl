@@ -122,6 +122,21 @@ Update a pull request.
 @endpoint update_pull_request(owner::AStr, repo::AStr, number::Integer)
 @endpoint update_pull_request(project::Integer, number::Integer)
 
+
+"""
+    subscribe_to_pull_request(::Forge, project::Integer, pull_request_id::Integer)
+
+Subscribe to notifications for the supplied project and pull request ID.
+"""
+@endpoint subscribe_to_pull_request(project::Integer, pull_request_id::Integer)
+
+"""
+    unsubscribe_from_pull_request(::Forge, project::Integer, pull_request_id::Integer)
+
+Unsubscribe from notifications for the supplied project and pull request ID.
+"""
+@endpoint unsubscribe_from_pull_request(project::Integer, pull_request_id::Integer)
+
 """
     get_commit(::Forge, owner::$AStr, repo::$AStr, ref::$AStr)
     get_commit(::Forge, project::Integer, ref::$AStr)
@@ -164,3 +179,80 @@ Get a list of tags from a repository.
 """
 @endpoint get_tags(owner::AStr, repo::AStr)
 @endpoint get_tags(project::Integer)
+
+"""
+    list_pull_request_comments(
+        ::Forge, owner::$AStr, repo::$AStr, pull_request_id::Integer;
+        kwargs...
+    )
+    list_pull_request_comments(
+        ::Forge, project::Integer, pull_request_id::Integer;
+        kwargs...
+    )
+
+Get a list of comments for a given pull request.
+"""
+@endpoint list_pull_request_comments(owner::AStr, repo::AStr, pull_request_id::Integer)
+@endpoint list_pull_request_comments(project::Integer, pull_request_id::Integer)
+
+"""
+    get_pull_request_comment(
+        ::Forge, owner::$AStr, repo::$AStr, comment_id::Integer
+    )
+    get_pull_request_comment(
+        ::Forge, project::Integer, pull_request_id::Integer, comment_id::Integer
+    )
+
+Get a single comment for a given pull request and comment ID.
+"""
+@endpoint get_pull_request_comment(owner::AStr, repo::AStr, comment_id::Integer)
+@endpoint get_pull_request_comment(
+    project::Integer, pull_request_id::Integer, comment_id::Integer
+)
+
+"""
+    create_pull_request_comment(
+        ::Forge, owner::$AStr, repo::$AStr, pull_request_id::Integer;
+        kwargs...
+    )
+    create_pull_request_comment(
+        ::Forge, project::Integer, pull_request_id::Integer;
+        kwargs...
+    )
+
+Create a new comment for a given pull request.
+"""
+@endpoint create_pull_request_comment(owner::AStr, repo::AStr, pull_request_id::Integer)
+@endpoint create_pull_request_comment(project::Integer, pull_request_id::Integer)
+
+"""
+    update_pull_request_comment(
+        ::Forge, owner::$AStr, repo::$AStr, comment_id::Integer;
+        kwargs...
+    )
+    update_pull_request_comment(
+        ::Forge, project::Integer, pull_request_id::Integer, comment_id::Integer;
+        kwargs...
+    )
+
+Update the body for a given pull request comment.
+"""
+@endpoint update_pull_request_comment(owner::AStr, repo::AStr, comment_id::Integer)
+@endpoint update_pull_request_comment(
+    project::Integer, pull_request_id::Integer, comment_id::Integer
+)
+
+"""
+    delete_pull_request_comment(
+        ::Forge, owner::$AStr, repo::$AStr, comment_id::Integer
+    )
+    delete_pull_request_comment(
+        ::Forge, project::Integer, pull_request_id::Integer, comment_id::Integer
+    )
+
+Delete a given pull request comment.
+"""
+@endpoint delete_pull_request_comment(owner::AStr, repo::AStr, comment_id::Integer)
+@endpoint delete_pull_request_comment(
+    project::Integer, pull_request_id::Integer, comment_id::Integer
+)
