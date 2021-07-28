@@ -256,3 +256,12 @@ Delete a given pull request comment.
 @endpoint delete_pull_request_comment(
     project::Integer, pull_request_id::Integer, comment_id::Integer
 )
+
+"""
+    list_pipeline_schedules(::Forge, project::Integer; kwargs...)
+    list_pipeline_schedules(::Forge, owner::$AStr, repo::$AStr; kwargs...)
+
+List all existing pipeline schedules for a project.
+"""
+@endpoint list_pipeline_schedules(project::Integer)
+@endpoint list_pipeline_schedules(ownert::AStr, repo::AStr)
