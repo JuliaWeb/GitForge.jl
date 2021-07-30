@@ -113,6 +113,7 @@ include("commits.jl")
 include("branches.jl")
 include("tags.jl")
 include("notes.jl")
+include("pipeline_schedules.jl")
 
 encode(owner::AStr, repo::AStr) = HTTP.escapeuri("$owner/$repo")
 encode(org::AStr) = HTTP.escapeuri(org)
