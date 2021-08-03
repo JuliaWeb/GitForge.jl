@@ -264,4 +264,4 @@ Delete a given pull request comment.
 List all existing pipeline schedules for a project.
 """
 @endpoint list_pipeline_schedules(project::Integer)
-@endpoint list_pipeline_schedules(ownert::AStr, repo::AStr)
+@endpoint list_pipeline_schedules(owner::AStr, repo::AStr)

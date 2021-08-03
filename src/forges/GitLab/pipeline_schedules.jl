@@ -20,7 +20,7 @@ function endpoint(
     ::typeof(list_pipeline_schedules),
     project::Integer,
 )
-    return EndPoint(:GET, "/projects/$project/pipeline_schedules")
+    return Endpoint(:GET, "/projects/$project/pipeline_schedules")
 end
 
 function endpoint(
@@ -29,7 +29,7 @@ function endpoint(
     owner::AStr,
     repo::AStr,
 )
-    return EndPoint(:GET, "/projects/$(encode(owner, repo))/pipeline_schedules")
+    return Endpoint(:GET, "/projects/$(encode(owner, repo))/pipeline_schedules")
 end
 
 into(::GitLabAPI, ::typeof(list_pipeline_schedules)) = Vector{PipelineSchedule}
