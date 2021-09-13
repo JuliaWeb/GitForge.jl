@@ -73,6 +73,20 @@ Get a branch from a repository.
 @endpoint get_branch(owner::AStr, repo::AStr, branch::AStr)
 
 """
+    get_branches(::Forge, owner::AbstractString, repo::AbstractString)
+
+Get all branches for a repository.
+"""
+@endpoint get_branches(owner::AStr, repo::AStr)
+
+"""
+    delete_branch(::Forge, owner::AbstractString, repo::AbstractString, branch::AbstractString)
+
+Delete a branch from a repository.
+"""
+@endpoint delete_branch(owner::AStr, repo::AStr, branch::AStr)
+
+"""
     get_file_contents(
         ::Forge,
         owner::$AStr,

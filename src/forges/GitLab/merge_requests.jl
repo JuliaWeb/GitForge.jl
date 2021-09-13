@@ -88,6 +88,8 @@ endpoint(::GitLabAPI, ::typeof(unsubscribe_from_pull_request), project::Integer,
     Endpoint(:POST, "/projects/$project/merge_requests/$pull_request_id/unsubscribe")
 into(::GitLabAPI, ::typeof(unsubscribe_from_pull_request)) = MergeRequest
 
+endpoint(::GitLabAPI, ::typeof(get_pull_requests), owner::AStr, repo::AStr) =
+    Endpoint(:GET, "/projects/$(encode(owner, repo))/merge_requests")
 endpoint(::GitLabAPI, ::typeof(get_pull_requests), project::Integer) =
     Endpoint(:GET, "/projects/$project/merge_requests")
 into(::GitLabAPI, ::typeof(get_pull_requests)) = Vector{MergeRequest}
