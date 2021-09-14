@@ -41,4 +41,4 @@ function endpoint(
         "/projects/$(encode(owner, repo))/repository/branches/$(encode(branch))",
     )
 end
-postprocessor(::GitLabAPI, ::typeof(delete_branch)) = DoNothing
+postprocessor(::GitLabAPI, ::typeof(delete_branch)) = DoNothing()
