@@ -56,10 +56,10 @@ endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
 
 endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) = Endpoint(:PUT, "/users/$id")
-postprocessor(::GitLabAPI, ::typeof(update_user)) = DoNothing
+postprocessor(::GitLabAPI, ::typeof(update_user)) = DoNothing()
 
 endpoint(::GitLabAPI, ::typeof(create_user)) = Endpoint(:POST, "/users")
 into(::GitLabAPI, ::typeof(create_user)) = User
 
 endpoint(::GitLabAPI, ::typeof(delete_user), id::Integer) = Endpoint(:DELETE, "/users/$id")
-postprocessor(::GitLabAPI, ::typeof(delete_user)) = DoNothing
+postprocessor(::GitLabAPI, ::typeof(delete_user)) = DoNothing()

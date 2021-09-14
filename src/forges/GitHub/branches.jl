@@ -50,4 +50,4 @@ function endpoint(
 )
     return Endpoint(:DELETE, "/repos/$owner/$repo/git/refs/heads/$branch")
 end
-postprocessor(::GitHubAPI, ::typeof(delete_branch)) = DoNothing
+postprocessor(::GitHubAPI, ::typeof(delete_branch)) = DoNothing()
