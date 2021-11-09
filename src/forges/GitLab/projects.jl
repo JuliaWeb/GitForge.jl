@@ -138,4 +138,6 @@ into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
 
 endpoint(::GitLabAPI, ::typeof(get_file_contents), id::Integer, path::AStr) =
     Endpoint(:GET, "/projects/$id/repository/files/$path"; query=Dict(:ref => "master"))
+endpoint(::GitLabAPI, ::typeof(get_file_contents), owner::AStr, repo::AStr, path::AStr) =
+    Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/files/$path"; query=Dict(:ref => "master"))
 into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents
