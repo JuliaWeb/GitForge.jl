@@ -10,9 +10,10 @@ using JSON2: JSON2
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]
 
+const proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
+const pkgver = match(r"version = \"(.+)\"", proj)[1]
+
 function __init__()
-    proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
-    pkgver = match(r"version = \"(.+)\"", proj)[1]
     push!(HEADERS, "User-Agent" => "Julia v$VERSION (GitForge v$pkgver)")
 end
 
