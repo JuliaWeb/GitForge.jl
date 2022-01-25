@@ -12,10 +12,7 @@ const HEADERS = ["Content-Type" => "application/json"]
 
 const proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
 const pkgver = match(r"version = \"(.+)\"", proj)[1]
-
-function __init__()
-    push!(HEADERS, "User-Agent" => "Julia v$VERSION (GitForge v$pkgver)")
-end
+push!(HEADERS, "User-Agent" => "Julia v$VERSION (GitForge v$pkgver)")
 
 include("forge.jl")
 include("ratelimits.jl")
