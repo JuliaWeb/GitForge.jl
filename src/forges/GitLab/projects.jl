@@ -111,6 +111,13 @@ end
     last_commit_id::String
 end
 
+@json struct Issue
+    description::String
+    due_date::String
+    labels::Vector{String}
+    title::String
+end
+
 endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
 endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AStr) =
@@ -141,3 +148,7 @@ endpoint(::GitLabAPI, ::typeof(get_file_contents), id::Integer, path::AStr) =
 endpoint(::GitLabAPI, ::typeof(get_file_contents), owner::AStr, repo::AStr, path::AStr) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/files/$path"; query=Dict(:ref => "master"))
 into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents
+
+endpoint(::GitLabAPI, ::typeof(list_issues), project::Integer) =
+    Endpoint(:GET, "/projects/$project/issues")
+into(::GitLabAPI, ::typeof(list_issues)) = Vector{Issue}
