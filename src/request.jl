@@ -158,7 +158,7 @@ function request(
     has_rate_limits(f, fun) && rate_limit_update!(f, fun, resp)
 
     resp.status >= 300 && !(resp.status == 404 && ep.allow_404) &&
-        throw(HTTPError(resp, HTTP.StatusError(resp.status, resp), stacktrace()))
+        throw(HTTPError(resp, HTTP.StatusError(resp.status, String(ep.method), url, resp), stacktrace()))
 
     return try
         postprocess(postprocessor(f, fun), resp, into(f, fun)), resp
