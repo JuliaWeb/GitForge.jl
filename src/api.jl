@@ -279,3 +279,10 @@ List all existing pipeline schedules for a project.
 """
 @endpoint list_pipeline_schedules(project::Integer)
 @endpoint list_pipeline_schedules(owner::AStr, repo::AStr)
+
+"""
+    list_issues(::Forge, project::Integer; kwargs...)
+
+List all issues for a project.
+"""
+@endpoint list_issues(project::Integer)

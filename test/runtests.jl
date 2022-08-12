@@ -1,18 +1,15 @@
 using GitForge
 const GF = GitForge
 
-using HTTP: HTTP
-using JSON2: JSON2
-using Test: @test, @testset
+using HTTP, JSON3, Logging
+using Test: @test, @testset, TestLogger
 
 function capture(f::Function)
-    so = stdout
-    r, w = redirect_stdout()
-    out = @async read(r, String)
-    result = f()
-    redirect_stdout(so)
-    close(w)
-    return result, fetch(out)
+    t = TestLogger()
+    result = with_logger(t) do
+        f()
+    end
+    return result, t.logs
 end
 
 struct TestPostProcessor <: GF.PostProcessor end
@@ -30,14 +27,13 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
 @testset "GitForge.jl" begin
     f = TestForge()
     (val, resp), out = capture(() -> get_user(f))
-
     @testset "Basics" begin
         @test val === :foo
         @test resp isa HTTP.Response
     end
 
     @testset "Request options" begin
-        body = JSON2.read(IOBuffer(resp.body))
+        body = JSON3.read(IOBuffer(resp.body))
         @test startswith(get(body, :url, ""), "https://httpbin.org")
         @test get(get(body, :headers, Dict()), :Foo, "") == "Bar"
         @test get(get(body, :args, Dict()), :foo, "") == "bar"
@@ -57,7 +53,7 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
 
         @test isempty(out)
 
-        body = JSON2.read(IOBuffer(resp.body))
+        body = JSON3.read(IOBuffer(resp.body))
         @test haskey(body.headers, :Foo)
         @test get(body.headers, :A, "") == "B"
         @test haskey(get(body, :args, Dict()), :foo)

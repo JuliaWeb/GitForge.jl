@@ -18,16 +18,14 @@ using ..GitForge:
 
 using Dates
 using HTTP
-using JSON2
+using JSON3: JSON3
+using StructTypes: StructTypes
+using TimeZones: ZonedDateTime
 
 export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
-const JSON_OPTS = (
-    dateformat=dateformat"y-m-d",
-    read_datetimeformats=[dateformat"y-m-dTH:M:S.sZ", dateformat"y-m-dTH:M:S.s+ss:ss", dateformat"y-m-dTH:M:S.s-ss:ss"],
-    write_datetimeformat=dateformat"y-m-dTH:M:S.sZ",
-)
+const DEFAULT_DATEFORMAT = dateformat"y-m-dTH:M:S.s\Z"
 
 abstract type AbstractToken end
 
@@ -121,7 +119,7 @@ encode(owner::AStr, subgroup::AStr, repo::AStr) = HTTP.escapeuri("$owner/$subgro
 
 function ismember(r::HTTP.Response)
     r.status == 404 && return false
-    m = JSON2.read(IOBuffer(r.body), Member)
+    m = JSON3.read(IOBuffer(r.body), Member)
     return m.access_level !== nothing && m.access_level >= 30
 end
 

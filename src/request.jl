@@ -83,7 +83,7 @@ Computes a value to be returned from an HTTP response.
 """
 postprocess(::DoNothing, ::HTTP.Response, ::Type) = nothing
 postprocess(p::JSON, r::HTTP.Response, ::Type{T}) where T =
-    p.f(JSON2.read(IOBuffer(r.body), T))
+    p.f(JSON3.read(IOBuffer(r.body), T))
 postprocess(p::DoSomething, r::HTTP.Response, ::Type) = p.f(r)
 
 # Requests.
@@ -139,9 +139,9 @@ function request(
     query = merge(request_query(f, fun), ep.query, query)
     opts = merge(request_kwargs(f, fun), Dict(pairs(request_opts)))
     body = if ep.method in (:PATCH, :POST, :PUT)
-        JSON2.write(Dict(kwargs))
+        JSON3.write(kwargs)
     else
-        merge!(query, Dict(kwargs))
+        merge!(query, kwargs)
         HTTP.nobody
     end
 
