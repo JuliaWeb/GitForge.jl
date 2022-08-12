@@ -11,14 +11,13 @@ using StructTypes: StructTypes, UnorderedStruct
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]
 
-function __init__()
-    # TODO: Apparently using @__DIR__ doesn't play well with PackageCompiler.
-    # Look into alternate methods of getting the package version e.g. Pkg.dependencies.
+let
     proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
     pkgver = match(r"version = \"(.+)\"", proj)[1]
     push!(HEADERS, "User-Agent" => "Julia v$VERSION (GitForge v$pkgver)")
 end
 
+Base.include_dependency("../Project.toml")
 include("forge.jl")
 include("ratelimits.jl")
 include("request.jl")
