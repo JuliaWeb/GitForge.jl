@@ -43,7 +43,7 @@ endpoint(::GitLabAPI, ::typeof(get_user), id::Integer) = Endpoint(:GET, "/users/
 endpoint(::GitLabAPI, ::typeof(get_user), name::AStr) =
     Endpoint(:GET, "/users"; query=Dict(:username => name))
 postprocessor(::GitLabAPI, ::typeof(get_user)) = DoSomething() do r
-    v = JSON2.read(IOBuffer(r.body), Union{User, Vector{User}})
+    v = JSON3.read(IOBuffer(r.body), Union{User, Vector{User}})
     return if v isa User
         v
     else
