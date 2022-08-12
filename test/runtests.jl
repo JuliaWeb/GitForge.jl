@@ -3,16 +3,15 @@ const GF = GitForge
 
 using HTTP: HTTP
 using JSON2: JSON2
-using Test: @test, @testset
+using Test: @test, @testset, TestLogger
+using Logging
 
 function capture(f::Function)
-    so = stdout
-    r, w = redirect_stdout()
-    out = @async read(r, String)
-    result = f()
-    redirect_stdout(so)
-    close(w)
-    return result, fetch(out)
+    t = TestLogger()
+    result = with_logger(t) do
+        f()
+    end
+    return result, t.logs
 end
 
 struct TestPostProcessor <: GF.PostProcessor end
@@ -30,7 +29,6 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
 @testset "GitForge.jl" begin
     f = TestForge()
     (val, resp), out = capture(() -> get_user(f))
-
     @testset "Basics" begin
         @test val === :foo
         @test resp isa HTTP.Response
