@@ -1,6 +1,6 @@
 module GitLab
 
-import ..GitForge: endpoint, into, postprocessor
+import ..GitForge: endpoint, into, postprocessor, @forge, FieldContext, constructfield
 
 using ..GitForge
 using ..GitForge:
@@ -14,18 +14,23 @@ using ..GitForge:
     OnRateLimit,
     RateLimiter,
     HEADERS,
-    ORL_THROW
+    ORL_THROW,
+    @not_implemented,
+    write,
+    mungetime
 
 using Dates
 using HTTP
 using JSON3: JSON3
-using StructTypes: StructTypes
+using StructTypes: StructTypes, StringType
 using TimeZones: ZonedDateTime
 
 export GitLabAPI, NoToken, OAuth2Token, PersonalAccessToken
 
 const DEFAULT_URL = "https://gitlab.com/api/v4"
-const DEFAULT_DATEFORMAT = dateformat"y-m-dTH:M:S.s\Z"
+const DEFAULT_TIME_OUT_MILLIS = dateformat"yyyy-mm-ddTHH:MM:SS.sss+00:00"
+const REGEX_SIMPLE_DATE = r"^[0-9]{2,4}-[0-9][0-9]?-[0-9][0-9]?$"
+const SIMPLE_DATE = dateformat"y-m-d"
 
 abstract type AbstractToken end
 
@@ -91,6 +96,18 @@ struct GitLabAPI <: Forge
         return new(token, url, has_rate_limits, on_rate_limit, RateLimiter())
     end
 end
+@forge GitLabAPI
+
+constructfield(::FieldContext{GitLabAPI}, ::Type{Union{Date, Nothing}}, v::AbstractString) =
+    match(REGEX_SIMPLE_DATE, v) !== nothing ?
+        Date(v, SIMPLE_DATE) :
+        Date(ZonedDateTime(mungetime(v)), UTC)
+
+constructfield(::FieldContext{GitLabAPI}, ::Type{Union{DateTime, Nothing}}, v::AbstractString) =
+    DateTime(ZonedDateTime(mungetime(v)), UTC)
+
+GitForge.write(::FieldContext{GitLabAPI}, buf, pos, len, time::DateTime; kw...) =
+    JSON3.write(StringType(), buf, pos, len, Dates.format(time, DEFAULT_TIME_OUT_MILLIS))
 
 GitForge.base_url(g::GitLabAPI) = g.url
 GitForge.request_headers(g::GitLabAPI, ::Function) = [HEADERS; auth_headers(g.token)]

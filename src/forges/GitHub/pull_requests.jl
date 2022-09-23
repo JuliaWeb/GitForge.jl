@@ -119,16 +119,27 @@ end
 
 endpoint(::GitHubAPI, ::typeof(get_pull_requests), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/pulls")
+@not_implemented(::GitHubAPI, ::typeof(get_pull_requests), ::Int64)
 into(::GitHubAPI, ::typeof(get_pull_requests)) = Vector{PullRequest}
 
 endpoint(::GitHubAPI, ::typeof(get_pull_request), owner::AStr, repo::AStr, number::Integer) =
     Endpoint(:GET, "/repos/$owner/$repo/pulls/$number")
+@not_implemented(::GitHubAPI, ::typeof(get_pull_request), ::Int64, ::Int64)
 into(::GitHubAPI, ::typeof(get_pull_request)) = PullRequest
 
 endpoint(::GitHubAPI, ::typeof(create_pull_request), owner::AStr, repo::AStr) =
     Endpoint(:POST, "/repos/$owner/$repo/pulls")
+@not_implemented(::GitHubAPI, ::typeof(create_pull_request), ::Int64)
 into(::GitHubAPI, ::typeof(create_pull_request)) = PullRequest
 
 endpoint(::GitHubAPI, ::typeof(update_pull_request), owner::AStr, repo::AStr, number::Integer) =
     Endpoint(:PATCH, "/repos/$owner/$repo/pulls/$number")
+@not_implemented(::GitHubAPI, ::typeof(update_pull_request), ::Int64, ::Int64)
 into(::GitHubAPI, ::typeof(update_pull_request)) = PullRequest
+
+@not_implemented(::GitHubAPI, ::typeof(subscribe_to_pull_request), ::Int64, ::Int64)
+
+@not_implemented(::GitHubAPI, ::typeof(unsubscribe_from_pull_request), ::Int64, ::Int64)
+
+@not_implemented(::GitHubAPI, ::typeof(list_pipeline_schedules), ::Int64)
+@not_implemented(::GitHubAPI, ::typeof(list_pipeline_schedules), ::String, ::String)

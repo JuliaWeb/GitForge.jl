@@ -59,4 +59,5 @@ end
 
 endpoint(::GitHubAPI, ::typeof(get_commit), owner::AStr, repo::AStr, ref::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/commits/$ref")
+@not_implemented(::GitHubAPI, ::typeof(get_commit), ::Int64, ::String)
 into(::GitHubAPI, ::typeof(get_commit)) = Commit

@@ -47,11 +47,18 @@ end
 end
 
 endpoint(::GitHubAPI, ::typeof(get_user)) = Endpoint(:GET, "/user")
+@not_implemented(::GitHubAPI, ::typeof(get_user), ::Int64)
 endpoint(::GitHubAPI, ::typeof(get_user), name::AStr) = Endpoint(:GET, "/users/$name")
 into(::GitHubAPI, ::typeof(get_user)) = User
 
 endpoint(::GitHubAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 into(::GitHubAPI, ::typeof(get_users)) = Vector{User}
 
+@not_implemented(api::GitHubAPI, ::typeof(update_user), id::Integer)
+
 endpoint(::GitHubAPI, ::typeof(update_user)) = Endpoint(:PATCH, "/user")
 into(::GitHubAPI, ::typeof(update_user)) = User
+
+@not_implemented(::GitHubAPI, ::typeof(create_user))
+
+@not_implemented(::GitHubAPI, ::typeof(delete_user), id::Integer)
