@@ -6,6 +6,7 @@ using Base.StackTraces: StackTrace
 using Dates
 using Dates: Period, UTC, now
 using HTTP: HTTP
+using UUIDs: UUID
 using JSON3: JSON3, @writechar, @check, realloc!
 using StructTypes: StructTypes, UnorderedStruct, StructType, DictType, StringType
 import StructTypes: construct, constructfrom
@@ -33,5 +34,6 @@ include("helpers.jl")
 include("api.jl")
 include(joinpath("forges", "GitHub", "GitHub.jl"))
 include(joinpath("forges", "GitLab", "GitLab.jl"))
+include(joinpath("forges", "Bitbucket", "Bitbucket.jl"))
 
 end
