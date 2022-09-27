@@ -1,10 +1,13 @@
+const ID = Union{Integer, UUID}
+const NameOrId = Union{AStr, ID}
+
 """
-    get_user(::Forge[, name_or_id::Union{$AStr, Integer}])
+    get_user(::Forge[, name_or_id::Union{$AStr, Integer, UUID}])
 
 Get the currently authenticated user, or a user by name or ID.
 """
 @endpoint get_user()
-@endpoint get_user(name_or_id::Union{AStr, Integer})
+@endpoint get_user(name_or_id::NameOrId)
 
 """
     get_users(::Forge)
@@ -14,12 +17,12 @@ Get all users.
 @endpoint get_users()
 
 """
-    update_user(::Forge[, id::Integer]; kwargs...)
+    update_user(::Forge[, id::Union{Integer, UUID}]; kwargs...)
 
 Update the currently authenticated user, or a user by ID.
 """
 @endpoint update_user()
-@endpoint update_user(id::Integer)
+@endpoint update_user(id::ID)
 
 """
     create_user(::Forge; kwargs...)
@@ -29,24 +32,25 @@ Create a new user.
 @endpoint create_user()
 
 """
-    delete_user(::Forge, id::Integer)
+    delete_user(::Forge, id::Union{Integer, UUID})
 
 Delete a user by ID.
 """
-@endpoint delete_user(id::Integer)
+@endpoint delete_user(id::ID)
 
 """
-    get_user_repos(::Forge[, name_or_id::Union{$AStr, Integer}])
+    get_user_repos(::Forge[, name_or_id::Union{$AStr, Integer, UUID}])
 
 Get the currently authenticated user's repositories, or those of a user by name or ID.
 """
 @endpoint get_user_repos()
-@endpoint get_user_repos(name_or_id::Union{AStr, Integer})
+@endpoint get_user_repos(name_or_id::NameOrId)
 
 """
     get_repo(::Forge, owner_repo::$AStr)
     get_repo(::Forge, owner::$AStr, repo::$AStr)
     get_repo(::Forge, id::Integer)
+    get_repo(::Forge, id::UUID)
     get_repo(::Forge, owner::$AStr, subgroup::$AStr, repo::$AStr)
 
 Get a repository by owner and name or ID.
@@ -54,6 +58,7 @@ Get a repository by owner and name or ID.
 @endpoint get_repo(owner_repo::AStr)
 @endpoint get_repo(owner::AStr, repo::AStr)
 @endpoint get_repo(id::Integer)
+@endpoint get_repo(id::UUID)
 @endpoint get_repo(owner::AStr, subgroup::AStr, repo::AStr)
 
 """
@@ -62,7 +67,8 @@ Get a repository by owner and name or ID.
 Create a repository.
 If using GitHub and you want to create a repository in an organization, pass the organization name as argument.
 """
-@endpoint create_repo(owner::Union{AStr, Integer})
+@endpoint create_repo(owner::AStr, repo::AStr)
+@endpoint create_repo(owner::NameOrId)
 @endpoint create_repo()
 
 """
@@ -165,19 +171,20 @@ Get a commit from a repository.
         ::Forge,
         owner::$AStr,
         repo::$AStr,
-        name_or_id::Union{$AStr, Integer},
+        name_or_id::Union{$AStr, Integer, UUID},
     )
 
 Check whether or not a user is a collaborator on a repository.
 """
-@endpoint is_collaborator(owner::AStr, repo::AStr, name_or_id::Union{AStr, Integer})
+@endpoint is_collaborator(owner::AStr, repo::AStr)
+@endpoint is_collaborator(owner::AStr, repo::AStr, name_or_id::NameOrId)
 
 """
-    is_member(::Forge, org::$AStr, name_or_id::Union{$AStr, Integer})
+    is_member(::Forge, org::$AStr, name_or_id::Union{$AStr, Integer, UUID})
 
 Check whether or not a user is a member of an organization.
 """
-@endpoint is_member(org::AStr, name_or_id::Union{AStr, Integer})
+@endpoint is_member(org::AStr, name_or_id::NameOrId)
 
 """
     groups(::Forge)
