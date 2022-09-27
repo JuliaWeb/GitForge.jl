@@ -3,10 +3,12 @@ module GitForge
 using Base.Iterators: Pairs
 using Base.StackTraces: StackTrace
 
+using Dates
 using Dates: Period, UTC, now
 using HTTP: HTTP
-using JSON3: JSON3
-using StructTypes: StructTypes, UnorderedStruct
+using JSON3: JSON3, @writechar, @check, realloc!
+using StructTypes: StructTypes, UnorderedStruct, StructType, DictType, StringType
+import StructTypes: construct, constructfrom
 
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]
@@ -16,6 +18,11 @@ let
     pkgver = match(r"version = \"(.+)\"", proj)[1]
     push!(HEADERS, "User-Agent" => "Julia v$VERSION (GitForge v$pkgver)")
 end
+
+"""
+The supertype of all other exceptions raised by API functions.
+"""
+abstract type ForgeError <: Exception end
 
 Base.include_dependency("../Project.toml")
 include("forge.jl")

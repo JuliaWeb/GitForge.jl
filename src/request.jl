@@ -1,11 +1,6 @@
 # Exceptions.
 
 """
-The supertype of all other exceptions raised by API functions.
-"""
-abstract type ForgeError <: Exception end
-
-"""
 An error encountered during the HTTP request.
 
 ## Fields
@@ -30,6 +25,7 @@ An error encountered during response postprocessing.
 - `stacktrace::StackTrace`
 """
 struct PostProcessorError{E<:Exception} <: ForgeError
+    func
     response::HTTP.Response
     exception::E
     stacktrace::StackTrace
@@ -82,8 +78,20 @@ end
 Computes a value to be returned from an HTTP response.
 """
 postprocess(::DoNothing, ::HTTP.Response, ::Type) = nothing
-postprocess(p::JSON, r::HTTP.Response, ::Type{T}) where T =
-    p.f(JSON3.read(IOBuffer(r.body), T))
+function postprocess(p::JSON, r::HTTP.Response, ::Type{T}) where T
+    data = try
+        JSON3.read(IOBuffer(r.body), T)
+    catch err
+        @error "Error converting to type $T from data $(String(r.body))" exception=(err,catch_backtrace())
+        rethrow(err)
+    end
+    try
+        p.f(data)
+    catch err
+        @error "Error processing data $data" exception=(err,catch_backtrace())
+        rethrow(err)
+    end
+end
 postprocess(p::DoSomething, r::HTTP.Response, ::Type) = p.f(r)
 
 # Requests.
@@ -152,7 +160,7 @@ function request(
             status_exception=false, # We handle status exceptions ourselvse.
         )
     catch e
-        throw(HTTPError(e, stacktrace(catch_backtrace())))
+        rethrow(HTTPError(e, stacktrace(catch_backtrace())))
     end
 
     has_rate_limits(f, fun) && rate_limit_update!(f, fun, resp)
@@ -163,6 +171,6 @@ function request(
     return try
         postprocess(postprocessor(f, fun), resp, into(f, fun)), resp
     catch e
-        throw(PostProcessorError(resp, e, stacktrace(catch_backtrace())))
+        rethrow(PostProcessorError(fun, resp, e, stacktrace(catch_backtrace())))
     end
 end

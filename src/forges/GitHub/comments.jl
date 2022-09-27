@@ -39,6 +39,7 @@ function endpoint(
 )
     return Endpoint(:GET, "/repos/$owner/$repo/issues/$pull_request_id/comments")
 end
+@not_implemented(::GitHubAPI, ::typeof(list_pull_request_comments), ::Int64, ::Int64)
 into(::GitHubAPI, ::typeof(list_pull_request_comments)) = Vector{Comment}
 
 # Get Single Pull Request (Issue) Comment
@@ -53,6 +54,7 @@ function endpoint(
     return Endpoint(
         :GET, "/repos/$owner/$repo/issues/comments/$comment_id")
 end
+@not_implemented(::GitHubAPI, ::typeof(get_pull_request_comment), ::Int64, ::Int64, ::Int64)
 info(::GitHubAPI, ::typeof(get_pull_request_comment)) = Comment
 
 # Create Pull Request (Issue) Comment
@@ -66,6 +68,7 @@ function endpoint(
 )
     return Endpoint(:POST, "/repos/$owner/$repo/issues/$pull_request_id/comments")
 end
+@not_implemented(::GitHubAPI, ::typeof(create_pull_request_comment), ::Int64, ::Int64)
 into(::GitHubAPI, ::typeof(create_pull_request_comment)) = Comment
 
 # Update Pull Request (Issue) Comment
@@ -79,6 +82,7 @@ function endpoint(
 )
     return Endpoint(:PATCH, "/repos/$owner/$repo/issues/comments/$comment_id")
 end
+@not_implemented(::GitHubAPI, ::typeof(update_pull_request_comment), ::Int64, ::Int64, ::Int64)
 into(::GitHubAPI, ::typeof(update_pull_request_comment)) = Comment
 
 # Delete Pull Request (Issue) Comment
@@ -92,4 +96,8 @@ function endpoint(
 )
     return Endpoint(:DELETE, "/repos/$owner/$repo/issues/comments/$comment_id")
 end
+@not_implemented(
+    ::GitHubAPI, ::typeof(delete_pull_request_comment),
+    project::Integer, pull_request_id::Integer, comment_id::Integer
+)
 into(::GitHubAPI, ::typeof(delete_pull_request_comment)) = Comment

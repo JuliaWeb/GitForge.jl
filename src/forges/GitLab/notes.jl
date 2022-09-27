@@ -25,6 +25,13 @@ function endpoint(
 )
     return Endpoint(:GET, "/projects/$project/merge_requests/$pull_request_id/notes")
 end
+@not_implemented(
+    api::GitLabAPI,
+    ::typeof(list_pull_request_comments),
+    owner::AStr,
+    repo::AStr,
+    pull_request_id::Integer
+)
 into(::GitLabAPI, ::typeof(list_pull_request_comments)) = Vector{Note}
 
 # Get Single Merge Request Note
@@ -40,6 +47,13 @@ function endpoint(
         :GET, "/projects/$project/merge_requests/$pull_request_id/notes/$comment_id"
     )
 end
+@not_implemented(
+    api::GitLabAPI,
+    ::typeof(get_pull_request_comment),
+    owner::AStr,
+    repo::AStr,
+    comment_id::Integer,
+)
 into(::GitLabAPI, ::typeof(get_pull_request_comment)) = Note
 
 # Create Merge Request Note
@@ -52,6 +66,13 @@ function endpoint(
 )
     return Endpoint(:POST, "/projects/$project/merge_requests/$pull_request_id/notes")
 end
+@not_implemented(
+    api::GitLabAPI,
+    ::typeof(create_pull_request_comment),
+    owner::AStr,
+    repo::AStr,
+    pull_request_id::Integer,
+)
 into(::GitLabAPI, ::typeof(create_pull_request_comment)) = Note
 
 # Update Merge Request Note
@@ -67,6 +88,13 @@ function endpoint(
         :PUT, "/projects/$project/merge_requests/$pull_request_id/notes/$comment_id"
     )
 end
+@not_implemented(
+    api::GitLabAPI,
+    ::typeof(update_pull_request_comment),
+    owner::AStr,
+    repo::AStr,
+    comment_id::Integer,
+)
 into(::GitLabAPI, ::typeof(update_pull_request_comment)) = Note
 
 # Delete Merge Request Note
@@ -82,4 +110,5 @@ function endpoint(
         :DELETE, "/projects/$project/merge_requests/$pull_request_id/notes/$comment_id"
     )
 end
+@not_implemented(::GitLabAPI, ::typeof(delete_pull_request_comment), ::String, ::String, ::Int64)
 into(::GitLabAPI, ::typeof(delete_pull_request_comment)) = Note

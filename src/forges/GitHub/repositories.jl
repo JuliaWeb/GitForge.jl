@@ -120,25 +120,31 @@ end
 endpoint(::GitHubAPI, ::typeof(get_user_repos)) = Endpoint(:GET, "/user/repos")
 endpoint(::GitHubAPI, ::typeof(get_user_repos), id::Integer) =
     Endpoint(:GET, "/users/$id/projects")
+@not_implemented(::GitHubAPI, ::typeof(get_user_repos), ::String)
 into(::GitHubAPI, ::typeof(get_user_repos)) = Vector{Repo}
 
 endpoint(::GitHubAPI, ::typeof(get_repo), owner_repo::AStr) =
     Endpoint(:GET, "/repos/$owner_repo")
 endpoint(::GitHubAPI, ::typeof(get_repo), owner::AStr, repo::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo")
+@not_implemented(::GitHubAPI, ::typeof(get_repo), ::String, ::String, ::String)
 into(::GitHubAPI, ::typeof(get_repo)) = Repo
 
 endpoint(::GitHubAPI, ::typeof(create_repo)) =
     Endpoint(:POST, "/user/repos")
 endpoint(::GitHubAPI, ::typeof(create_repo), org::AStr) =
     Endpoint(:POST, "/orgs/$org/repos")
+@not_implemented(::GitHubAPI, ::typeof(create_repo), ::Int64)
+@not_implemented(api::GitHubAPI, ::typeof(create_repo), namespace::AStr, repo::AStr)
 into(::GitHubAPI, ::typeof(create_repo)) = Repo
 
 endpoint(::GitHubAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, user::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/collaborators/$user"; allow_404=true)
+@not_implemented(::GitHubAPI, ::typeof(is_collaborator), ::String, ::String, ::Int64)
 postprocessor(::GitHubAPI, ::typeof(is_collaborator)) = DoSomething(ismemberorcollaborator)
 into(::GitHubAPI, ::typeof(is_collaborator)) = Bool
 
 endpoint(::GitHubAPI, ::typeof(get_file_contents), owner::AStr, repo::AStr, path::AStr) =
     Endpoint(:GET, "/repos/$owner/$repo/contents/$path")
+@not_implemented(::GitHubAPI, ::typeof(get_file_contents), ::Int64, ::String)
 into(::GitHubAPI, ::typeof(get_file_contents)) = FileContents

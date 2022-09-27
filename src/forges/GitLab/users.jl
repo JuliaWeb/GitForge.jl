@@ -55,6 +55,7 @@ into(::GitLabAPI, ::typeof(get_user)) = User
 endpoint(::GitLabAPI, ::typeof(get_users)) = Endpoint(:GET, "/users")
 into(::GitLabAPI, ::typeof(get_users)) = Vector{User}
 
+@not_implemented(api::GitLabAPI, ::typeof(update_user))
 endpoint(::GitLabAPI, ::typeof(update_user), id::Integer) = Endpoint(:PUT, "/users/$id")
 postprocessor(::GitLabAPI, ::typeof(update_user)) = DoNothing()
 

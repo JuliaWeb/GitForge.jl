@@ -120,6 +120,7 @@ end
 
 endpoint(::GitLabAPI, ::typeof(get_user_repos)) =
     Endpoint(:GET, "/projects"; query=Dict("membership" => true))
+@not_implemented(api::GitLabAPI, ::typeof(get_user_repos), id::Integer)
 endpoint(::GitLabAPI, ::typeof(get_user_repos), name::AStr) =
     Endpoint(:GET, "/users/$name/repos")
 into(::GitLabAPI, ::typeof(get_user_repos)) = Vector{Project}
@@ -136,17 +137,20 @@ endpoint(::GitLabAPI, ::typeof(create_repo)) =
     Endpoint(:POST, "/projects")
 endpoint(::GitLabAPI, ::typeof(create_repo), id::Integer) =
     Endpoint(:POST, "/projects/user/$id")
+@not_implemented(api::GitLabAPI, ::typeof(create_repo), repo::AStr)
+@not_implemented(api::GitLabAPI, ::typeof(create_repo), namespace::AStr, repo::AStr)
 into(::GitLabAPI, ::typeof(create_repo)) = Project
 
 endpoint(::GitLabAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, id::Integer) =
     Endpoint(:GET, "/projects/$(encode(owner, repo))/members/$id"; allow_404=true)
+@not_implemented(api::GitLabAPI, ::typeof(is_collaborator), owner::AStr, repo::AStr, id::AStr)
 postprocessor(::GitLabAPI, ::typeof(is_collaborator)) = DoSomething(ismember)
 into(::GitLabAPI, ::typeof(is_collaborator)) = Bool
 
 endpoint(::GitLabAPI, ::typeof(get_file_contents), id::Integer, path::AStr) =
-    Endpoint(:GET, "/projects/$id/repository/files/$path"; query=Dict(:ref => "master"))
+    Endpoint(:GET, "/projects/$id/repository/files/$(HTTP.escapeuri(path))"; query=Dict(:ref => "master"))
 endpoint(::GitLabAPI, ::typeof(get_file_contents), owner::AStr, repo::AStr, path::AStr) =
-    Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/files/$path"; query=Dict(:ref => "master"))
+    Endpoint(:GET, "/projects/$(encode(owner, repo))/repository/files/$(HTTP.escapeuri(path))"; query=Dict(:ref => "master"))
 into(::GitLabAPI, ::typeof(get_file_contents)) = FileContents
 
 endpoint(::GitLabAPI, ::typeof(list_issues), project::Integer) =

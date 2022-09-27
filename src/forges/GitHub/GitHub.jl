@@ -2,7 +2,7 @@
 
 module GitHub
 
-import ..GitForge: endpoint, into, postprocessor
+import ..GitForge: endpoint, into, postprocessor, @forge
 
 using ..GitForge
 using ..GitForge:
@@ -15,7 +15,8 @@ using ..GitForge:
     OnRateLimit,
     RateLimiter,
     HEADERS,
-    ORL_THROW
+    ORL_THROW,
+    @not_implemented
 
 using Dates
 using HTTP
@@ -24,7 +25,7 @@ using JSON3: JSON3
 export GitHubAPI, NoToken, Token, JWT
 
 const DEFAULT_URL = "https://api.github.com"
-const DEFAULT_DATEFORMAT = dateformat"y-m-dTH:M:S\Z"
+const DEFAULT_DATEFORMAT = dateformat"yyyy-mm-ddTHH:MM:SS\Z"
 
 abstract type AbstractToken end
 
@@ -92,6 +93,7 @@ struct GitHubAPI <: Forge
         return new(token, url, has_rate_limits, on_rate_limit, RateLimiter(), RateLimiter())
     end
 end
+@forge GitHubAPI
 
 GitForge.base_url(g::GitHubAPI) = g.url
 GitForge.request_headers(g::GitHubAPI, ::Function) = [HEADERS; auth_headers(g.token)]
@@ -115,6 +117,6 @@ include("branches.jl")
 include("tags.jl")
 include("comments.jl")
 
-ismemberorcollaborator(r::HTTP.Response) = r.status != 404
+ismemberorcollaborator(r::HTTP.Response) = !(r.status in [403, 404])
 
 end

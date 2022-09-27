@@ -22,3 +22,5 @@ julia> @assert user.login == "christopher-dG"
 Eventually, the goal is to cover all the "basic" parts of services like GitHub, such as repositories, issues, pull requests, etc.
 However, this library was mostly motivated by development on [Registrator](https://github.com/JuliaRegistries/Registrator.jl), so at the moment most of the wrapped endpoints are just the ones needed for that specific task.
 More recently, it's being used for efforts on [CompatHelper](https://github.com/JuliaRegistries/CompatHelper.jl) and [TagBot](https://github.com/JuliaRegistries/TagBot).
+
+Forges will cover different methods of the API and they use @not_implemented to note unimplemented methods.

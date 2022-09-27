@@ -119,8 +119,8 @@ List a repository's pull requests.
 @endpoint get_pull_requests(repo::Integer)
 
 """
-    create_pull_requests(::Forge, owner::$AStr, repo::$AStr; kwargs...)
-    create_pull_requests(::Forge, project::Integer; kwargs...)
+    create_pull_request(::Forge, owner::$AStr, repo::$AStr; kwargs...)
+    create_pull_request(::Forge, project::Integer; kwargs...)
 
 Create a pull request.
 """

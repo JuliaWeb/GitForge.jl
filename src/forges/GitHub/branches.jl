@@ -34,7 +34,7 @@ function endpoint(
     owner::AStr,
     repo::AStr,
 )
-    return EndPoint(:GET, "repos/$owner/$repo/branches")
+    return Endpoint(:GET, "repos/$owner/$repo/branches")
 end
 into(::GitHubAPI, ::typeof(get_branches)) = Vector{Branch}
 
