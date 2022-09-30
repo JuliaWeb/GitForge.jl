@@ -81,7 +81,7 @@ function json(forge::Type, def::Expr)
         Base.@__doc__ $def
     
         # sort extras so they can compare for equality
-        $T(; $(kws...), $extras) =
+        $T(; $(kws...), $extras = (;)) =
             $T($(names...), (; sort!([pairs($extras)...], by = first)...))
 
         # equality
