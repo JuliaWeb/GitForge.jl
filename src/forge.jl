@@ -77,7 +77,7 @@ constructfield(ctx::FieldContext, ::Type{Union{Vector{FT}, Nothing}}, vec::Vecto
     [constructfield(ctx, FT, v) for v in vec]
 
 # convert Vectors recursively
-constructfield(ctx::FieldContext, ::Type, vec::Vector) where FT =
+constructfield(ctx::FieldContext, ::Type, vec::Vector) =
     [constructfield(ctx, Union{Any, Nothing}, v) for v in vec]
 
 # convert dicts recursively
