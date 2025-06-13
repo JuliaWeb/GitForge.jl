@@ -187,6 +187,14 @@ struct Endpoint
         query::Dict=Dict(),
         allow_404::Bool=false,
     )
+        # do not allow path navigation in URLs
+        if occursin(r"\.\.", url)
+            throw(ArgumentError("URLs cannot contain path navigation"))
+        end
+        # do not allow new lines or carraige returns in URLs
+        if occursin(r"[\r\n]", url)
+            throw(ArgumentError("URLs cannot contain line breaks"))
+        end
         return new(method, url, headers, query, allow_404)
     end
 end

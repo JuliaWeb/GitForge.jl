@@ -69,6 +69,16 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
         @test haskey(get(body, :args, Dict()), :foo)
         @test get(get(body, :args, Dict()), :a, "") == "b"
     end
+
+    @testset "URL sanity" begin
+        @test isa(GitForge.Endpoint(:GET, "/repos/owner/repo"), GitForge.Endpoint)
+        @test_throws ArgumentError GitForge.Endpoint(:GET, "/repos/owner1/../owner2/repo")
+        @test_throws ArgumentError GitForge.Endpoint(:GET, "/repos/owner1/\n/owner2/repo")
+        @test_throws ArgumentError GitForge.Endpoint(:GET, "/repos/owner1/\r\nfoo/owner2/repo")
+
+        forge = GitForge.GitHub.GitHubAPI(;token=GitForge.GitHub.NoToken())
+        @test_throws ArgumentError GitForge.get_repo(forge, "JuliaLang", "../octocat/Hello-World")
+    end
 end
 
 # test whether apis are conformant
