@@ -192,7 +192,7 @@ struct Endpoint
             throw(ArgumentError("URLs cannot contain path navigation"))
         end
         # do not allow new lines or carriage returns in URLs
-        if occursin(r"[\r\n]", url)
+        if occursin(r"\s", url)
             throw(ArgumentError("URLs cannot contain line breaks"))
         end
         return new(method, url, headers, query, allow_404)
