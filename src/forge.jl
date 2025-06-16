@@ -191,7 +191,7 @@ struct Endpoint
         if occursin(r"\.\.", url)
             throw(ArgumentError("URLs cannot contain path navigation"))
         end
-        # do not allow new lines or carraige returns in URLs
+        # do not allow new lines or carriage returns in URLs
         if occursin(r"[\r\n]", url)
             throw(ArgumentError("URLs cannot contain line breaks"))
         end
