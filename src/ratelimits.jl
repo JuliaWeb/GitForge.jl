@@ -25,19 +25,27 @@ rate_limit_wait(rl::RateLimiter) = sleep(rate_limit_period(rl))
 rate_limit_period(rl::RateLimiter) = max(Millisecond(0), unix2datetime(rl.reset) - now(UTC))
 
 function rate_limit_update!(rl::RateLimiter, r::HTTP.Response)
-    remaining = tryheader(i -> parse(Int, i), r, "RateLimit-Remaining")
-    reset = tryheader(i -> parse(Int, i), r, "RateLimit-Reset")
-    if remaining === nothing  || reset === nothing
+    remaining = tryheader(r, "RateLimit-Remaining")
+    reset = tryheader(r, "RateLimit-Reset")
+    remaining === nothing && reset === nothing && return
+
+    if remaining === nothing || reset === nothing
         @warn "Parsing rate limit headers failed"
     else
-        rl.remaining = remaining
-        rl.reset = reset
+        parsed_remaining = tryparse(Int, remaining)
+        parsed_reset = tryparse(Int, reset)
+        if parsed_remaining === nothing || parsed_reset === nothing
+            @warn "Parsing rate limit headers failed"
+            return
+        end
+        rl.remaining = parsed_remaining
+        rl.reset = parsed_reset
     end
 end
 
-function tryheader(f::Function, r::HTTP.Response, header::AStr)
+function tryheader(r::HTTP.Response, header::AStr)
     for h in [header, "X-$header"]
-        HTTP.hasheader(r, h) && return f(HTTP.header(r, h))
+        HTTP.hasheader(r, h) && return HTTP.header(r, h)
     end
     return nothing
 end
