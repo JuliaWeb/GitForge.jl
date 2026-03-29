@@ -35,5 +35,6 @@ include("api.jl")
 include(joinpath("forges", "GitHub", "GitHub.jl"))
 include(joinpath("forges", "GitLab", "GitLab.jl"))
 include(joinpath("forges", "Bitbucket", "Bitbucket.jl"))
+include(joinpath("forges", "Forgejo", "Forgejo.jl"))
 
 end
