@@ -158,7 +158,7 @@ end
     Endpoint(
         method::Symbol,
         url::$AStr;
-        headers::Vector{<:Pair}=HTTP.Header[],
+        headers::Vector{<:Pair}=Pair{String,String}[],
         query::Dict=Dict(),
         allow_404::Bool=false,
     ) -> Endpoint
@@ -170,7 +170,7 @@ Contains information on how to call an endpoint.
 - `url::$AStr`: Endpoint URL, relative to the base URL.
 
 ## Keywords
-- `headers::Vector{<:Pair}=HTTP.Header[]`: Request headers to add.
+- `headers::Vector{<:Pair}=Pair{String,String}[]`: Request headers to add.
 - `query::Dict=Dict()`: Query string parameters to add.
 - `allow_404::Bool=false`: Sends responses  with 404 statuses to the postprocessor.
 """
@@ -183,7 +183,7 @@ struct Endpoint
 
     function Endpoint(
         method::Symbol, url::AStr;
-        headers::Vector{<:Pair}=HTTP.Header[],
+        headers::Vector{<:Pair}=Pair{String,String}[],
         query::Dict=Dict(),
         allow_404::Bool=false,
     )

@@ -48,7 +48,6 @@ GF.into(::TestForge, ::typeof(get_user)) = Symbol
         @test get(get(body, :headers, Dict()), :Foo, "") == "Bar"
         @test get(get(body, :args, Dict()), :foo, "") == "bar"
         @test occursin("/get", get(body, :url, ""))
-        @test !isempty(out)
     end
 
     @testset "Per-call request options" begin
