@@ -14,8 +14,18 @@ import StructTypes: construct, constructfrom
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]
 
-# HTTP.Header was removed in HTTP.jl 2.x; use its absence to detect the version.
-const _HTTP_V2 = !isdefined(HTTP, :Header)
+# Detect the HTTP 2.x line by package version (robust). HTTP.jl 2.x removed
+# `HTTP.Header`, but keying off a removed binding's absence is fragile — 2.x has
+# re-added other removed bindings as deprecating shims (e.g. `HTTP.Exceptions`,
+# JuliaWeb/HTTP.jl#1315), so use the version, falling back to a genuine 2.x-only
+# type (`HTTP.EmptyBody`) when `pkgversion` is unavailable (Julia < 1.9).
+@static if VERSION >= v"1.9"
+    const _HTTP_V2 = let v = pkgversion(HTTP)
+        v === nothing ? isdefined(HTTP, :EmptyBody) : v >= v"2"
+    end
+else
+    const _HTTP_V2 = isdefined(HTTP, :EmptyBody)
+end
 
 let
     proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
