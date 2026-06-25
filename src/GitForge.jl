@@ -14,6 +14,9 @@ import StructTypes: construct, constructfrom
 const AStr = AbstractString
 const HEADERS = ["Content-Type" => "application/json"]
 
+# HTTP.Header was removed in HTTP.jl 2.x; use its absence to detect the version.
+const _HTTP_V2 = !isdefined(HTTP, :Header)
+
 let
     proj = read(joinpath(dirname(@__DIR__), "Project.toml"), String)
     pkgver = match(r"version = \"(.+)\"", proj)[1]
