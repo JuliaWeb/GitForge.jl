@@ -57,8 +57,8 @@ endpoint(::BitbucketAPI, ::typeof(create_repo), workspace::AStr, repo::AStr) =
 into(::BitbucketAPI, ::typeof(create_repo)) = Repo
 
 function is_bitbucket_collaborator(resp::HTTP.Response)
-    if HTTP.status(resp) == 200
-        d = JSON3.read(String(HTTP.body(resp)), Dict)
+    if resp.status == 200
+        d = JSON3.read(String(resp.body), Dict)
         return haskey(d, "values") && length(d["values"]) > 0 &&
             d["values"][1]["permissions"] in ["write" "admin"]
     end

@@ -34,7 +34,7 @@ function Base.iterate(pgn::BBPaginator{BitbucketAPI, P}, (p, offset)::Tuple{P, I
         rethrow(HTTPError(e, stacktrace(catch_backtrace())))
     end
     has_rate_limits(api, OP) && rate_limit_update!(api, OP, resp)
-    resp.status != 200 && throw(HTTPError(resp, HTTP.StatusError(resp.status, resp), stacktrace()))
+    resp.status != 200 && throw(HTTPError(resp, _HTTP_V2 ? HTTP.StatusError(resp) : HTTP.StatusError(resp.status, "GET", p.next, resp), stacktrace()))
     try
         p2 = postprocess(postprocessor(api, OP), resp, into(api, OP))
         p2.values[1], (p2, 2)

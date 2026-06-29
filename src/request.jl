@@ -99,7 +99,7 @@ postprocess(p::DoSomething, r::HTTP.Response, ::Type) = p.f(r)
 """
     request(
         f::Forge, fun::Function, ep::Endpoint;
-        headers::Vector{<:Pair}=HTTP.Header[],
+        headers::Vector{<:Pair}=Pair{String,String}[],
         query::AbstractDict=Dict(),
         request_opts=Dict(),
         kwargs...,
@@ -114,7 +114,7 @@ Make an HTTP request and return `T` and the response, where `T` is determined by
 
 ## Keywords
 - `query::AbstractDict=Dict()`: Query string parameters to add to the request.
-- `headers::Vector{<:Pair}=HTTP.Header[]`: Headers to add to the request.
+- `headers::Vector{<:Pair}=Pair{String,String}[]`: Headers to add to the request.
 - `request_opts=Dict()`: Keywords passed into `HTTP.request`.
 
 Trailing keywords are sent as a JSON body for `PATCH`, `POST`, and `PUT` requests.
@@ -126,7 +126,7 @@ For other request types, the keywords are sent as query string parameters.
 """
 function request(
     f::Forge, fun::Function, ep::Endpoint;
-    headers::Vector{<:Pair}=HTTP.Header[],
+    headers::Vector{<:Pair}=Pair{String,String}[],
     query::AbstractDict=Dict(),
     request_opts=Dict(),
     kwargs...,
@@ -166,7 +166,7 @@ function request(
     has_rate_limits(f, fun) && rate_limit_update!(f, fun, resp)
 
     resp.status >= 300 && !(resp.status == 404 && ep.allow_404) &&
-        throw(HTTPError(resp, HTTP.StatusError(resp.status, String(ep.method), url, resp), stacktrace()))
+        throw(HTTPError(resp, _HTTP_V2 ? HTTP.StatusError(resp) : HTTP.StatusError(resp.status, String(ep.method), url, resp), stacktrace()))
 
     return try
         postprocess(postprocessor(f, fun), resp, into(f, fun)), resp

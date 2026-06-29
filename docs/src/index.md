@@ -32,6 +32,14 @@ GitLab.OAuth2Token
 GitLab.PersonalAccessToken
 ```
 
+## Bitbucket
+
+```@docs
+Bitbucket
+Bitbucket.BitbucketAPI
+Bitbucket.RenderedPullRequestMarkup
+```
+
 # API
 
 Each API function ([`get_user`](@ref), [`get_repo`](@ref), etc.) returns a `Tuple{T, HTTP.Response}`.
@@ -67,16 +75,29 @@ create_user
 delete_user
 get_user_repos
 get_repo
+create_repo(::Forge, ::AbstractString, ::AbstractString)
 get_branch
+get_branches
+delete_branch
 get_file_contents
 get_pull_request
 get_pull_requests
 create_pull_request
 update_pull_request
+subscribe_to_pull_request
+unsubscribe_from_pull_request
+list_pull_request_comments
+get_pull_request_comment
+create_pull_request_comment
+update_pull_request_comment
+delete_pull_request_comment
 get_commit
 get_tags
 is_collaborator
 is_member
+groups
+list_issues
+list_pipeline_schedules
 ```
 
 # Internals
@@ -143,4 +164,12 @@ DoNothing
 DoSomething
 JSON
 @json
+```
+
+## JSON Field Construction
+
+```@docs
+constructfield
+write(::GitForge.FieldContext, ::Any, ::Any, ::Any, ::Any)
+@forge
 ```
