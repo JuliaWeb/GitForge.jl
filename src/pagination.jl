@@ -41,6 +41,10 @@ function Paginator{T}(
     return Paginator{T}(q -> f(args...; kwargs..., query=merge(query, q)))
 end
 
+Base.IteratorSize(::GitForge.Paginator) = Base.SizeUnknown()
+Base.IteratorEltype(::GitForge.Paginator) = Base.HasEltype()
+Base.eltype(::GitForge.Paginator{T}) where T = T
+
 function paginate(
     fun::Function, f::Forge, args...;
     page::Int=1, per_page::Int=100, kwargs...,
