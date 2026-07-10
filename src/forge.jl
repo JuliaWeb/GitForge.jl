@@ -187,10 +187,19 @@ struct Endpoint
         query::Dict=Dict(),
         allow_404::Bool=false,
     )
-        # do not allow path navigation in URLs
+        # Do not allow path navigation in URLs
+        # Disallowed pattern: ..
         if occursin(r"\.\.", url)
             throw(ArgumentError("URLs cannot contain path navigation"))
         end
+
+        # Additional disallowed patterns:
+        # ../, ..\, /.., \.., ./, .\, /./, \.\
+        PATH_TRAVERSAL = r"(?:\.{2,}[\/\\]|\.{1,}[\/\\]|[\/\\]\.{2,}|[\/\\]\.{1,}[\/\\])"
+        if occursin(PATH_TRAVERSAL, url)
+            throw(ArgumentError("URLs cannot contain path navigation"))
+        end
+
         # do not allow new lines or carriage returns in URLs
         if occursin(r"\s", url)
             throw(ArgumentError("URLs cannot contain line breaks"))
