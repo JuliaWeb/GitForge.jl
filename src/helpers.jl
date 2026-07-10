@@ -33,7 +33,7 @@ macro json(forgesym::Symbol, def::Expr)
     catch
         throw("No struct named $forgesym, pass a valid API to @json $(def.args[2])")
     end
-    !(forge <: GitForge.ForgeType) && throw("$forge is not a ForgeType, pass a valid API to @json $(def.args[2])")
+    !(forge <: GitForge.Forge) && throw("$forge is not a Forge, pass a valid API to @json $(def.args[2])")
     json(forge, def)
 end
 
